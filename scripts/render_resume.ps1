@@ -216,16 +216,38 @@ Write-Host "Generated HTML at: $HtmlPath"
 # Locate Chromium-based headless browser (Edge or Chrome)
 $BrowserPath = $null
 $CandidatePaths = @(
+    # Windows paths
     "C:\Program Files (x86)\Microsoft\Edge\Application\msedge.exe",
     "C:\Program Files\Microsoft\Edge\Application\msedge.exe",
     "C:\Program Files\Google\Chrome\Application\chrome.exe",
-    "C:\Program Files (x86)\Google\Chrome\Application\chrome.exe"
+    "C:\Program Files (x86)\Google\Chrome\Application\chrome.exe",
+    # macOS paths
+    "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
+    "/Applications/Microsoft Edge.app/Contents/MacOS/Microsoft Edge",
+    "/Applications/Chromium.app/Contents/MacOS/Chromium",
+    # Linux paths
+    "/usr/bin/google-chrome",
+    "/usr/bin/google-chrome-stable",
+    "/usr/bin/chromium",
+    "/usr/bin/chromium-browser"
 )
 
 foreach ($path in $CandidatePaths) {
     if (Test-Path $path) {
         $BrowserPath = $path
         break
+    }
+}
+
+# Check if browser binary is available on PATH
+if ($null -eq $BrowserPath) {
+    $pathBins = @("msedge", "chrome", "google-chrome", "google-chrome-stable", "chromium", "chromium-browser")
+    foreach ($bin in $pathBins) {
+        $cmd = Get-Command $bin -ErrorAction SilentlyContinue
+        if ($cmd) {
+            $BrowserPath = $cmd.Source
+            break
+        }
     }
 }
 

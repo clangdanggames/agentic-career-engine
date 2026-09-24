@@ -24,6 +24,9 @@ $confirmed = $false
 
 if ($ConfirmPhrase -eq "RESET-ALL-DATA") {
     $confirmed = $true
+} elseif (-not [string]::IsNullOrWhiteSpace($ConfirmPhrase)) {
+    Write-Warning "Reset aborted: Provided ConfirmPhrase '$ConfirmPhrase' does not match 'RESET-ALL-DATA'."
+    exit 0
 } else {
     Write-Host "`nTo prevent accidental loss of job applications, human confirmation is required." -ForegroundColor Yellow
     $userInput = Read-Host "Type 'RESET' (all caps) to permanently wipe application dossiers and reset ledgers"
