@@ -1,9 +1,9 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "title": "ATS Search Configuration",
-  "description": "Configurable parameters for automated ATS job discovery, filtering, and scoring across any industry",
+  "description": "Configurable parameters for automated ATS job discovery, filtering, and scoring",
   "search_criteria": {
-    "industry": "General / All Industries",
+    "industry": "General",
     "roles": [
       "Senior Project Manager",
       "Operations Director",
@@ -40,14 +40,17 @@
       "target": 150000,
       "relocation_floor": 180000,
       "currency": "USD"
-    }
+    },
+    "search_scope": "broad",
+    "search_scope_description": "Options: 'broad' (scans all employers hiring across ATS platforms), 'premier' (adds focused batches for market leaders), or 'targeted' (limits scans to target_companies)"
   },
-  "target_companies": [
+  "premier_employers": [
     "Google", "Microsoft", "Amazon", "Apple", "Meta", "Netflix",
     "UnitedHealth Group", "Pfizer", "Johnson & Johnson",
     "JPMorgan Chase", "Goldman Sachs", "Stripe", "Visa",
     "Nike", "Target", "Disney", "Salesforce", "Deloitte"
   ],
+  "target_companies": [],
   "scoring_weights": {
     "core_competencies": {
       "max_points": 40,

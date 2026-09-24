@@ -1,6 +1,6 @@
-# Cross-Industry Compensation Estimation Heuristic
+# Compensation Estimation Heuristic
 
-> **Purpose**: A fast, deterministic 4-step framework to estimate realistic Total Compensation (Base + Bonus/Equity) when an ATS job posting omits compensation details, applicable across **any industry or profession**.
+> **Purpose**: A deterministic 4-step framework to estimate realistic Total Compensation (Base + Bonus/Equity) when an ATS job posting omits compensation details.
 
 ---
 

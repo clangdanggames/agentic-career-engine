@@ -1,6 +1,6 @@
-# ATS Job Scanner — Universal Scoring Rubric & Evaluation Framework
+# ATS Job Scanner — Scoring Rubric & Evaluation Framework
 
-> **Purpose**: A deterministic, transparent 100-point scoring algorithm and qualitative success evaluation rubric to assess job opportunities against the candidate's professional background, compensation targets, and network leverage across **any industry or profession**.
+> **Purpose**: A deterministic, transparent 100-point scoring algorithm and qualitative evaluation rubric to assess job opportunities against the candidate's professional background, compensation targets, and network leverage.
 
 ---
 

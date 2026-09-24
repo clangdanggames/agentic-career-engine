@@ -14,11 +14,9 @@
 
 Finding a job in today's market is fundamentally a distributed systems problem: sourcing high-match opportunities across fragmented Applicant Tracking Systems (ATS), tailoring resumes to exact requisitions, ensuring documents fit strictly on a single page, tracking applications, finding 1st-degree referrals, and preparing for behavioral loops.
 
-**ACE** pairs you with an autonomous AI coding assistant (such as **Google Antigravity**, **Cursor**, **Windsurf**, or **Claude Code**) to act as your personal career chief of staff. 
+**ACE** pairs you with an autonomous AI coding assistant (such as **Google Antigravity**, **Cursor**, **Windsurf**, or **Claude Code**) to act as your personal career chief of staff. Whether you are leading operations, engineering, healthcare programs, finance, or product teams, ACE turns fragmented job hunts into a structured, high-leverage operating system.
 
-It is designed for professionals across **any industry or domain**—including **Technology**, **Healthcare & Life Sciences**, **Finance & Accounting**, **Operations & Strategy**, **Product Management**, **Marketing**, **Sales**, and **Executive Leadership**.
-
-Instead of juggling spreadsheets, manual word processor formatting, and lost notes, ACE gives you a production-grade workspace where your AI agent autonomously scans ATS boards, tailors applications, matches your network, compiles pixel-perfect PDFs, and maintains your pipeline.
+Instead of juggling spreadsheets, manual document formatting, and lost notes, ACE gives you a production-grade workspace where your AI agent autonomously scans ATS boards, tailors applications, matches your network, compiles pixel-perfect PDFs, and maintains your pipeline.
 
 ---
 
@@ -104,10 +102,9 @@ ACE/
 │   ├── ats_search_config.json           # User configuration (roles, locations, salary floors)
 │   └── compensation_estimator.md        # 4-factor compensation estimation heuristic
 ├── .gitignore                           # Privacy guardrail: blocks private PII/PDF leaks
-├── GENESIS_PROMPT.md                    # 1-click master prompt to initialize your workspace
-├── QUICKSTART.md                        # 3-step setup guide for non-technical users
-├── README.md                            # Project command center front door
-└── SOCIAL_SHARE_KIT.md                  # Launch copy for LinkedIn, Facebook, and DMs
+├── GENESIS_PROMPT.md                    # Setup prompt to initialize your workspace
+├── QUICKSTART.md                        # Step-by-step setup guide
+└── README.md                            # Project command center front door
 ```
 
 ---
@@ -136,13 +133,13 @@ allowing you to evaluate real total compensation potential before investing time
 
 ---
 
-## ⚡ 3-Minute Quickstart (Zero-Jargon Setup)
+## ⚡ Quickstart Setup
 
-Getting started requires no command-line or coding knowledge:
+Getting started takes just a few moments:
 
 1. **Create an empty folder** on your computer (e.g. `Career` or `My_Job_Hunt`) and open it in your AI assistant (**Google Antigravity**, **Cursor**, **Windsurf**, or **Claude Code**).
-2. Open [`GENESIS_PROMPT.md`](file:///c:/Code/ACE/GENESIS_PROMPT.md), copy the **One-Shot Bootstrap Prompt**, and paste it directly into your AI assistant chat panel.
-3. Your AI agent automatically clones/downloads the codebase, verifies dependencies, interviews you on your career goals, ingests your resume into an exact 1-page PDF, and activates your live dashboard!
+2. Open [`GENESIS_PROMPT.md`](file:///c:/Code/ACE/GENESIS_PROMPT.md), copy the setup prompt, and paste it directly into your AI assistant chat panel.
+3. Your AI agent automatically configures the workspace, guides you through a brief intake interview, formats your master resume, and activates your live dashboard!
 
 👉 *For detailed instructions and FAQs, see [`QUICKSTART.md`](file:///c:/Code/ACE/QUICKSTART.md).*
 
@@ -156,11 +153,11 @@ Getting started requires no command-line or coding knowledge:
 
 ---
 
-## 🤝 Community & Sharing
+## 🤝 Community & Support
 
 If you found ACE valuable in your career transition:
 - Star this repository on GitHub ⭐
-- Use [`SOCIAL_SHARE_KIT.md`](file:///c:/Code/ACE/SOCIAL_SHARE_KIT.md) for plug-and-play launch copy to share with friends, colleagues, or your LinkedIn network!
+- Share it with friends or colleagues currently on the job market!
 
 ---
 

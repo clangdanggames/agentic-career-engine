@@ -1,6 +1,6 @@
 # High-Impact Outreach Templates
 
-> **Core Principle**: Keep networking messages concise (under 120 words), authentic, low-friction, and respectful of the other person's bandwidth. Always offer an easy "out" so conversations feel warm and professional rather than transactional or demanding. Applicable across **any industry or profession**.
+> **Core Principle**: Keep networking messages concise (under 120 words), authentic, low-friction, and respectful of the other person's bandwidth. Always offer an easy "out" so conversations feel warm and professional rather than transactional or demanding.
 
 ---
 

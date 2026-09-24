@@ -1,84 +1,81 @@
-# ⚡ Quickstart: The 3-Step Setup for Any Job Seeker
+# ⚡ Quickstart Guide
 
-> **Welcome to the Agentic Career Engine (ACE)!**  
-> You don't need to know how to code, use Git, or manage complex terminal commands. By pairing your job search with an autonomous AI coding assistant (like **Google Antigravity**, **Cursor**, **Windsurf**, or **Claude Code**), your AI agent installs the engine, tailors your applications, and tracks your pipeline automatically.  
-> Works across **all industries and professions** (Technology, Healthcare, Finance, Operations, Marketing, Product, Management, Sales, and more).
+> Pair your job search with an autonomous AI assistant (such as **Google Antigravity**, **Cursor**, **Windsurf**, or **Claude Code**) to automate ATS discovery, tailor applications, and manage your pipeline.
 
 ---
 
-## 🚀 The 3-Step Setup (Under 3 Minutes)
+## 🚀 3-Step Setup
 
 ### Step 1: Open Your AI Assistant
-If you don't already have one installed, download any modern AI coding assistant:
+Open your preferred AI assistant. If you don't have one installed:
 - [Google Antigravity](https://deepmind.google/technologies/antigravity/)
 - [Cursor](https://cursor.com/)
 - [Windsurf](https://codeium.com/windsurf)
 - [Claude Code](https://docs.anthropic.com/en/docs/agents-and-tools/claude-code/overview)
 
-### Step 2: Create an Empty Folder
-1. Create a new empty folder anywhere on your computer (e.g., `Career` or `My_Job_Hunt`).
-2. Open that empty folder in your AI assistant (**File $\rightarrow$ Open Folder**).
+### Step 2: Open an Empty Folder
+1. Create a new folder on your computer (e.g., `Career` or `JobHunt`).
+2. Open that folder in your AI assistant (**File $\rightarrow$ Open Folder**).
 
-### Step 3: Paste the Bootstrap Setup Prompt
-1. Open [`GENESIS_PROMPT.md`](file:///c:/Code/ACE/GENESIS_PROMPT.md) (or copy the prompt block below).
-2. Open your AI agent's chat panel (press `Ctrl + L` or click the chat icon).
-3. Paste the prompt and hit **Enter**.
+### Step 3: Run the Genesis Prompt
+1. Copy the prompt block below.
+2. Open your assistant's chat panel (press `Ctrl + L` or click the chat icon).
+3. Paste the prompt and press **Enter**.
 
 ---
 
-## 📋 The One-Shot Bootstrap Prompt
-
-Copy and paste this directly into your empty project chat:
+## 📋 The Setup Prompt
 
 ```markdown
-You are my Lead Career Architect and Autonomous Career Copilot. We are setting up my personalized career command center using the open-source Agentic Career Engine (ACE).
+You are my Lead Career Architect and Autonomous Career Copilot. We are initializing my personalized career command center using the Agentic Career Engine (ACE).
 
-Please execute the following 5-stage setup and onboarding protocol in this workspace:
+Please guide me through the following setup and onboarding protocol:
 
 1. Check if the ACE codebase exists in this directory. If not, clone it via `git clone https://github.com/clangdanggames/agentic-career-engine.git .` (or if Git is not installed, download and extract the repository zip from https://github.com/clangdanggames/agentic-career-engine/archive/refs/heads/main.zip directly).
 2. Verify environment prerequisites (PowerShell / Bash and Headless Edge/Chrome for PDF printing).
 3. Verify workspace integrity (ensure active directories resumes/, applications/, network/, and stories/ are clean).
-4. Conduct an interactive candidate intake interview to capture my name, target industry & roles, location preferences, compensation floor/target, and core competencies.
-5. Ingest my current resume into resumes/[My_Name]_Resume_Master.md, compile an exact 1-page PDF using scripts/render_resume.ps1, validate it with scripts/check_pdf_pages.ps1, configure workflows/ats_search_config.json, and generate my active README.md command center dashboard!
+4. Conduct an interactive candidate intake interview to capture my contact details, target roles, location preferences, compensation floor/target, and search scope (Broad Market, Premier Employers, or Custom Wishlist). Note: LinkedIn connections import is optional and can be skipped.
+5. Handle my master resume flexibly: refine an existing resume if provided, interview me to author a brand-new resume from scratch, or create a placeholder draft if I prefer to defer resume writing for later. If drafted, compile an exact 1-page PDF using scripts/render_resume.ps1 and validate it with scripts/check_pdf_pages.ps1.
+6. Configure workflows/ats_search_config.json, initialize applications/ledger.json, and generate my active README.md command center dashboard!
 
 Begin by greeting me and walking through the intake interview!
 ```
 
 ---
 
-## 🎯 How to Run Your Career Operating System
+## 🎯 Running Your Career Operating System
 
-Once initialized, you never have to manually edit JSON files, configure search strings, or wrestle with document formatting. Simply chat with your AI agent naturally:
+Once initialized, you interact with your workspace conversationally:
 
-| Goal | What to Tell Your AI Agent |
+| Objective | Example Prompt for Your AI Agent |
 | :--- | :--- |
 | **Discover Open Roles** | *"Scan ATS boards for new senior roles matching my compensation target and fit rubric."* |
-| **Tailor for a Specific Opening** | *"Tailor my resume for this requisition: [paste link or text]. Keep it strictly to 1 page and create an application dossier."* |
+| **Tailor for a Job Requisition** | *"Tailor my resume for this requisition: [paste link or text]. Keep it strictly to 1 page and create an application dossier."* |
 | **Activate Your Network** | *"I placed my LinkedIn Connections.csv in `network/`. Parse my connections and highlight who works at target companies."* |
 | **Draft Warm Referral Outreach** | *"Draft a concise, warm message to [Contact Name] at [Company] asking for an internal referral."* |
 | **Estimate Unlisted Salary** | *"Estimate the total compensation for this unlisted job posting using our 4-factor heuristic."* |
-| **Prepare for Interviews** | *"Interview me on a STAR story about leading a major project and save it to my story bank."* |
+| **Prepare for Interviews** | *"Interview me on a STAR story about leading a major initiative and save it to my story bank."* |
 
 ---
 
 ## ❓ Frequently Asked Questions
 
 <details>
-<summary><b>Do I need Git installed?</b></summary>
-No! The AI agent checks whether Git is installed on your machine. If Git is present, it clones the repo. If Git is missing, it automatically downloads and unpacks the repository archive using built-in system tools (PowerShell or curl/unzip).
+<summary><b>Do I need an existing resume to get started?</b></summary>
+No. Your agent can build a master resume from scratch through a guided interview, or you can defer resume creation entirely and jump straight into configuring searches and tracking applications.
 </details>
 
 <details>
-<summary><b>Is ACE only for software engineers?</b></summary>
-Not at all. ACE is built for job seekers in <b>any profession</b>—including healthcare, finance, operations, product management, marketing, sales, executive leadership, and technology. The scoring rubric and ATS scanner calibrate to your specific functional skills, certifications, and industry benchmarks.
+<summary><b>Do I need LinkedIn connections exported right now?</b></summary>
+No. Network cross-referencing is completely optional. You can enter key contacts manually into <code>network/contacts_ledger.md</code> at any time, or import your connection archive later.
 </details>
 
 <details>
-<summary><b>Is my resume and private information kept private?</b></summary>
-Yes, 100%. Everything runs locally on your computer. The built-in <code>.gitignore</code> file ensures that personal resumes, compiled PDFs, and LinkedIn connection files are never pushed to public repositories.
+<summary><b>Is my data kept private?</b></summary>
+Yes. All resumes, dossiers, and notes remain on your local machine. The repository's <code>.gitignore</code> prevents your personal career documents from ever being committed to public repositories.
 </details>
 
 <details>
-<summary><b>Why do you enforce a strict 1-page PDF rule?</b></summary>
-Recruiters and hiring managers spend an average of 6 seconds reviewing an initial resume. Spilling a few stray lines onto a second page looks sloppy. ACE's Headless Chromium compiler and deterministic stream validator guarantee that your resume is dense, readable, and strictly <b>1 page</b>.
+<summary><b>Why enforce a strict 1-page PDF layout?</b></summary>
+Recruiters and hiring managers scan resumes in seconds. Awkward page spills dilute impact. ACE's headless compiler and stream validator ensure your resume is dense, scannable, and strictly <b>1 page</b>.
 </details>

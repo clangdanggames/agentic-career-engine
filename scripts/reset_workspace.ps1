@@ -1,7 +1,8 @@
 # Workspace Reset Utility
 # Cleans test application dossiers and re-initializes ledgers to a pristine state.
+# SAFETY GUARD: Requires explicit human confirmation to prevent accidental data loss.
 param (
-    [switch]$Force
+    [string]$ConfirmPhrase
 )
 
 $ErrorActionPreference = "Stop"
@@ -13,20 +14,46 @@ $ledgerPath = Join-Path $appsDir "ledger.json"
 $inboxJsonPath = Join-Path $appsDir "sourcing_inbox.json"
 $inboxMdPath = Join-Path $appsDir "sourcing_inbox.md"
 
-Write-Host "======================================================" -ForegroundColor Yellow
-Write-Host "  Agentic Career Engine (ACE) - Workspace Reset Tool  " -ForegroundColor Yellow
-Write-Host "======================================================" -ForegroundColor Yellow
+Write-Host "======================================================" -ForegroundColor Red
+Write-Host "  [!] AGENTIC CAREER ENGINE - WORKSPACE RESET TOOL    " -ForegroundColor Red
+Write-Host "======================================================" -ForegroundColor Red
+Write-Host "WARNING: This utility is for maintenance and fresh installations." -ForegroundColor Yellow
+Write-Host "Executing this will permanently delete all application folders and reset your ledgers." -ForegroundColor Yellow
 
-if (-not $Force) {
-    $confirmation = Read-Host "This will delete all application folders inside 'applications/' and reset your tracking ledgers to an empty state. Proceed? (y/N)"
-    if ($confirmation -ne 'y' -and $confirmation -ne 'Y') {
-        Write-Host "Operation cancelled. No changes made." -ForegroundColor Cyan
-        exit 0
+$confirmed = $false
+
+if ($ConfirmPhrase -eq "RESET-ALL-DATA") {
+    $confirmed = $true
+} else {
+    Write-Host "`nTo prevent accidental loss of job applications, human confirmation is required." -ForegroundColor Yellow
+    $userInput = Read-Host "Type 'RESET' (all caps) to permanently wipe application dossiers and reset ledgers"
+    if ($userInput -eq "RESET") {
+        $confirmed = $true
     }
 }
 
+if (-not $confirmed) {
+    Write-Warning "Reset aborted. Confirmation phrase was not matched. No files were modified."
+    exit 0
+}
+
+# Create safe backup of current ledgers before wiping
+$archiveDir = Join-Path $appsDir ".archive"
+if (-not (Test-Path $archiveDir)) {
+    New-Item -ItemType Directory -Path $archiveDir -Force | Out-Null
+}
+$timestamp = Get-Date -Format "yyyyMMdd_HHmmss"
+
+if (Test-Path $ledgerPath) {
+    Copy-Item -Path $ledgerPath -Destination (Join-Path $archiveDir "ledger_$timestamp.bak.json") -Force
+}
+if (Test-Path $inboxJsonPath) {
+    Copy-Item -Path $inboxJsonPath -Destination (Join-Path $archiveDir "sourcing_inbox_$timestamp.bak.json") -Force
+}
+Write-Host "`n[Safety] Pre-reset snapshot saved to applications/.archive/" -ForegroundColor DarkGray
+
 Write-Host "`n[1/4] Scanning for application subdirectories to remove..." -ForegroundColor Cyan
-$subDirs = Get-ChildItem -Path $appsDir -Directory
+$subDirs = Get-ChildItem -Path $appsDir -Directory | Where-Object { $_.Name -ne ".archive" }
 $removedCount = 0
 foreach ($dir in $subDirs) {
     Write-Host "  Removing application dossier: $($dir.Name)" -ForegroundColor DarkGray
@@ -42,9 +69,9 @@ $blankLedger = @{
         candidate = "Candidate Name"
         last_updated = (Get-Date -Format "yyyy-MM-dd")
         compensation_target = @{
-            target = 160000
-            minimum = 120000
-            relocation_minimum = 190000
+            target = 150000
+            minimum = 100000
+            relocation_minimum = 180000
         }
         notes = "Main ledger tracking all active, submitted, and archived career applications."
     }
@@ -93,4 +120,4 @@ Set-Content -Path $inboxMdPath -Value $blankInboxMd -Encoding UTF8
 Write-Host "  applications/sourcing_inbox.md reset to empty state." -ForegroundColor Green
 
 Write-Host "`nSUCCESS: Workspace has been reset cleanly to factory defaults!" -ForegroundColor Green
-Write-Host "Your demo files in 'examples/' and configuration in 'workflows/' remain intact." -ForegroundColor Gray
+Write-Host "Demo showcase files in 'examples/' and configuration in 'workflows/' were preserved." -ForegroundColor Gray

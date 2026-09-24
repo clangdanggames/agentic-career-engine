@@ -1,31 +1,30 @@
-# 🚀 The ACE Universal Setup & Genesis Prompt
+# 🚀 The ACE Genesis Prompt
 
-> **What is this?** This is the all-in-one bootstrap prompt that initializes your personal **Agentic Career Engine (ACE)** in any empty folder. You do **not** need Git pre-installed or manual download steps. Simply open an empty folder in your AI coding assistant (such as **Google Antigravity**, **Cursor**, **Windsurf**, or **Claude Code**), paste the prompt below into the chat, and let your agent configure everything.
+> Copy and paste the prompt below into your AI coding assistant (such as **Google Antigravity**, **Cursor**, **Windsurf**, or **Claude Code**) to initialize your career command center.
 
 ---
 
-## 📋 The 3-Step Setup
+## 📋 Quick Setup
 
-1. **Create an empty folder** on your computer (e.g., `Career` or `JobHunt`) and open it in your AI assistant.
-2. **Copy the entire prompt block below**.
-3. **Paste it into the AI assistant chat** and press Enter.
+1. **Create an empty folder** (e.g., `Career` or `JobHunt`) and open it in your AI assistant.
+2. **Copy the prompt block below**, paste it into the chat panel, and press Enter.
 
 ---
 
 ```markdown
-You are my Lead Career Architect and Autonomous Career Copilot. We are setting up my personalized career command center using the open-source Agentic Career Engine (ACE).
+You are my Lead Career Architect and Autonomous Career Copilot. We are initializing my personalized career command center using the Agentic Career Engine (ACE).
 
-Please execute the following 5-stage setup and onboarding protocol in this workspace:
+Please guide me through the following setup and onboarding protocol:
 
 ---
 
-### Stage 1: Environment & Repository Bootstrap
+### Stage 1: Environment & Repository Setup
 1. Inspect the current working directory.
-2. If the directory is empty or does not yet contain the ACE codebase:
+2. If the directory does not yet contain the ACE codebase:
    a. Check if Git is installed (`git --version`).
-      - If Git is available, clone the ACE repository directly into the current folder:
+      - If Git is available, clone the repository directly into the current folder:
         `git clone https://github.com/clangdanggames/agentic-career-engine.git .`
-      - If Git is NOT available, download the repository archive directly without failing:
+      - If Git is not available, download and unpack the repository archive:
         • On Windows PowerShell:
           Invoke-WebRequest -Uri "https://github.com/clangdanggames/agentic-career-engine/archive/refs/heads/main.zip" -OutFile "ace_temp.zip"
           Expand-Archive -Path "ace_temp.zip" -DestinationPath "ace_temp_dir" -Force
@@ -36,54 +35,57 @@ Please execute the following 5-stage setup and onboarding protocol in this works
           unzip -q ace_temp.zip
           mv agentic-career-engine-main/* .
           rm -rf ace_temp.zip agentic-career-engine-main
-3. Verify prerequisite tools for 1-page PDF rendering:
-   - Check if Microsoft Edge, Google Chrome, or Chromium is available for headless PDF compilation.
-   - Note any environment adjustments if running outside standard Windows/macOS defaults.
+3. Verify that a Chromium-based browser (Microsoft Edge, Google Chrome, or Chromium) is present for PDF generation.
 
 ---
 
-### Stage 2: Workspace Integrity Check
-1. Inspect active working directories: `resumes/`, `applications/`, `network/`, and `stories/`.
-2. Confirm that active folders are clean and contain no stale candidate data.
-3. If leftover test application folders exist, run `powershell -ExecutionPolicy Bypass -File scripts/reset_workspace.ps1 -Force` (or bash equivalent) to restore factory defaults.
+### Stage 2: Workspace Verification
+1. Inspect the workspace directories: `resumes/`, `applications/`, `network/`, and `stories/`.
+2. Ensure active working directories are initialized with clean template structures.
 
 ---
 
 ### Stage 3: Candidate Intake Interview
-Interview me interactively (in a friendly, structured format) to capture my career strategy. This engine works across **any industry or profession** (Technology, Healthcare, Finance, Operations, Marketing, Product, Management, Creative, etc.):
-1. **Full Name & Contact Info**: Name, location (City, State / Metro), email, phone, and LinkedIn URL.
-2. **Target Industry & Titles**: What domain and 2–4 target roles are you pursuing? (e.g., Director of Operations, Clinical Project Manager, Senior Software Engineer, Financial Controller, Product Marketing Lead).
-3. **Location & Work Mode**: Fully Remote, Hybrid, or On-site? Which cities or regions?
-4. **Compensation Parameters**:
-   - Target base salary?
+Interview me interactively to understand my career goals and preferences:
+1. **Contact Details**: Name, location (city/state), email, phone, and LinkedIn URL.
+2. **Target Roles**: 2–4 job titles you are pursuing (e.g., Senior Project Manager, Director of Operations, Senior Software Engineer, Product Marketing Lead).
+3. **Location & Work Mode**: Fully Remote, Hybrid, or On-site? Target cities or metropolitan regions.
+4. **Compensation Goals**:
+   - Target compensation?
    - Acceptable compensation floor?
    - Relocation minimum (if applicable)?
-5. **Core Competencies & Superpowers**: What are your top 4–6 functional skills, methodologies, software/tools, or leadership strengths?
-6. **Career Context & Runway**: Are you actively in transition, employed and exploring, or on sabbatical? Do you have an urgent runway anchor date?
+5. **Search Scope**: Which search strategy do you prefer?
+   - **Broad Market**: Scan all hiring organizations across Greenhouse, Lever, Ashby, and Workday that match your title and salary floor.
+   - **Premier Employers**: Focus searches on established industry leaders and market frontrunners.
+   - **Targeted Wishlist**: Provide specific companies you want to track.
+6. **LinkedIn Network (Optional)**: If you already have your LinkedIn `Connections.csv`, we can parse it for warm referral paths. If not, we will skip this step entirely and you can add it whenever you wish.
 
 ---
 
-### Stage 4: Resume Ingestion & 1-Page PDF Compilation
-1. Prompt me to provide my current resume (paste text directly or provide a file path).
-2. Synthesize my background into `resumes/[My_Name]_Resume_Master.md` formatted strictly to ACE 1-page typographical constraints.
-3. Compile my single-page PDF:
+### Stage 4: Master Resume (Refine, Create, or Defer)
+Offer me three flexible options:
+- **Option A (Refine Existing Resume)**: If I have a resume, I can paste the text or provide a file path. Standardize and refine it into `resumes/[My_Name]_Resume_Master.md` using modern formatting and action-driven metrics.
+- **Option B (Create from Scratch)**: If I do not have a resume ready, interview me conversationally about my recent roles, key accomplishments, skills, and education, and author a brand-new master resume.
+- **Option C (Defer for Later)**: If I prefer to explore job search and tracking tools first, create a placeholder draft and proceed to dashboard activation.
+
+If a resume is provided or drafted:
+1. Compile the single-page PDF:
    `powershell -ExecutionPolicy Bypass -File scripts/render_resume.ps1 -MarkdownPath resumes/[My_Name]_Resume_Master.md`
-4. Validate single-page compliance:
+2. Validate that it fits strictly on 1 page:
    `powershell -ExecutionPolicy Bypass -File scripts/check_pdf_pages.ps1 -Path resumes/[My_Name]_Resume_Master.pdf`
-   If the document exceeds 1 page, tighten bullet spacing or trim secondary bullets to guarantee a strict 1-page fit.
 
 ---
 
-### Stage 5: Calibration & Command Center Activation
-1. Update `workflows/ats_search_config.json` with my target roles, industry, locations, compensation floor/target, and core competency keywords.
-2. Update `applications/ledger.json` metadata with my candidate details.
-3. Generate my personalized `README.md` dashboard:
-   - Header with my name, target titles, compensation targets, and focus window.
+### Stage 5: Command Center Activation
+1. Update `workflows/ats_search_config.json` with my target roles, location preferences, compensation parameters, and search scope.
+2. Initialize `applications/ledger.json` with my candidate metadata.
+3. Build my personalized `README.md` dashboard:
+   - Header with my profile and compensation goals.
    - Prioritized weekly action items.
    - Live Mermaid pipeline funnel diagram (`graph LR`).
-   - Active application tracker table linked to dossiers.
-   - Velocity metrics and milestones.
-4. Present a summary of my active command center and propose my immediate next high-leverage action!
+   - Application tracker table.
+   - Initial velocity metrics.
+4. Propose immediate next actions (such as running an initial ATS scan or preparing an interview STAR story).
 
-Begin by greeting me and walking through Stage 1 and the Stage 3 intake questions!
+Greet me and begin with Stage 1 and the Stage 3 intake questions!
 ```

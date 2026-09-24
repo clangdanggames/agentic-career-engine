@@ -81,6 +81,23 @@ if ($config.search_batches -and $config.search_batches.Count -gt 0) {
             Query = "($domainSiteString) ($roleQueryStr) ($locQueryStr) $negative"
         }
     }
+
+    # 4. Scope-Specific Employer Batches (Premier or Targeted)
+    $scope = if ($config.search_criteria.search_scope) { $config.search_criteria.search_scope } else { "broad" }
+    $focusedEmployers = @()
+    if ($scope -eq "premier" -and $config.premier_employers) {
+        $focusedEmployers = @($config.premier_employers)
+    } elseif ($scope -eq "targeted" -and $config.target_companies) {
+        $focusedEmployers = @($config.target_companies)
+    }
+
+    if ($focusedEmployers.Count -gt 0) {
+        $empQueryStr = ($focusedEmployers | Select-Object -First 8 | ForEach-Object { "`"$_`"" }) -join " OR "
+        $constructedQueries += [PSCustomObject]@{
+            Category = "Focused Employers ($scope scope)"
+            Query = "($domainSiteString) ($roleQueryStr) ($empQueryStr) $negative"
+        }
+    }
 }
 
 Write-Host "`nConstructed $($constructedQueries.Count) Optimized ATS Search Batches:" -ForegroundColor Green

@@ -6,6 +6,9 @@
 network/*.csv
 network/Connections.csv
 
+# Ignore personal creator kits
+SOCIAL_SHARE_KIT.md
+
 # Ignore personalized user resumes (keep resume_template.md)
 resumes/*_Resume_Master.md
 resumes/*_Resume_*.md
@@ -21,6 +24,7 @@ resumes/*_Resume_*.pdf
 applications/20*
 applications/*_applied/
 applications/*_archive/
+applications/.archive/
 
 # Operating system and editor artifacts
 .DS_Store

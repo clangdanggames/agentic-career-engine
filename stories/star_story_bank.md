@@ -1,7 +1,7 @@
 # STAR Professional & Behavioral Story Bank
 
 > **Candidate**: [Your Name]  
-> **Format**: Situation $\rightarrow$ Task $\rightarrow$ Action $\rightarrow$ Result (STAR) with Key Takeaway and Applicable Interview Questions across **any professional background**.
+> **Format**: Situation $\rightarrow$ Task $\rightarrow$ Action $\rightarrow$ Result (STAR) with Key Takeaway and Applicable Interview Questions.
 
 ---
 
