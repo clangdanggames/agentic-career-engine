@@ -53,17 +53,23 @@ if (Test-Path $ledgerPath) {
 if (Test-Path $inboxJsonPath) {
     Copy-Item -Path $inboxJsonPath -Destination (Join-Path $archiveDir "sourcing_inbox_$timestamp.bak.json") -Force
 }
+$dashboardPath = Join-Path $workspaceRoot "DASHBOARD.md"
+if (Test-Path $dashboardPath) {
+    Copy-Item -Path $dashboardPath -Destination (Join-Path $archiveDir "DASHBOARD_$timestamp.bak.md") -Force
+    Remove-Item -Path $dashboardPath -Force
+    Write-Host "  Archived and removed active DASHBOARD.md" -ForegroundColor DarkGray
+}
 Write-Host "`n[Safety] Pre-reset snapshot saved to applications/.archive/" -ForegroundColor DarkGray
 
 Write-Host "`n[1/4] Scanning for application subdirectories to remove..." -ForegroundColor Cyan
-$subDirs = Get-ChildItem -Path $appsDir -Directory | Where-Object { $_.Name -ne ".archive" }
+$subDirs = Get-ChildItem -Path $appsDir -Directory | Where-Object { $_.Name -ne ".archive" -and $_.Name -ne "dossier_template" }
 $removedCount = 0
 foreach ($dir in $subDirs) {
     Write-Host "  Removing application dossier: $($dir.Name)" -ForegroundColor DarkGray
     Remove-Item -Path $dir.FullName -Recurse -Force
     $removedCount++
 }
-Write-Host "  Removed $removedCount application folder(s)." -ForegroundColor Green
+Write-Host "  Removed $removedCount application folder(s) (preserved dossier_template)." -ForegroundColor Green
 
 Write-Host "`n[2/4] Resetting applications/ledger.json..." -ForegroundColor Cyan
 $blankLedger = @{

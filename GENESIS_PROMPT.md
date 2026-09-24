@@ -50,12 +50,18 @@ If a resume is provided or drafted:
 ### Stage 5: Calibration & Command Center Activation
 1. Update `workflows/ats_search_config.json` with my target roles, location preferences, compensation parameters, and search scope.
 2. Initialize `applications/ledger.json` with my candidate metadata.
-3. Build my personalized `README.md` dashboard:
-   - Header with my profile and compensation goals.
-   - Prioritized weekly action items.
+3. Build my personalized career command center in `DASHBOARD.md` (leaving `README.md` pristine as the permanent project documentation):
+   - Header with my profile, target titles, and compensation parameters.
+   - Prioritized weekly action items & pipeline targets.
    - Live Mermaid pipeline funnel diagram (`graph LR`).
-   - Application tracker table.
-   - Initial velocity metrics.
-4. Propose immediate next actions (such as running an initial ATS scan or preparing an interview STAR story).
+   - Active application tracker table (linking to each role's dossier in `applications/`).
+   - Initial velocity and conversion metrics.
+4. Present my new `DASHBOARD.md` and introduce our full-cycle career copilot routines:
+   - **ATS Sourcing**: Autonomous scans scored against our 100-point rubric.
+   - **Application Dossiers**: Standardizing `applications/YYYY-MM-DD_[company]/` with tailored 1-page resumes, outreach logs, and interview prep.
+   - **Behavioral & Technical STAR Stories**: Extracting, refining, and mapping achievements from `stories/star_story_bank.md` into role dossiers.
+   - **Recruiter Screen Cheatsheets**: 90-second elevator pitches and verified metric quick-references.
+   - **Offer Negotiation**: Structuring counter-proposals with `workflows/compensation_estimator.md`.
+5. Propose immediate next actions (such as running an initial ATS scan, creating an application dossier, or authoring a targeted STAR story).
 
 Greet me and begin with Stage 1 and the Stage 3 intake questions!

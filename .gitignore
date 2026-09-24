@@ -9,10 +9,11 @@ network/Connections.csv
 # Ignore personal creator kits
 SOCIAL_SHARE_KIT.md
 
-# Ignore personalized user resumes (keep resume_template.md)
+# Ignore personalized user resumes and active dashboard
 resumes/*_Resume_Master.md
 resumes/*_Resume_*.md
 resumes/*_Resume_*.pdf
+DASHBOARD.md
 
 # Ignore generated HTML and PDF files across the repo, EXCEPT showcase demo files
 *.pdf
