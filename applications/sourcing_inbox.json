@@ -1,0 +1,12 @@
+﻿{
+    "leads":  [
+
+              ],
+    "$schema":  "./schema.json",
+    "meta":  {
+                 "active_leads":  0,
+                 "title":  "Job Sourcing Lead Inbox",
+                 "total_leads":  0,
+                 "last_scanned":  null
+             }
+}

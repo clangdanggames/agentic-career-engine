@@ -1,0 +1,37 @@
+# ===================================================
+# Agentic Career Engine (ACE) — Privacy-First Gitignore
+# ===================================================
+
+# Ignore personal LinkedIn export data
+network/*.csv
+network/Connections.csv
+
+# Ignore personalized user resumes (keep resume_template.md)
+resumes/*_Resume_Master.md
+resumes/*_Resume_*.md
+resumes/*_Resume_*.pdf
+
+# Ignore generated HTML and PDF files across the repo, EXCEPT showcase demo files
+*.pdf
+*.html
+!examples/demo_showcase/*.pdf
+!examples/demo_showcase/*.html
+
+# Ignore real active application folders generated during job hunts
+applications/20*
+applications/*_applied/
+applications/*_archive/
+
+# Operating system and editor artifacts
+.DS_Store
+Thumbs.db
+desktop.ini
+.vscode/
+.idea/
+*.swp
+*.bak
+*~
+
+# Log files and temporary crash dumps
+*.log
+scratch/

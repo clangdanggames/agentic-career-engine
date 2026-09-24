@@ -1,0 +1,139 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Alex Morgan</title>
+    <style>
+        @page {
+            size: letter;
+            margin: 0;
+        }
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        html, body {
+            background-color: #ffffff;
+            color: #1e293b;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            font-size: 9pt;
+            line-height: 1.28;
+            -webkit-print-color-adjust: exact;
+        }
+        body {
+            padding: 0.32in 0.42in;
+        }
+        .candidate-name {
+            font-size: 18pt;
+            font-weight: 700;
+            color: #0f172a;
+            letter-spacing: -0.02em;
+            margin-bottom: 2px;
+        }
+        p {
+            margin-bottom: 3px;
+        }
+        a {
+            color: #2563eb;
+            text-decoration: none;
+        }
+        .section-title {
+            font-size: 10pt;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: #0f172a;
+            border-bottom: 1.25px solid #0f172a;
+            padding-bottom: 1px;
+            margin-top: 6px;
+            margin-bottom: 3.5px;
+        }
+        .job-company {
+            font-size: 9.5pt;
+            font-weight: 700;
+            color: #1e293b;
+            margin-top: 4.5px;
+            margin-bottom: 1px;
+        }
+        .job-subheading {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            font-size: 8.75pt;
+            margin-bottom: 2.5px;
+        }
+        .job-title {
+            font-weight: 600;
+            color: #334155;
+        }
+        .job-dates {
+            font-weight: 500;
+            color: #64748b;
+            font-size: 8.5pt;
+        }
+        .bullet-list {
+            margin-left: 15px;
+            margin-bottom: 3px;
+        }
+        .bullet-list li {
+            margin-bottom: 2px;
+            padding-left: 1px;
+        }
+        code {
+            font-family: "Consolas", "Courier New", monospace;
+            background: #f1f5f9;
+            padding: 0.5px 2.5px;
+            border-radius: 2px;
+            font-size: 8.5pt;
+        }
+        em {
+            color: #475569;
+            font-size: 8.5pt;
+        }
+    </style>
+</head>
+<body>
+    <h1 class='candidate-name'>Alex Morgan</h1>
+<p>Seattle, WA | alex.morgan@example.com | (555) 019-2834 | <a href="https://linkedin.com">linkedin.com/in/alexmorgan-dev</a> | <a href="https://github.com">github.com/alexmorgan</a></p>
+<h2 class='section-title'>Professional Summary</h2>
+<p>Senior Software Engineer with 8+ years of experience architecting distributed backend services, high-throughput streaming pipelines, and developer infrastructure. Proven track record leading core platform modernization, reducing p99 latency by 42%, and eliminating $180k in annual infrastructure spend. Passionate about resilient systems design, infrastructure as code, and mentoring high-velocity engineering teams.</p>
+<h2 class='section-title'>Technical Skills</h2>
+<ul class='bullet-list'>
+<li><strong>Languages & Runtimes</strong>: Go, Python (3.11+), TypeScript, Java, SQL, Bash.</li>
+<li><strong>Frameworks & Ecosystems</strong>: gRPC, REST, FastAPI, Gin, React, Node.js.</li>
+<li><strong>Cloud & Infrastructure</strong>: AWS (EKS, RDS, DynamoDB, S3), Docker, Kubernetes, Terraform, Helm, GitHub Actions.</li>
+<li><strong>Data & Messaging</strong>: Apache Kafka, PostgreSQL, Redis, Elasticsearch, Prometheus, Grafana, OpenTelemetry.</li>
+<li><strong>Architecture & Practices</strong>: Distributed Systems, Microservices, Event-Driven Design, Zero-Downtime Deployments.</li>
+</ul>
+<h2 class='section-title'>Professional Experience</h2>
+<h3 class='job-company'>CloudScale Technologies</h3>
+<div class='job-subheading'><span class='job-title'>Senior Software Engineer — Platform Infrastructure</span><span class='job-dates'>Jan 2022 – Present</span></div>
+<ul class='bullet-list'>
+<li>Architected and deployed an event-driven telemetry ingestion engine using Go and Kafka, processing 12M+ daily events with sub-25ms p99 latency across multi-region Kubernetes clusters.</li>
+<li>Spearheaded the migration of 14 monolithic services into decoupled containerized microservices on AWS EKS, reducing deployment cycle times from 45 minutes to under 6 minutes.</li>
+<li>Implemented distributed tracing and custom Prometheus alerting across 30+ production services, cutting mean-time-to-resolution (MTTR) for critical incidents by 58%.</li>
+<li>Designed an automated developer preview environment pipeline with Terraform and GitHub Actions, saving 18 engineering hours weekly and accelerating team shipping cadence.</li>
+</ul>
+<h3 class='job-company'>Apex Financial Systems</h3>
+<div class='job-subheading'><span class='job-title'>Software Engineer — Core Services</span><span class='job-dates'>Aug 2018 – Dec 2021</span></div>
+<ul class='bullet-list'>
+<li>Engineered transactional ledger and settlement APIs using Go and PostgreSQL, reliably processing $45M+ in daily transaction volume with zero accounting discrepancy.</li>
+<li>Optimized database indexing, query execution plans, and Redis caching layers, improving API throughput by 65% and reducing p99 response times from 340ms to 48ms.</li>
+<li>Authored comprehensive integration test harnesses and contract testing suites, elevating automated pipeline test coverage from 62% to 91%.</li>
+<li>Mentored 4 junior engineers on distributed systems debugging, database locking semantics, and idiomatic Go design.</li>
+</ul>
+<h3 class='job-company'>Nexa Digital</h3>
+<div class='job-subheading'><span class='job-title'>Associate Software Engineer</span><span class='job-dates'>Jul 2016 – Jul 2018</span></div>
+<ul class='bullet-list'>
+<li>Built full-stack features and internal administrative dashboards using Python, Flask, React, and MySQL.</li>
+<li>Designed automated database migration scripts and CI/CD quality gates, reducing faulty database deployments to zero.</li>
+</ul>
+<h2 class='section-title'>Education & Certifications</h2>
+<h3 class='job-company'>University of Washington</h3>
+<div class='job-subheading'><span class='job-title'>Bachelor of Science in Computer Science</span><span class='job-dates'>2016</span></div>
+<ul class='bullet-list'>
+<li>AWS Certified Solutions Architect – Associate | HashiCorp Certified: Terraform Associate</li>
+</ul>
+</body>
+</html>

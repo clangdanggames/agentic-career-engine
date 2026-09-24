@@ -1,0 +1,80 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "ATS Search Configuration",
+  "description": "Configurable parameters for automated ATS job discovery, filtering, and scoring across any industry",
+  "search_criteria": {
+    "industry": "General / All Industries",
+    "roles": [
+      "Senior Project Manager",
+      "Operations Director",
+      "Senior Product Manager",
+      "Senior Software Engineer",
+      "Staff Engineer",
+      "Director of Marketing",
+      "Financial Controller",
+      "Clinical Operations Manager"
+    ],
+    "ats_domains": [
+      "boards.greenhouse.io",
+      "jobs.lever.co",
+      "jobs.ashbyhq.com",
+      "myworkdayjobs.com"
+    ],
+    "locations": [
+      "Remote",
+      "United States"
+    ],
+    "negative_keywords": [
+      "intern",
+      "internship",
+      "junior",
+      "entry level",
+      "staffing",
+      "recruiting agency",
+      "unpaid",
+      "part-time",
+      "part time"
+    ],
+    "compensation": {
+      "floor": 100000,
+      "target": 150000,
+      "relocation_floor": 180000,
+      "currency": "USD"
+    }
+  },
+  "target_companies": [
+    "Google", "Microsoft", "Amazon", "Apple", "Meta", "Netflix",
+    "UnitedHealth Group", "Pfizer", "Johnson & Johnson",
+    "JPMorgan Chase", "Goldman Sachs", "Stripe", "Visa",
+    "Nike", "Target", "Disney", "Salesforce", "Deloitte"
+  ],
+  "scoring_weights": {
+    "core_competencies": {
+      "max_points": 40,
+      "description": "Alignment with candidate's primary domain tools, functional skills, methods, and certifications",
+      "keywords": ["project management", "P&L", "Agile", "cross-functional leadership", "strategic planning", "data analysis", "operations", "stakeholder management"]
+    },
+    "scope_and_impact": {
+      "max_points": 30,
+      "description": "Measurable business outcomes, revenue impact, budget scale, cost reductions, or organizational scaling",
+      "keywords": ["process optimization", "budget management", "cost reduction", "revenue growth", "system architecture", "efficiency", "scalability", "KPI delivery"]
+    },
+    "seniority_and_leadership": {
+      "max_points": 20,
+      "description": "Seniority level match, direct report leadership, cross-departmental influence, and years of experience",
+      "keywords": ["senior", "lead", "staff", "manager", "director", "head of", "principal", "vice president", "5+ years", "8+ years", "10+ years"]
+    },
+    "domain_and_industry": {
+      "max_points": 10,
+      "description": "Industry vertical, regulatory environment, and organizational alignment",
+      "keywords": ["healthcare", "finance", "technology", "enterprise SaaS", "consumer", "life sciences", "manufacturing", "e-commerce"]
+    },
+    "referral_boost_points": 30
+  },
+  "execution_settings": {
+    "max_results_per_query": 10,
+    "max_total_leads": 25,
+    "deduplicate_days": 30,
+    "min_fit_score_to_inbox": 65
+  }
+}
