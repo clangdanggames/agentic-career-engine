@@ -102,8 +102,8 @@ ACE/
 │   ├── ats_search_config.json           # User configuration (roles, locations, salary floors)
 │   └── compensation_estimator.md        # 4-factor compensation estimation heuristic
 ├── .gitignore                           # Privacy guardrail: blocks private PII/PDF leaks
-├── GENESIS_PROMPT.md                    # Setup prompt to initialize your workspace
-├── QUICKSTART.md                        # Step-by-step setup guide
+├── GENESIS_PROMPT.md                    # Core candidate onboarding and initialization prompt
+├── QUICK_START.md                       # 3-step setup guide and assistant installation
 └── README.md                            # Project command center front door
 ```
 
@@ -137,11 +137,11 @@ allowing you to evaluate real total compensation potential before investing time
 
 Getting started takes just a few moments:
 
-1. **Create an empty folder** on your computer (e.g. `Career` or `My_Job_Hunt`) and open it in your AI assistant (**Google Antigravity**, **Cursor**, **Windsurf**, or **Claude Code**).
-2. Open [`GENESIS_PROMPT.md`](file:///c:/Code/ACE/GENESIS_PROMPT.md), copy the setup prompt, and paste it directly into your AI assistant chat panel.
-3. Your AI agent automatically configures the workspace, guides you through a brief intake interview, formats your master resume, and activates your live dashboard!
+1. **Open your AI assistant** ([Google Antigravity](https://antigravity.google) or [Cursor](https://cursor.com)) in a new empty folder.
+2. Open [`QUICK_START.md`](file:///c:/Code/ACE/QUICK_START.md) and copy the one-line setup prompt into your assistant's chat panel.
+3. Your assistant automatically bootstraps the workspace, executes [`GENESIS_PROMPT.md`](file:///c:/Code/ACE/GENESIS_PROMPT.md), interviews you on your career preferences, formats your master resume, and activates your live dashboard!
 
-👉 *For detailed instructions and FAQs, see [`QUICKSTART.md`](file:///c:/Code/ACE/QUICKSTART.md).*
+👉 *For detailed instructions and FAQs, see [`QUICK_START.md`](file:///c:/Code/ACE/QUICK_START.md).*
 
 ---
 

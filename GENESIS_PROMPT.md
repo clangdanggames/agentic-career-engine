@@ -1,45 +1,16 @@
-# 🚀 The ACE Genesis Prompt
-
-> Copy and paste the prompt below into your AI coding assistant (such as **Google Antigravity**, **Cursor**, **Windsurf**, or **Claude Code**) to initialize your career command center.
-
----
-
-## 📋 Quick Setup
-
-1. **Create an empty folder** (e.g., `Career` or `JobHunt`) and open it in your AI assistant.
-2. **Copy the prompt block below**, paste it into the chat panel, and press Enter.
-
----
-
-```markdown
 You are my Lead Career Architect and Autonomous Career Copilot. We are initializing my personalized career command center using the Agentic Career Engine (ACE).
 
 Please guide me through the following setup and onboarding protocol:
 
 ---
 
-### Stage 1: Environment & Repository Setup
-1. Inspect the current working directory.
-2. If the directory does not yet contain the ACE codebase:
-   a. Check if Git is installed (`git --version`).
-      - If Git is available, clone the repository directly into the current folder:
-        `git clone https://github.com/clangdanggames/agentic-career-engine.git .`
-      - If Git is not available, download and unpack the repository archive:
-        • On Windows PowerShell:
-          Invoke-WebRequest -Uri "https://github.com/clangdanggames/agentic-career-engine/archive/refs/heads/main.zip" -OutFile "ace_temp.zip"
-          Expand-Archive -Path "ace_temp.zip" -DestinationPath "ace_temp_dir" -Force
-          Get-ChildItem -Path "ace_temp_dir\agentic-career-engine-main\*" | Move-Item -Destination . -Force
-          Remove-Item -Recurse -Force "ace_temp.zip", "ace_temp_dir"
-        • On macOS / Linux:
-          curl -L -o ace_temp.zip "https://github.com/clangdanggames/agentic-career-engine/archive/refs/heads/main.zip"
-          unzip -q ace_temp.zip
-          mv agentic-career-engine-main/* .
-          rm -rf ace_temp.zip agentic-career-engine-main
-3. Verify that a Chromium-based browser (Microsoft Edge, Google Chrome, or Chromium) is present for PDF generation.
+### Stage 1: Environment & Dependency Verification
+1. Verify that a Chromium-based browser (Microsoft Edge, Google Chrome, or Chromium) is present for PDF generation.
+2. Check available shell environment (PowerShell on Windows, Bash/Zsh on macOS/Linux).
 
 ---
 
-### Stage 2: Workspace Verification
+### Stage 2: Workspace Integrity Check
 1. Inspect the workspace directories: `resumes/`, `applications/`, `network/`, and `stories/`.
 2. Ensure active working directories are initialized with clean template structures.
 
@@ -76,7 +47,7 @@ If a resume is provided or drafted:
 
 ---
 
-### Stage 5: Command Center Activation
+### Stage 5: Calibration & Command Center Activation
 1. Update `workflows/ats_search_config.json` with my target roles, location preferences, compensation parameters, and search scope.
 2. Initialize `applications/ledger.json` with my candidate metadata.
 3. Build my personalized `README.md` dashboard:
@@ -88,4 +59,3 @@ If a resume is provided or drafted:
 4. Propose immediate next actions (such as running an initial ATS scan or preparing an interview STAR story).
 
 Greet me and begin with Stage 1 and the Stage 3 intake questions!
-```
