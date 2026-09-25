@@ -124,10 +124,12 @@ ACE/
 ├── scripts/
 │   ├── check_pdf_pages.ps1              # Validates that compiled PDF is strictly 1 page
 │   ├── lint_resume_integrity.ps1        # Deterministic linter enforcing Rule 3 whitelist integrity
+│   ├── migrate_workspace.ps1            # Imports career history/dossiers from legacy or older ACE workspaces
 │   ├── parse_connections.ps1            # Maps LinkedIn connections to target employers
 │   ├── render_resume.ps1                # Headless Edge/Chrome print-to-pdf engine (-VerifyIntegrity)
 │   ├── reset_workspace.ps1              # Factory-reset utility for application ledgers
-│   └── scan_ats_jobs.ps1                # Automated multi-query ATS search generator
+│   ├── scan_ats_jobs.ps1                # Automated multi-query ATS search generator
+│   └── update_engine.ps1                # Safe, in-place engine updater (preserves all personal user data)
 ├── stories/
 │   ├── career_gap_framing.md            # Framing sabbaticals, layoffs, or pauses with confidence
 │   ├── recruiter_screen_cheatsheet.md   # Phone screen pitches, salary scripts, & reverse questions
@@ -135,6 +137,7 @@ ACE/
 ├── workflows/
 │   ├── ats_search_config.json           # User configuration (roles, locations, salary floors)
 │   ├── compensation_estimator.md        # 4-factor compensation estimation heuristic
+│   ├── engine_lifecycle.md              # Lifecycle guide for in-place updates and workspace migration
 │   ├── job_hunt_workflow.md             # Operational Rules 1–3, 20-min SOP, & energy budgeting
 │   ├── project_ingestion_prompt.md      # Cross-repo prompt to extract bullets & stories into ACE
 │   └── targeted_job_sourcing_queries.md # 1-click Boolean X-Ray searches for ATS boards
@@ -184,6 +187,11 @@ Export your LinkedIn connections archive and run `scripts/parse_connections.ps1`
 Many job postings omit compensation. ACE provides a deterministic heuristic framework factoring:
 $$\text{Estimated Base} = \text{Role Baseline} \times \text{Company Tier Multiplier} \times \text{Geo Index}$$
 allowing you to evaluate real total compensation potential before investing time in an application, and to structure data-backed counter-proposals during offer negotiations.
+
+### 9. 🔄 Conflict-Free Lifecycle (In-Place Updates & Workspace Migration)
+Never fear Git merge conflicts when the engine evolves. ACE strictly isolates **Engine Code** from **Personal User State**:
+- **In-Place Updates** ([`scripts/update_engine.ps1`](scripts/update_engine.ps1)): Snapshots your configuration and updates core scripts/prompts from GitHub while leaving resumes, applications, stories, contacts, and `DASHBOARD.md` 100% untouched.
+- **Fresh Workspace Migration** ([`scripts/migrate_workspace.ps1`](scripts/migrate_workspace.ps1)): Seamlessly ports all application dossiers, master resumes, story banks, contacts, and ledgers from older workspaces or legacy folders into a clean, newly cloned ACE installation. Detailed in [`workflows/engine_lifecycle.md`](workflows/engine_lifecycle.md).
 
 ---
 

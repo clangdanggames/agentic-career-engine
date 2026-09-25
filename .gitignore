@@ -42,3 +42,7 @@ desktop.ini
 # Log files and temporary crash dumps
 *.log
 scratch/
+
+# Engine backups and update archives
+.backups/
+*.zip
