@@ -21,6 +21,23 @@ Instead of juggling spreadsheets, manual document formatting, and lost notes, AC
 
 ---
 
+## ⚡ Quickstart Setup (Get Running in 3 Minutes)
+
+You can initialize your personalized career command center in three simple steps:
+
+1. **Open Your AI Assistant**: Open [Google Antigravity](https://antigravity.google) (Desktop GUI) or [Cursor](https://cursor.com) in an empty folder (e.g. `Career` or `JobHunt`).
+2. **Run the Genesis Setup Prompt**: Copy the prompt below, paste it into your assistant's chat panel, and press **Enter**:
+
+```markdown
+Clone https://github.com/clangdanggames/agentic-career-engine.git into this directory (or download and extract the repository zip from https://github.com/clangdanggames/agentic-career-engine/archive/refs/heads/main.zip if Git is not installed), then read and execute the instructions in GENESIS_PROMPT.md.
+```
+
+3. **Activate Your Command Center**: Your assistant bootstraps the workspace, interviews you on your career preferences, formats your master resume, compiles a verified 1-page PDF, and generates your personal **`DASHBOARD.md`** command center!
+
+👉 *For detailed instructions, conversational prompts, and FAQs, see [QUICK_START.md](QUICK_START.md).*
+
+---
+
 ## 🔄 The ACE Operating System Pipeline
 
 ```mermaid
@@ -77,16 +94,20 @@ ACE/
 │       └── ats-job-scanner/             # Autonomous skill for scanning & scoring ATS listings
 │           ├── SKILL.md                 # Skill definition & execution protocol
 │           └── references/
-│               └── scoring_rubric.md    # 100-point deterministic fit scoring algorithm
+│               └── scoring_rubric.md    # 100-point fit scoring with 3-tier gap analysis
 ├── applications/
 │   ├── dossier_template/                # Canonical blueprint for individual application dossiers
 │   │   ├── job_description.md          # Requisition requirements, compensation, & source text
+│   │   ├── application_form_guide.md   # Pre-filled cheat sheet for ATS portal submission fields
+│   │   ├── cover_letter.md             # Tailored 1-page cover letter template
 │   │   ├── outreach_and_timeline.md    # Referral log, outreach messages, & milestone funnel
-│   │   └── interview_prep.md           # 90s screen pitch, metrics cheat-sheet, & STAR pairings
+│   │   └── interview_prep.md           # 90s screen pitch, metrics cheat-sheet, STAR pairings, & questions
 │   ├── ledger.json                      # Programmatic single source of truth for all applications
 │   ├── sourcing_inbox.json              # Structured discovered job leads
 │   ├── sourcing_inbox.md                # Ranked visual dashboard of active opportunities
-│   └── YYYY-MM-DD_[company]/           # Individual, isolated application dossiers (ignored by git)
+│   └── YYYY-MM-DD_[company]_[reqid]/    # Individual, isolated application dossiers (ignored by git)
+├── companies/
+│   └── target_tier_list.md              # 3-tier strategic market map (Premier, Domain Champions, Local)
 ├── examples/
 │   └── demo_showcase/                   # ISOLATED DEMO DATA (Prevents AI hallucinations)
 │       ├── Alex_Morgan_Resume.md        # Sample Senior SWE master resume
@@ -97,18 +118,26 @@ ACE/
 │   ├── contacts_ledger.md               # 1st-degree contacts & referral paths
 │   └── outreach_templates.md            # Tested, low-friction networking templates
 ├── resumes/
-│   └── resume_template.md               # Clean, 1-page typography-constrained template
+│   ├── modular_reserve_bank.md          # Overflow bank of verified specialized bullets
+│   ├── resume_template.md               # Clean, 1-page typography-constrained template
+│   └── variants/                        # Multi-track baseline master resumes (TPM, SRE, Ops)
 ├── scripts/
 │   ├── check_pdf_pages.ps1              # Validates that compiled PDF is strictly 1 page
+│   ├── lint_resume_integrity.ps1        # Deterministic linter enforcing Rule 3 whitelist integrity
 │   ├── parse_connections.ps1            # Maps LinkedIn connections to target employers
-│   ├── render_resume.ps1                # Headless Edge/Chrome print-to-pdf engine
+│   ├── render_resume.ps1                # Headless Edge/Chrome print-to-pdf engine (-VerifyIntegrity)
 │   ├── reset_workspace.ps1              # Factory-reset utility for application ledgers
 │   └── scan_ats_jobs.ps1                # Automated multi-query ATS search generator
 ├── stories/
-│   └── star_story_bank.md               # Structured Situation-Task-Action-Result narratives
+│   ├── career_gap_framing.md            # Framing sabbaticals, layoffs, or pauses with confidence
+│   ├── recruiter_screen_cheatsheet.md   # Phone screen pitches, salary scripts, & reverse questions
+│   └── star_story_bank.md               # Structured Situation-Task-Action-Result-Reflection narratives
 ├── workflows/
 │   ├── ats_search_config.json           # User configuration (roles, locations, salary floors)
-│   └── compensation_estimator.md        # 4-factor compensation estimation heuristic
+│   ├── compensation_estimator.md        # 4-factor compensation estimation heuristic
+│   ├── job_hunt_workflow.md             # Operational Rules 1–3, 20-min SOP, & energy budgeting
+│   ├── project_ingestion_prompt.md      # Cross-repo prompt to extract bullets & stories into ACE
+│   └── targeted_job_sourcing_queries.md # 1-click Boolean X-Ray searches for ATS boards
 ├── .gitignore                           # Privacy guardrail: blocks private PII/PDF leaks
 ├── DASHBOARD.md                         # [Generated] Your live, active personal career command center
 ├── GENESIS_PROMPT.md                    # Core candidate onboarding and initialization prompt
@@ -120,47 +149,41 @@ ACE/
 
 ## ✨ Core Feature Highlights
 
-### 1. 🔍 Autonomous ATS Job Scanner
-Bypasses noisy third-party scrapers and job aggregators. Directly targets applicant tracking systems (`boards.greenhouse.io`, `jobs.lever.co`, `jobs.ashbyhq.com`, `myworkdayjobs.com`) filtering out junior/intern positions and ranking opportunities with a transparent **100-Point Fit Rubric**.
+### 1. 🔍 Autonomous ATS Job Scanner & Direct X-Ray Queries
+Bypasses noisy third-party scrapers and job aggregators. Directly targets applicant tracking systems (`boards.greenhouse.io`, `jobs.lever.co`, `jobs.ashbyhq.com`, `myworkdayjobs.com`), scoring leads with a transparent **100-Point Fit Rubric** featuring a **Pragmatic 3-Tier Gap Analysis**. Also includes ready-to-run 1-click Boolean X-Ray Google search strings in [`workflows/targeted_job_sourcing_queries.md`](workflows/targeted_job_sourcing_queries.md).
 
-### 2. 🖨️ Headless 1-Page PDF Compiler
-Never deal with word processors spilling two lines onto an awkward second page. ACE uses a headless Chromium browser (`scripts/render_resume.ps1`) enforcing print margins, modern typography, and proportional line heights. Paired with `scripts/check_pdf_pages.ps1` to deterministically verify that your document never exceeds **exactly 1 page**.
+### 2. 🖨️ Headless 1-Page PDF Compiler & Automated Integrity Linter
+Never deal with word processors spilling two lines onto an awkward second page. ACE uses a headless Chromium browser (`scripts/render_resume.ps1`) enforcing print margins, modern typography, and proportional line heights. Paired with `scripts/check_pdf_pages.ps1` to deterministically verify that your document never exceeds **exactly 1 page**, and `scripts/lint_resume_integrity.ps1` to programmatically ensure no unverified skills or hallucinated buzzwords sneak past review.
 
-### 3. 📁 Standardized Application Dossiers
-Every requisition you pursue is isolated into a dedicated folder (`applications/YYYY-MM-DD_[company]/`). Each dossier encapsulates:
+### 3. 📁 Standardized Application Dossiers & Form Guides
+Every requisition you pursue is isolated into a dedicated folder (`applications/YYYY-MM-DD_[company]_[reqid]/`, falling back to `_[role_slug]/` if unlisted, and `_2` on collision). Each dossier encapsulates:
 - The verbatim job description and required competencies (`job_description.md`).
-- Your tailored single-page markdown and compiled PDF resume.
-- Sent outreach messages, referral contacts, and follow-up alarms (`outreach_and_timeline.md`).
-- Role-specific interview prep, recruiter screen pitches, and questions to ask (`interview_prep.md`).
+- Your tailored single-page markdown and compiled PDF resume (`[Name]_Resume_[Company]_[ReqID].pdf`).
+- An **Application Form Guide** (`application_form_guide.md`) pre-calculating exact answers for tricky ATS portal questions (salary numbers, work authorization, screening prompts) to eliminate application friction.
+- A tailored 1-page cover letter (`cover_letter.md`) when beneficial.
+- Sent outreach messages, referral contacts, and milestone timeline (`outreach_and_timeline.md`).
+- Role-specific interview prep, 90-second pitches, whiteboard flows, and reverse questions (`interview_prep.md`).
 
-### 4. 🧠 Full-Cycle Career Partner (STAR Story Bank & Interview Prep)
-ACE goes far beyond resume generation. Through conversational interviewing, your AI assistant helps you extract, quantify, and refine accomplishments in `stories/star_story_bank.md` using the **STAR+R framework**. When preparing for screens, ACE authors 90-second elevator pitches, compiles metric quick-reference cheatsheets, and formulates strategic, high-acumen questions for hiring executives.
+### 4. 🧠 Full-Cycle Career Partner (STAR+R Stories, Screen Cheatsheets & Gap Framing)
+ACE goes far beyond resume generation. Through conversational interviewing, your AI assistant helps you extract, quantify, and refine accomplishments in `stories/star_story_bank.md` using the **STAR+R framework**. ACE equips you with a phone screen cheat sheet (`stories/recruiter_screen_cheatsheet.md`), scripts for explaining career pauses or sabbaticals with confidence (`stories/career_gap_framing.md`), and high-acumen questions for hiring executives.
 
-### 5. 🤝 LinkedIn Network Intelligence
-Export your LinkedIn connections archive and run `scripts/parse_connections.ps1` to surface every 1st-degree connection you have across target organizations. Automatically cross-references incoming job leads against your network so you apply with an internal referral whenever possible.
+### 5. 🧩 Modular Reserve Bank & Multi-Track Variants
+Because a resume must fit strictly on 1 page, `resumes/modular_reserve_bank.md` maintains a verified repository of specialized achievement bullets ready to swap in for niche postings without bloating your default master resume. For candidates targeting multiple disciplines, `resumes/variants/` maintains calibrated master baselines.
 
-### 6. 🛡️ Zero-Hallucination Architecture
-A common flaw in AI job search tools is the model inventing prior jobs or credentials. ACE enforces a strict architectural boundary:
-- All fictional demo examples are sandboxed in `examples/demo_showcase/`.
-- Active directories (`resumes/`, `applications/`, `network/`, `stories/`) remain pristine.
-- The AI agent tailors resumes **only** using achievements explicitly documented in your verified master resume.
+### 6. 🛡️ Operational Doctrine & Zero-Hallucination Guardrails
+Documented in [`workflows/job_hunt_workflow.md`](workflows/job_hunt_workflow.md):
+- **Rule 1 (Confirmation Gate)**: Agent never marks an application as applied or outreach sent without explicit candidate confirmation.
+- **Rule 2 (Immutable Resumes)**: Submitted resumes are frozen as permanent historical artifacts; subsequent revisions use versioning `_v2`.
+- **Rule 3 (Closed-Set Whitelist)**: Master Resume and Reserve Bank form an immutable factual ceiling. Zero keyword back-filling.
+- **20-Minute Micro-Stepped Application SOP**: Breaks each application into four timed micro-steps to eliminate ADHD overwhelm and perfectionism.
 
-### 7. 💰 4-Factor Compensation Estimator & Offer Negotiation
+### 7. 🤝 LinkedIn Network Intelligence & Strategic Tier Mapping
+Export your LinkedIn connections archive and run `scripts/parse_connections.ps1` to surface every 1st-degree connection you have across target organizations in `companies/target_tier_list.md`. Automatically cross-references incoming job leads against your network so you apply with an internal referral whenever possible.
+
+### 8. 💰 4-Factor Compensation Estimator & Offer Negotiation
 Many job postings omit compensation. ACE provides a deterministic heuristic framework factoring:
 $$\text{Estimated Base} = \text{Role Baseline} \times \text{Company Tier Multiplier} \times \text{Geo Index}$$
 allowing you to evaluate real total compensation potential before investing time in an application, and to structure data-backed counter-proposals during offer negotiations.
-
----
-
-## ⚡ Quickstart Setup
-
-Getting started takes just a few moments:
-
-1. **Open your AI assistant** ([Google Antigravity](https://antigravity.google) or [Cursor](https://cursor.com)) in a new empty folder.
-2. Open [`QUICK_START.md`](file:///c:/Code/ACE/QUICK_START.md) and copy the one-line setup prompt into your assistant's chat panel.
-3. Your assistant automatically bootstraps the workspace, executes [`GENESIS_PROMPT.md`](file:///c:/Code/ACE/GENESIS_PROMPT.md), interviews you on your career preferences, formats your master resume, and activates your live career command center in **`DASHBOARD.md`** (leaving `README.md` pristine as the permanent project documentation)!
-
-👉 *For detailed instructions, conversational prompts, and FAQs, see [`QUICK_START.md`](file:///c:/Code/ACE/QUICK_START.md).*
 
 ---
 

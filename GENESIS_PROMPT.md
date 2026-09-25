@@ -56,11 +56,14 @@ If a resume is provided or drafted:
    - Live Mermaid pipeline funnel diagram (`graph LR`).
    - Active application tracker table (linking to each role's dossier in `applications/`).
    - Initial velocity and conversion metrics.
+   - **Quick Access Workspace Links**: One-click markdown links to all core workspace assets (`sourcing_inbox.md`, `ats_search_config.json`, `scoring_rubric.md`, `contacts_ledger.md`, `[Candidate]_Resume_Master.md`, `modular_reserve_bank.md`, `target_tier_list.md`, `targeted_job_sourcing_queries.md`, `recruiter_screen_cheatsheet.md`, `career_gap_framing.md`, and `job_hunt_workflow.md`).
 4. Present my new `DASHBOARD.md` and introduce our full-cycle career copilot routines:
-   - **ATS Sourcing**: Autonomous scans scored against our 100-point rubric.
-   - **Application Dossiers**: Standardizing `applications/YYYY-MM-DD_[company]/` with tailored 1-page resumes, outreach logs, and interview prep.
-   - **Behavioral & Technical STAR Stories**: Extracting, refining, and mapping achievements from `stories/star_story_bank.md` into role dossiers.
-   - **Recruiter Screen Cheatsheets**: 90-second elevator pitches and verified metric quick-references.
+   - **ATS Sourcing & X-Ray**: Autonomous scans and 1-click Boolean searches (`workflows/targeted_job_sourcing_queries.md`) with pragmatic 3-tier gap analysis.
+   - **20-Minute Application SOP**: Micro-stepped workflow in `workflows/job_hunt_workflow.md` enforcing Rules 1–3 (Confirmation Gate, Immutable Resumes, Closed-Set Whitelist).
+   - **Application Dossiers**: Standardizing `applications/YYYY-MM-DD_[company]_[reqid]/` with tailored 1-page resumes, pre-filled portal guides (`application_form_guide.md`), cover letters, and interview prep.
+   - **Automated Integrity Linting**: Verifying zero hallucinated skills via `scripts/lint_resume_integrity.ps1` prior to rendering.
+   - **Modular Reserve Bank**: Swapping specialized bullets from `resumes/modular_reserve_bank.md` to match unique requirements without bloating 1-page layouts.
+   - **Story Bank & Gap Framing**: STAR+R stories (`stories/star_story_bank.md`), phone screen cheatsheets, and confident sabbatical/transition framing (`stories/career_gap_framing.md`).
    - **Offer Negotiation**: Structuring counter-proposals with `workflows/compensation_estimator.md`.
 5. Propose immediate next actions (such as running an initial ATS scan, creating an application dossier, or authoring a targeted STAR story).
 

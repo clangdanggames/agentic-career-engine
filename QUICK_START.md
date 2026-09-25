@@ -31,16 +31,19 @@ Your assistant will verify your environment, guide you through an onboarding int
 Whenever you find an opportunity to pursue, your AI assistant isolates that application into a dedicated dossier folder:
 
 ```text
-applications/YYYY-MM-DD_[company]/
-├── job_description.md              # Requisition text, requirements, level, and compensation
-├── [Your_Name]_Resume_[Company].md # Tailored resume source
-├── [Your_Name]_Resume_[Company].pdf# Headless Chromium compiled 1-page PDF
-├── outreach_and_timeline.md        # Warm referral logs, email copies, and milestone funnel
-└── interview_prep.md               # 90-second screen pitch, metric cheat-sheet, & STAR pairings
+applications/YYYY-MM-DD_[company]_[reqid_or_role]/
+├── job_description.md                     # Requisition text, requirements, level, and compensation
+├── [Candidate]_Resume_[Company]_[ReqID].md # Tailored resume source
+├── [Candidate]_Resume_[Company]_[ReqID].pdf# Headless Chromium compiled 1-page PDF
+├── application_form_guide.md              # Pre-calculated answers for ATS portal submission fields
+├── cover_letter.md                        # Standardized 1-page cover letter (if required)
+├── outreach_and_timeline.md               # Warm referral logs, email copies, and milestone funnel
+└── interview_prep.md                      # 90-second screen pitch, whiteboard prep, & STAR pairings
 ```
 
 ### Why Dossiers Matter:
-- **Zero Confusion**: You always know exactly which resume variation and bullet points were submitted.
+- **Zero Collision & Confusion**: Uses `[reqid]` or slugified `[role]` (with `_2` incremental fallback) so multiple applications to the same company on the same day stay cleanly separated.
+- **Frictionless Submission**: The pre-filled `application_form_guide.md` removes decision fatigue by pre-calculating answers for tricky portal questions.
 - **Persistent Context**: Outreach history, recruiter notes, and interview prep are coupled directly to the JD.
 - **Automatic Privacy**: The repository's `.gitignore` automatically excludes `applications/20*` folders, keeping your active applications completely private.
 
@@ -53,12 +56,15 @@ ACE operates as an end-to-end career chief of staff across every phase of your j
 | Search Phase | Objective | Example Conversational Prompt |
 | :--- | :--- | :--- |
 | **Sourcing** | Discover ATS leads | *"Scan ATS boards for new senior roles matching my compensation floor and fit rubric."* |
-| **Tailoring** | Create application dossier | *"Tailor my resume for this requisition: [paste link or text]. Create an application dossier and ensure the PDF is strictly 1 page."* |
+| **Direct X-Ray** | 1-Click Boolean searches | *"Show me direct Boolean search strings for finding uncrowded Director of Operations roles on Greenhouse and Ashby."* |
+| **Tailoring** | 20-min micro-stepped dossier | *"Tailor my resume for this requisition: [paste link or text]. Run the integrity linter, ensure strict 1-page PDF, and pre-fill an application form guide."* |
+| **Whitelisting** | Verify factual integrity | *"Run `scripts/lint_resume_integrity.ps1` against my tailored resume to verify zero hallucinated skills."* |
+| **Reserve Bank** | Swap specialized bullets | *"Check `resumes/modular_reserve_bank.md` and swap in our verified distributed systems bullets for this role."* |
 | **Networking** | Uncover warm referral paths | *"I placed my LinkedIn Connections.csv in `network/`. Parse my connections and highlight who works at target employers."* |
 | **Outreach** | Draft low-friction messages | *"Draft a concise, warm message to [Contact Name] at [Company] asking for an internal referral for requisition #[ID]."* |
+| **Gap Framing** | Address career pauses | *"Help me refine my narrative in `stories/career_gap_framing.md` for explaining my recent sabbatical with confidence."* |
 | **Interviewing** | Extract & refine STAR stories | *"Interview me to extract a high-stakes STAR story about turning around an off-track project, and save it to `stories/star_story_bank.md`."* |
-| **Screen Prep** | Build recruiter cheatsheet | *"Generate my 90-second elevator pitch and high-impact metric cheatsheet for my upcoming screen at [Company]. Save it to the dossier's `interview_prep.md`."* |
-| **Due Diligence** | Questions for interviewers | *"What 5 strategic, senior-level questions should I ask the VP of Engineering during my panel interview?"* |
+| **Screen Prep** | Phone screen cheatsheet | *"Prepare my 90-second elevator pitch, metric cheatsheet, and reverse questions in the dossier's `interview_prep.md`."* |
 | **Negotiation** | Evaluate & counter an offer | *"I received an offer of $165k base + $30k equity at [Company]. Benchmark this against our 4-factor compensation model and draft a polite, data-backed counter-proposal."* |
 
 ---

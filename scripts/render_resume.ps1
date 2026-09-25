@@ -3,7 +3,10 @@ param (
     [string]$MarkdownPath,
 
     [Parameter(Mandatory = $false)]
-    [string]$OutputPath
+    [string]$OutputPath,
+
+    [Parameter(Mandatory = $false)]
+    [switch]$VerifyIntegrity
 )
 
 $ErrorActionPreference = "Stop"
@@ -16,6 +19,18 @@ if (-not (Test-Path $MarkdownPath)) {
 
 $ResolvedMd = (Resolve-Path $MarkdownPath).Path
 $WorkDir = Split-Path -Parent $ResolvedMd
+
+if ($VerifyIntegrity) {
+    $linterScript = Join-Path $PSScriptRoot "lint_resume_integrity.ps1"
+    if (Test-Path $linterScript) {
+        Write-Host "Running Resume Integrity Linter prior to compilation..." -ForegroundColor Cyan
+        & powershell -ExecutionPolicy Bypass -File $linterScript -TailoredResumePath $ResolvedMd
+        if ($LASTEXITCODE -ne 0) {
+            Write-Error "Integrity check failed. Compilation aborted."
+            exit 1
+        }
+    }
+}
 
 if (-not $OutputPath) {
     $BaseName = [System.IO.Path]::GetFileNameWithoutExtension($ResolvedMd)

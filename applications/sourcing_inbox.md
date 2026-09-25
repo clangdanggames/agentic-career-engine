@@ -1,7 +1,7 @@
-﻿# Job Sourcing Inbox & Opportunity Tracker
+# Job Sourcing Inbox & Opportunity Tracker
 
 > **Last Scanned**: Never | **Total Qualified Leads**: 0
-> **Search Config**: [workflows/ats_search_config.json](file:///c:/Code/ACE/workflows/ats_search_config.json) | **Scoring Rubric**: [100-Point Fit Rubric](file:///c:/Code/ACE/.agents/skills/ats-job-scanner/references/scoring_rubric.md)
+> **Search Config**: [`workflows/ats_search_config.json`](../workflows/ats_search_config.json) | **Scoring Rubric**: [100-Point Fit Rubric](../.agents/skills/ats-job-scanner/references/scoring_rubric.md)
 
 ---
 

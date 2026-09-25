@@ -24,9 +24,9 @@ Activate this skill when:
 Follow this 5-step procedure to execute an ATS job scan:
 
 ### Step 1: Read Search Configuration
-1. Open and read [`workflows/ats_search_config.json`](file:///c:/Code/ACE/workflows/ats_search_config.json).
+1. Open and read [`workflows/ats_search_config.json`](../../../workflows/ats_search_config.json).
 2. Note the configured roles, ATS domains, locations, and negative filters.
-3. Check existing URLs in [`applications/sourcing_inbox.json`](file:///c:/Code/ACE/applications/sourcing_inbox.json) to prevent processing duplicate leads.
+3. Check existing URLs in [`applications/sourcing_inbox.json`](../../../applications/sourcing_inbox.json) to prevent processing duplicate leads.
 
 ### Step 2: Execute Targeted Web Searches
 Run searches using `search_web` across the ATS query categories constructed from the configuration:
@@ -44,15 +44,15 @@ For each discovered job posting:
 1. **Extract Metadata**: Job Title, Company, Location (Remote / Hybrid / Onsite), Job URL, Date Discovered.
 2. **Identify Compensation**:
    - If salary is stated in the posting, record the exact base salary range.
-   - If salary is unlisted, estimate using the [4-Factor Compensation Estimator](file:///c:/Code/ACE/workflows/compensation_estimator.md) based on company tier and title.
+   - If salary is unlisted, estimate using the [4-Factor Compensation Estimator](../../../workflows/compensation_estimator.md) based on company tier and title.
 3. **Calculate Personal Fit Score (0–100%)**:
-   - Evaluate against the criteria in [Scoring Rubric](file:///c:/Code/ACE/.agents/skills/ats-job-scanner/references/scoring_rubric.md):
+   - Evaluate against the criteria in [Scoring Rubric](references/scoring_rubric.md):
      - **Core Technical Stack** (Languages, frameworks, tooling) $\rightarrow$ up to 40 pts.
      - **Architectural Scope** (System design, testing architecture, infrastructure, pipelines) $\rightarrow$ up to 30 pts.
      - **Seniority & Scale** (Level match, years of experience, distributed/production scale) $\rightarrow$ up to 20 pts.
      - **Domain Alignment** (Industry vertical, business model, problem space) $\rightarrow$ up to 10 pts.
 4. **Cross-Reference Network Contacts**:
-   - Check the company name against [`network/contacts_ledger.md`](file:///c:/Code/ACE/network/contacts_ledger.md).
+   - Check the company name against [`network/contacts_ledger.md`](../../../network/contacts_ledger.md).
    - If a 1st-degree connection exists at the company, note the contact name, title, and profile link.
 5. **Determine Likelihood of Success**:
    - **High**: Title match + Location alignment + Compensation within target range + (Bonus: Internal referral exists).
@@ -60,8 +60,8 @@ For each discovered job posting:
    - **Low**: Relocation required outside target regions or heavy non-aligned tech stack requirements.
 
 ### Step 4: Update Sourcing Inbox
-1. Append all qualified leads ($\text{Fit Score} \ge 65\%$) to [`applications/sourcing_inbox.json`](file:///c:/Code/ACE/applications/sourcing_inbox.json).
-2. Regenerate [`applications/sourcing_inbox.md`](file:///c:/Code/ACE/applications/sourcing_inbox.md) with a ranked visual table sorted by **Fit Score** and **Likelihood of Success**.
+1. Append all qualified leads ($\text{Fit Score} \ge 65\%$) to [`applications/sourcing_inbox.json`](../../../applications/sourcing_inbox.json).
+2. Regenerate [`applications/sourcing_inbox.md`](../../../applications/sourcing_inbox.md) with a ranked visual table sorted by **Fit Score** and **Likelihood of Success**.
 
 ### Step 5: Report Highlights to the User
 Present the top 3–5 highest-scoring opportunities in your response, highlighting:

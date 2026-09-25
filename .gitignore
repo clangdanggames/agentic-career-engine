@@ -13,6 +13,8 @@ SOCIAL_SHARE_KIT.md
 resumes/*_Resume_Master.md
 resumes/*_Resume_*.md
 resumes/*_Resume_*.pdf
+resumes/variants/*_Resume_*.md
+resumes/variants/*_Resume_*.pdf
 DASHBOARD.md
 
 # Ignore generated HTML and PDF files across the repo, EXCEPT showcase demo files

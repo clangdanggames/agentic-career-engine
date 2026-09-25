@@ -72,7 +72,8 @@
       "description": "Industry vertical, regulatory environment, and organizational alignment",
       "keywords": ["healthcare", "finance", "technology", "enterprise SaaS", "consumer", "life sciences", "manufacturing", "e-commerce"]
     },
-    "referral_boost_points": 30
+    "referral_boost_points": 30,
+    "gap_advisory_deduction": 15
   },
   "execution_settings": {
     "max_results_per_query": 10,
