@@ -5,10 +5,11 @@
 [High-impact 3-4 line summary highlighting total years of progressive experience, core functional competencies, leadership philosophy, and measurable business, clinical, operational, or technical scale delivered.]
 
 ## Core Competencies & Key Skills
-- **Core Functional Expertise**: [e.g. Strategic Planning, P&L Ownership, Cross-Functional Leadership, Regulatory Compliance, Software Engineering]
-- **Specialized Methodologies & Frameworks**: [e.g. Agile/Scrum, Lean Six Sigma, Financial Modeling, Clinical Trial Management, System Architecture]
-- **Tools, Software & Platforms**: [e.g. Salesforce, SAP, Tableau, Workday, AWS, Python, Jira, Microsoft 365 / PowerBI]
-- **Industry Certifications & Licenses**: [e.g. PMP, CPA, SHRM-SCP, AWS Solutions Architect, Lean Six Sigma Black Belt]
+- **Core Functional Expertise**: [e.g. Strategic Planning, P&L Ownership, Cross-Functional Leadership, Clinical Operations, Financial Modeling]
+- **Core Domain Skills & Direct Mastery (Level 1)**: [e.g. Python, SQL, Financial Statement Analysis, Lean Six Sigma, HIPAA Protocol Execution] *(Competencies you directly execute, audit, and can defend from first principles without AI)*
+- **Systems, Automation & AI-Accelerated Platforms (Level 2)**: [e.g. AWS, PowerBI/DAX, Agentic AI Workflows, Docker, Custom CRM Automations, Streamlit] *(Systems, automated tools, or pipelines authored/orchestrated via agentic workflows)*
+- **Software, Methodologies & Operations (Level 3)**: [e.g. Agile/Scrum, Git, Jira, Workday, Salesforce, Epic Systems, SAP]
+- **Industry Certifications & Professional Licenses**: [e.g. PMP, CPA, CFA, SHRM-SCP, RN / Board Certification, AWS Solutions Architect]
 
 ## Professional Experience
 

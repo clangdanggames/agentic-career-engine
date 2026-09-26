@@ -6,29 +6,30 @@
 
 ---
 
-## 📂 Category 1: [Specialized Architecture, Infrastructure, or Domain A]
+## 📂 Category 1: [Specialized Domain Knowledge, Engineering Architecture, or Specialty A]
 
 ### [Focus Area / Sub-Discipline 1]
-- **[Keyword / Theme]**: [Draft a high-impact, 2-line bullet following: `[Strong Action Verb]` + `[Problem Solved / Scope]` + `[Tools / Methodology]` + `[Quantifiable Result]`].
-- **[Keyword / Theme]**: [Draft secondary specialized bullet].
+- `[Level 1: Core Direct]` **[Keyword / Theme]**: [Draft a high-impact, 2-line bullet following: `[Strong Action Verb]` + `[Problem Solved / Scope]` + `[Methodology / Tools]` + `[Quantifiable Result]`].
+- `[Level 1: Core Direct]` **[Keyword / Theme]**: [Draft secondary specialized bullet].
 
 ### [Focus Area / Sub-Discipline 2]
-- **[Keyword / Theme]**: [Draft bullet].
+- `[Level 1: Core Direct]` **[Keyword / Theme]**: [Draft bullet].
 
 ---
 
-## 📂 Category 2: [Operations, Process Optimization, or Domain B]
+## 📂 Category 2: [Leadership, P&L Ownership, Operations, or Strategic Execution]
 
 ### [Focus Area / Sub-Discipline 1]
-- **[Keyword / Theme]**: [Draft bullet detailing operational scaling, P&L management, or cross-functional alignment].
-- **[Keyword / Theme]**: [Draft bullet].
+- `[Level 1: Core Direct]` **[Keyword / Theme]**: [Draft bullet detailing operational scaling, cost savings, budget ownership, or cross-functional alignment].
+- `[Level 1: Core Direct]` **[Keyword / Theme]**: [Draft bullet].
 
 ---
 
-## 📂 Category 3: [Recent R&D, Side Projects, or Modern Tooling]
+## 📂 Category 3: [Recent Initiatives, Automated Tooling, or AI-Accelerated Projects]
 
 ### [Project Name / Modern Initiative]
-- **[Keyword / Theme]**: [Draft bullet extracted via `workflows/project_ingestion_prompt.md` highlighting modern tools and rapid prototyping].
+- `[Level 2: AI-Assisted / Architecture]` **[Keyword / Theme]**: [Draft bullet extracted via `workflows/project_ingestion_prompt.md` highlighting operational problem-solving, system design, and agentic delivery velocity rather than claiming raw language/programming specialization].
+- `[Level 3: Incidental / Exposure]` **[Keyword / Theme]**: [Draft bullet for evaluated platforms, CRMs, ERPs, or secondary integrations].
 
 ---
 
