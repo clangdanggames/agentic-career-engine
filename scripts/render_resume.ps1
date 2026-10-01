@@ -143,51 +143,51 @@ $fullHtml = @"
             background-color: #ffffff;
             color: #1e293b;
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-            font-size: 9pt;
-            line-height: 1.28;
+            font-size: 8.65pt;
+            line-height: 1.25;
             -webkit-print-color-adjust: exact;
         }
         body {
-            padding: 0.32in 0.42in;
+            padding: 0.28in 0.38in;
         }
         .candidate-name {
-            font-size: 18pt;
+            font-size: 17pt;
             font-weight: 700;
             color: #0f172a;
             letter-spacing: -0.02em;
             margin-bottom: 2px;
         }
         p {
-            margin-bottom: 3px;
+            margin-bottom: 2.5px;
         }
         a {
             color: #2563eb;
             text-decoration: none;
         }
         .section-title {
-            font-size: 10pt;
+            font-size: 9.5pt;
             font-weight: 700;
             text-transform: uppercase;
             letter-spacing: 0.05em;
             color: #0f172a;
             border-bottom: 1.25px solid #0f172a;
             padding-bottom: 1px;
-            margin-top: 6px;
-            margin-bottom: 3.5px;
+            margin-top: 5px;
+            margin-bottom: 2.5px;
         }
         .job-company {
-            font-size: 9.5pt;
+            font-size: 9.25pt;
             font-weight: 700;
             color: #1e293b;
-            margin-top: 4.5px;
+            margin-top: 3.5px;
             margin-bottom: 1px;
         }
         .job-subheading {
             display: flex;
             justify-content: space-between;
             align-items: baseline;
-            font-size: 8.75pt;
-            margin-bottom: 2.5px;
+            font-size: 8.5pt;
+            margin-bottom: 2px;
         }
         .job-title {
             font-weight: 600;
@@ -196,14 +196,14 @@ $fullHtml = @"
         .job-dates {
             font-weight: 500;
             color: #64748b;
-            font-size: 8.5pt;
+            font-size: 8.25pt;
         }
         .bullet-list {
-            margin-left: 15px;
-            margin-bottom: 3px;
+            margin-left: 14px;
+            margin-bottom: 2.5px;
         }
         .bullet-list li {
-            margin-bottom: 2px;
+            margin-bottom: 1.5px;
             padding-left: 1px;
         }
         code {
@@ -224,6 +224,11 @@ $fullHtml = @"
 </body>
 </html>
 "@
+
+$htmlParent = Split-Path -Parent $HtmlPath
+if (-not [string]::IsNullOrWhiteSpace($htmlParent) -and -not (Test-Path $htmlParent)) {
+    New-Item -ItemType Directory -Path $htmlParent -Force | Out-Null
+}
 
 Set-Content -Path $HtmlPath -Value $fullHtml -Encoding UTF8
 Write-Host "Generated HTML at: $HtmlPath"

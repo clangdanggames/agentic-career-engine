@@ -46,3 +46,6 @@ scratch/
 # Engine backups and update archives
 .backups/
 *.zip
+
+# Internal ACE development skills & tools (not distributed to end-users)
+.agents/skills/ace-dogfood-analyzer/

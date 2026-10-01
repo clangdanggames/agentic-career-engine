@@ -179,7 +179,14 @@ foreach ($m in $familiarMatches) {
     }
 }
 
-# 4. Report Findings & Determine Status
+# 4. Check for Internal Experience Depth Tags Leaking into Resume
+$depthTagMatches = [regex]::Matches($tailoredText, "(?i)(?:\[|\()(?:Level\s*[123]|Direct\s+Mastery|AI-Assisted|Vibe[- ]?Coded|Incidental\s+Exposure)(?:\]|\))")
+$leakedTags = [System.Collections.Generic.List[string]]::new()
+foreach ($m in $depthTagMatches) {
+    $leakedTags.Add($m.Value)
+}
+
+# 5. Report Findings & Determine Status
 $hasFailure = $false
 
 if ($hallucinatedFound.Count -gt 0) {
@@ -206,11 +213,20 @@ if ($unverifiedSkills.Count -gt 0) {
     }
 }
 
+if ($leakedTags.Count -gt 0) {
+    $hasFailure = $true
+    Write-Host "`n❌ VIOLATION: Internal evaluation depth tags detected in candidate-facing resume:" -ForegroundColor Red
+    foreach ($lt in ($leakedTags | Select-Object -Unique)) {
+        Write-Host "   - $lt" -ForegroundColor Red
+    }
+    Write-Host "   Internal depth classifications ([Level 1/2/3]) must remain internal to evaluation notes and never appear in public resume text." -ForegroundColor Yellow
+}
+
 if ($hasFailure) {
-    Write-Host "`n🚫 INTEGRITY LINT FAILED: Rule 3 (Closed-Set Whitelist) violated." -ForegroundColor Red
-    Write-Host "Action Required: Remove or replace these unverified items with authentic Master Resume capabilities before proceeding to PDF compilation or submission.`n" -ForegroundColor Red
+    Write-Host "`n🚫 INTEGRITY LINT FAILED: Rule 3 (Closed-Set Whitelist & Depth Calibration) violated." -ForegroundColor Red
+    Write-Host "Action Required: Remove or replace these unverified items/internal tags with authentic Master Resume capabilities before proceeding to PDF compilation or submission.`n" -ForegroundColor Red
     exit 1
 } else {
-    Write-Host "`n✅ INTEGRITY LINT PASSED: All competency tokens strictly verified in Master Resume whitelist.`n" -ForegroundColor Green
+    Write-Host "`n✅ INTEGRITY LINT PASSED: All competency tokens strictly verified in Master Resume whitelist and zero internal tags leaked.`n" -ForegroundColor Green
     exit 0
 }

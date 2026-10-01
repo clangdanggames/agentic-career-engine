@@ -73,6 +73,18 @@ Present the top 3–5 highest-scoring opportunities in your response, highlighti
 
 ---
 
+## 🎓 The Inbox Zero Graduation Lifecycle
+
+The Sourcing Inbox is designed as a high-velocity triage queue rather than an indefinite parking lot:
+
+1. **Inbox Ingestion**: New leads enter [`applications/sourcing_inbox.md`](../../../applications/sourcing_inbox.md) and `.json` in an un-triaged state.
+2. **Active Graduation**: The moment the candidate decides to pursue a role (scaffolding an application dossier in `applications/YYYY-MM-DD_[company]_[reqid]/`, tailoring a resume, or reaching out for a referral), the role **graduates out of the inbox**:
+   - It is removed from the active triage table in `sourcing_inbox.md`.
+   - Its lifecycle is formally logged in [`applications/ledger.json`](../../../applications/ledger.json) and tracked on [`DASHBOARD.md`](../../../DASHBOARD.md).
+3. **Archiving & Passing**: Leads that are evaluated and passed on (below compensation floor, location mismatch, or non-negotiable hard gaps) are moved to the `Archived & Passed Leads` section or pruned to keep active inbox triage friction at zero.
+
+---
+
 ## ⏰ Scheduling the Scanner
 
 To set this skill to run automatically on a recurring schedule:

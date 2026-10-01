@@ -123,12 +123,13 @@ ACE/
 │   └── variants/                        # Multi-track baseline master resumes (TPM, SRE, Ops)
 ├── scripts/
 │   ├── check_pdf_pages.ps1              # Validates that compiled PDF is strictly 1 page
-│   ├── lint_resume_integrity.ps1        # Deterministic linter enforcing Rule 3 whitelist integrity
+│   ├── lint_resume_integrity.ps1        # Deterministic linter enforcing Rule 3 whitelist integrity & tag isolation
 │   ├── migrate_workspace.ps1            # Imports career history/dossiers from legacy or older ACE workspaces
 │   ├── parse_connections.ps1            # Maps LinkedIn connections to target employers
 │   ├── render_resume.ps1                # Headless Edge/Chrome print-to-pdf engine (-VerifyIntegrity)
 │   ├── reset_workspace.ps1              # Factory-reset utility for application ledgers
 │   ├── scan_ats_jobs.ps1                # Automated multi-query ATS search generator
+│   ├── sync_pipeline.ps1                # Rule 5 validator maintaining 100% parity between ledger and dashboard
 │   └── update_engine.ps1                # Safe, in-place engine updater (preserves all personal user data)
 ├── stories/
 │   ├── career_gap_framing.md            # Framing sabbaticals, layoffs, or pauses with confidence
@@ -138,10 +139,11 @@ ACE/
 │   ├── ats_search_config.json           # User configuration (roles, locations, salary floors)
 │   ├── compensation_estimator.md        # 4-factor compensation estimation heuristic
 │   ├── engine_lifecycle.md              # Lifecycle guide for in-place updates and workspace migration
-│   ├── job_hunt_workflow.md             # Operational Rules 1–3, 20-min SOP, & energy budgeting
+│   ├── job_hunt_workflow.md             # Operational Rules 1–5, 20-min SOP, & energy budgeting
 │   ├── project_ingestion_prompt.md      # Cross-repo prompt to extract bullets & stories into ACE
 │   └── targeted_job_sourcing_queries.md # 1-click Boolean X-Ray searches for ATS boards
 ├── .gitignore                           # Privacy guardrail: blocks private PII/PDF leaks
+├── AGENTS.md                            # Universal cross-IDE operational doctrines (Rules 1–7)
 ├── DASHBOARD.md                         # [Generated] Your live, active personal career command center
 ├── GENESIS_PROMPT.md                    # Core candidate onboarding and initialization prompt
 ├── QUICK_START.md                       # 3-step setup guide and assistant installation

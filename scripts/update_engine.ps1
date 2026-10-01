@@ -42,7 +42,7 @@ if (-not $SkipBackup -and -not $DryRun) {
     New-Item -ItemType Directory -Path $backupDir -Force | Out-Null
 
     # Backup engine components
-    $backupItems = @("scripts", ".agents", "workflows", "applications\dossier_template")
+    $backupItems = @("scripts", ".agents", "workflows", "applications\dossier_template", "AGENTS.md")
     foreach ($item in $backupItems) {
         $sourceItem = Join-Path $workspaceRoot $item
         if (Test-Path $sourceItem) {
@@ -141,7 +141,7 @@ foreach ($doc in $coreWorkflowDocs) {
 }
 
 # Update Root Guides (Only update README if it's the project documentation, NOT a user dashboard)
-$rootGuides = @("QUICK_START.md", "GENESIS_PROMPT.md")
+$rootGuides = @("QUICK_START.md", "GENESIS_PROMPT.md", "AGENTS.md")
 foreach ($guide in $rootGuides) {
     $srcGuide = Join-Path $upstreamRoot $guide
     $tgtGuide = Join-Path $workspaceRoot $guide

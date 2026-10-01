@@ -74,6 +74,18 @@ Audit your `resumes/[Name]_Resume_Master.md` against these 4 standards:
 
 ---
 
+## ⚡ Rule 5: Atomic State & Dashboard Synchronization Protocol (Mandatory Pre-Condition)
+
+> [!IMPORTANT]
+> **Zero State Drift & Anti-Attention Bias**:
+> LLMs naturally exhibit an "attention bias" toward generative and drafting tasks, frequently leaping ahead to analyze new roles or author outreach messages while neglecting to log real-world pipeline milestones.
+> 
+> To prevent pipeline desynchronization:
+> - Whenever the candidate mentions or confirms a real-world pipeline milestone (*"I submitted to [Company]"*, *"I messaged [Contact]"*, *"Screen scheduled"*, *"Rejected"*), the assistant **MUST IMMEDIATELY** record the event in [`applications/ledger.json`](../applications/ledger.json) and synchronize [`DASHBOARD.md`](../DASHBOARD.md) as the **first action** before or alongside addressing any new request.
+> - Run [`scripts/sync_pipeline.ps1`](../scripts/sync_pipeline.ps1) to mechanically verify 100% lockstep parity between the ledger database and the markdown dashboard.
+
+---
+
 ## ⚡ The 20-Minute Micro-Stepped Application SOP
 
 To avoid executive paralysis and perfectionism loops, every application follows a structured 5-step micro-routine:
@@ -127,7 +139,10 @@ The assistant reviews the JD against the candidate's Master Resume, Reserve Bank
 
 #### 4. Step 4: Submission & Explicit Confirmation (5 mins)
 - Candidate reviews, opens the application link, submits, and messages the assistant: *"Submitted"*.
-- Assistant logs the application into [`applications/ledger.json`](../applications/ledger.json), updates [`DASHBOARD.md`](../DASHBOARD.md), and freezes the resume artifacts.
+
+#### 5. Step 5: Atomic Ledger & Dashboard Synchronization (Instant)
+- Enforcing **Rule 5**, the assistant immediately records the submission in [`applications/ledger.json`](../applications/ledger.json), updates [`DASHBOARD.md`](../DASHBOARD.md), and freezes the resume artifacts.
+- Runs `powershell -File scripts/sync_pipeline.ps1` to audit and enforce 100% lockstep parity between the ledger database and the markdown dashboard.
 
 ---
 
