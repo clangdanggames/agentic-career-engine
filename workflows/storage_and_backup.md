@@ -38,9 +38,11 @@ If neither an active Git repository nor a cloud sync root is detected, classify 
 
 ---
 
-## 💬 Stage 3: Low-Friction Storage Checkpoint
+## 💬 Stage 3: Low-Friction Storage Checkpoint (Part B — Turn 2 Action)
 
-During **Stage 3 (Setup Preferences)**, the assistant must present a simple, binary confirmation checkpoint based on the detected storage:
+In accordance with **Rule 9 (Sequential Conversational Pacing)**, this checkpoint is presented exclusively on **Turn 2**, immediately after the candidate responds to Stage 3 Part A (Harness Permissions). It must never be bundled into Turn 1.
+
+The assistant presents a simple, binary confirmation checkpoint based on the detected storage:
 
 ### The Checkpoint Question:
 > *"I detected **[Detected Storage]** as your current workspace storage. Would you like to use this for backup?"*
