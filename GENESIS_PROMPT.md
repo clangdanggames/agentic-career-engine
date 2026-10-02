@@ -6,21 +6,22 @@ Please guide me through the following setup and onboarding protocol.
 
 ## 🛑 Sequential Onboarding Protocol (MANDATORY)
 - **Strict Turn-by-Turn Pacing**: You MUST proceed strictly **one stage or step at a time** across sequential conversational turns. Never overwhelm the candidate by bundling multiple disparate stages or lines of questioning into a single message.
+- **Stage Progress Labeling**: Explicitly label every onboarding stage as **"Stage X of 6"** (e.g., *Stage 1 of 6*, *Stage 2 of 6*, *Stage 3 of 6*) to establish a cohesive visual hierarchy and implicitly communicate progress and expected effort.
 - **Concise Summaries**: Keep Stage 1 (Environment) and Stage 2 (Workspace Integrity) checks to a brief 2–3 line summary. Do NOT generate multi-row tables or verbose directory inventories.
 - **Turn 1 Directive**:
   1. Inspect environment, storage, and workspace integrity silently.
-  2. Output a concise 2–3 line verification summary of Stage 1 & Stage 2.
-  3. Present **ONLY** Stage 3 Part A (Agent Harness Permission Optimization).
+  2. Output a concise 2–3 line verification summary explicitly labeling **Stage 1 of 6 (Environment & Storage)** and **Stage 2 of 6 (Workspace Integrity)**.
+  3. Present **ONLY** **Stage 3 of 6: Setup Preferences (Part A: Agent Harness Permission Optimization)**.
   4. **STOP execution and wait for my response.** Do NOT present Stage 3 Part B, Stage 4, or any intake questions in Turn 1!
 - **Sequential Follow-Up Across Subsequent Turns**:
-  - **Turn 2**: Acknowledge Part A, present **ONLY** Stage 3 Part B (Workspace Storage & Backup Checkpoint), and STOP to wait for my response.
-  - **Turn 3**: Acknowledge Part B, begin Stage 4 (Candidate Intake Interview) with cohesive, grouped questions, and STOP to wait for my response.
-  - **Turn 4**: Stage 5 (Master Resume preference), and wait for my response.
-  - **Turn 5**: Stage 6 (Command Center activation and dashboard tour).
+  - **Turn 2**: Acknowledge Part A, present **ONLY** **Stage 3 of 6: Setup Preferences (Part B: Workspace Storage & Backup Checkpoint)**, and STOP to wait for my response.
+  - **Turn 3**: Acknowledge Part B, begin **Stage 4 of 6: Candidate Intake Interview** with cohesive, grouped questions, and STOP to wait for my response.
+  - **Turn 4**: **Stage 5 of 6: Master Resume** (Refine, Create, or Defer), and wait for my response.
+  - **Turn 5**: **Stage 6 of 6: Calibration & Command Center Activation** (Dashboard launch and workflow tour).
 
 ---
 
-### Stage 1: Environment & Dependency Verification
+### Stage 1 of 6: Environment & Dependency Verification
 1. Verify that a Chromium-based browser (Microsoft Edge, Google Chrome, or Chromium) is present for PDF generation.
 2. Check available shell environment (PowerShell on Windows, Bash/Zsh on macOS/Linux).
 3. Silently inspect workspace storage and version control environment (per `workflows/storage_and_backup.md`):
@@ -31,13 +32,13 @@ Please guide me through the following setup and onboarding protocol.
 
 ---
 
-### Stage 2: Workspace Integrity Check
+### Stage 2 of 6: Workspace Integrity Check
 1. Inspect the workspace directories: `resumes/`, `applications/`, `network/`, and `stories/`.
 2. Ensure active working directories are initialized with clean template structures.
 
 ---
 
-### Stage 3: Setup Preferences (Permissions & Storage Backup)
+### Stage 3 of 6: Setup Preferences (Permissions & Storage Backup)
 
 #### Part A: Agent Harness Permission Optimization (Optional) — [Turn 1 Action]
 Ask me neutrally if and how I would like to configure agent harness permissions (based on `HARNESS_SETUP.md`) to prevent repetitive approval pop-ups during subsequent resume compilation, integrity linting, and ATS scanning:
@@ -62,9 +63,9 @@ Then **STOP execution and wait for my input**.
 
 ---
 
-### Stage 4: Candidate Intake Interview — [Turn 3 Action]
+### Stage 4 of 6: Candidate Intake Interview — [Turn 3 Action]
 *(Presented after Stage 3 preferences are completed)*
-Interview me conversationally. Group related questions cohesively into cohesive blocks rather than asking a disjointed list of separate questions:
+Interview me conversationally. Group related questions cohesively into blocks rather than asking a disjointed list of separate questions:
 
 1. **Identity & Target Roles**:
    - Contact details: Full name, location (city/state), email, phone, and LinkedIn URL.
@@ -78,7 +79,7 @@ Interview me conversationally. Group related questions cohesively into cohesive 
 
 ---
 
-### Stage 5: Master Resume (Refine, Create, or Defer) — [Turn 4 Action]
+### Stage 5 of 6: Master Resume (Refine, Create, or Defer) — [Turn 4 Action]
 Offer me three flexible options:
 - **Option A (Refine Existing Resume)**: If I have a resume, I can paste the text or provide a file path. Standardize and refine it into `resumes/[My_Name]_Resume_Master.md` using modern formatting and action-driven metrics.
 - **Option B (Create from Scratch)**: If I do not have a resume ready, interview me conversationally about my recent roles, key accomplishments, skills, and education, and author a brand-new master resume.
@@ -92,7 +93,7 @@ If a resume is provided or drafted:
 
 ---
 
-### Stage 6: Calibration & Command Center Activation — [Turn 5 Action]
+### Stage 6 of 6: Calibration & Command Center Activation — [Turn 5 Action]
 1. Update `workflows/ats_search_config.json` with my target roles, location preferences, compensation parameters, and search scope.
 2. Initialize `applications/ledger.json` with my candidate metadata.
 3. Build my personalized career command center in `DASHBOARD.md` (leaving `README.md` pristine as the permanent project documentation):
@@ -114,4 +115,4 @@ If a resume is provided or drafted:
 
 ---
 
-Greet me with a concise 2–3 line summary of Stage 1 (Environment & Storage) and Stage 2 (Workspace Integrity), present ONLY Stage 3 Part A (Agent Harness Permission Optimization), and STOP to wait for my response! Do NOT present Stage 3 Part B, Stage 4, or any intake questions yet.
+Greet me, label Stage 1 of 6 (Environment & Storage) and Stage 2 of 6 (Workspace Integrity) in a concise 2–3 line summary, present ONLY Stage 3 of 6 Part A (Agent Harness Permission Optimization), and STOP to wait for my response! Do NOT present Stage 3 Part B, Stage 4, or any intake questions yet.
