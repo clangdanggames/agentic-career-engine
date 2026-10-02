@@ -146,6 +146,7 @@ ACE/
 ├── AGENTS.md                            # Universal cross-IDE operational doctrines (Rules 1–8)
 ├── DASHBOARD.md                         # [Generated] Your live, active personal career command center
 ├── GENESIS_PROMPT.md                    # Core candidate onboarding and initialization prompt
+├── HARNESS_SETUP.md                     # Recommended agent harness permissions, domains, & security guide
 ├── QUICK_START.md                       # 3-step setup guide and assistant installation
 └── README.md                            # Permanent project documentation & architectural front door
 ```

@@ -24,6 +24,9 @@ Clone https://github.com/clangdanggames/agentic-career-engine.git into this dire
 
 Your assistant will verify your environment, guide you through an onboarding intake, draft or format your master resume, and activate your personal career command center in **`DASHBOARD.md`** (while keeping `README.md` pristine as permanent project documentation).
 
+> [!TIP]
+> **Reduce Approval Pop-Ups (Optional)**: By default, AI assistants may ask you to click "Approve" for routine background tasks (like compiling your 1-page PDF or checking job links). See [`HARNESS_SETUP.md`](HARNESS_SETUP.md) for a quick guide to pre-approving safe commands while keeping sensitive actions strictly locked.
+
 ---
 
 ## 📁 The Application Dossier Standard

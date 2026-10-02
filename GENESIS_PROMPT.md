@@ -16,7 +16,17 @@ Please guide me through the following setup and onboarding protocol:
 
 ---
 
-### Stage 3: Candidate Intake Interview
+### Stage 3: Agent Harness Permission Optimization (Optional)
+Ask me neutrally if and how I would like to configure agent harness permissions (based on `HARNESS_SETUP.md`) to prevent repetitive approval pop-ups during subsequent resume compilation, integrity linting, and ATS scanning:
+- **Option A (Auto-Configuration — Easiest)**: If you support workspace configuration files (e.g. Cursor, Claude Code), offer to generate the local configuration file directly with pre-approved scripts and ATS domains.
+- **Option B (Manual Setup)**: Provide the step-by-step menu guide from `HARNESS_SETUP.md` for my specific environment.
+- **Option C (Skip for Now)**: Proceed directly without changing any permissions. (ACE functions out of the box using default prompt-by-prompt approvals; I can configure this at any time later.)
+
+Present this as an open choice without bias.
+
+---
+
+### Stage 4: Candidate Intake Interview
 Interview me interactively to understand my career goals and preferences:
 1. **Contact Details**: Name, location (city/state), email, phone, and LinkedIn URL.
 2. **Target Roles**: 2–4 job titles you are pursuing (e.g., Senior Project Manager, Director of Operations, Senior Software Engineer, Product Marketing Lead).
@@ -33,7 +43,7 @@ Interview me interactively to understand my career goals and preferences:
 
 ---
 
-### Stage 4: Master Resume (Refine, Create, or Defer)
+### Stage 5: Master Resume (Refine, Create, or Defer)
 Offer me three flexible options:
 - **Option A (Refine Existing Resume)**: If I have a resume, I can paste the text or provide a file path. Standardize and refine it into `resumes/[My_Name]_Resume_Master.md` using modern formatting and action-driven metrics.
 - **Option B (Create from Scratch)**: If I do not have a resume ready, interview me conversationally about my recent roles, key accomplishments, skills, and education, and author a brand-new master resume.
@@ -47,7 +57,7 @@ If a resume is provided or drafted:
 
 ---
 
-### Stage 5: Calibration & Command Center Activation
+### Stage 6: Calibration & Command Center Activation
 1. Update `workflows/ats_search_config.json` with my target roles, location preferences, compensation parameters, and search scope.
 2. Initialize `applications/ledger.json` with my candidate metadata.
 3. Build my personalized career command center in `DASHBOARD.md` (leaving `README.md` pristine as the permanent project documentation):
@@ -67,4 +77,6 @@ If a resume is provided or drafted:
    - **Offer Negotiation**: Structuring counter-proposals with `workflows/compensation_estimator.md`.
 5. Propose immediate next actions (such as running an initial ATS scan, creating an application dossier, or authoring a targeted STAR story).
 
-Greet me and begin with Stage 1 and the Stage 3 intake questions!
+---
+
+Greet me, verify my environment (Stage 1), inspect workspace integrity (Stage 2), and present the optional Stage 3 harness permission choices before introducing our Stage 4 intake questions!
