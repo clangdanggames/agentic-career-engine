@@ -108,7 +108,8 @@ flowchart TD
 ### Step-by-Step Breakdown:
 
 #### 1. Step 1: Intake (3 mins)
-- Candidate pastes a job posting URL or requisition text into the assistant chat.
+- Candidate pastes a job posting URL or requisition text into the assistant chat (or pulls a verified lead from [`applications/sourcing_inbox.md`](../applications/sourcing_inbox.md)).
+- **Direct Requisition URL Check (Rule 8)**: Assistant ensures the opportunity URL points directly to the specific requisition (containing numeric Job ID or UUID) rather than a generic career portal root, ensuring 1-click access to the job description and application form.
 
 #### 2. Step 2: Pragmatic 3-Tier Gap Analysis (5 mins)
 The assistant reviews the JD against the candidate's Master Resume, Reserve Bank, and compensation floor. It produces an explicit 3-Tier match breakdown:

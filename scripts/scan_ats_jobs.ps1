@@ -4,11 +4,108 @@ param (
     [string]$InboxJsonPath = ".\applications\sourcing_inbox.json",
     [string]$InboxMdPath = ".\applications\sourcing_inbox.md",
     [string]$ContactsLedgerPath = ".\network\contacts_ledger.md",
+    [switch]$VerifyInbox,
     [switch]$DryRun
 )
 
 $ErrorActionPreference = "Stop"
 [Console]::OutputEncoding = [System.Text.Encoding]::UTF8
+
+# --- INLINE VERIFICATION MODE ---
+if ($VerifyInbox) {
+    Write-Host "==========================================================" -ForegroundColor Cyan
+    Write-Host "ACE SOURCING INBOX LINK INTEGRITY AUDIT (Direct Links Only)" -ForegroundColor Cyan
+    Write-Host "==========================================================" -ForegroundColor Cyan
+    
+    if (-not (Test-Path $InboxJsonPath)) {
+        Write-Host "Sourcing inbox JSON not found at: $InboxJsonPath (no leads to audit)." -ForegroundColor Yellow
+        exit 0
+    }
+
+    $rawInbox = Get-Content $InboxJsonPath -Raw -Encoding UTF8
+    try {
+        $inbox = $rawInbox | ConvertFrom-Json
+    } catch {
+        Write-Error "Invalid JSON syntax in $InboxJsonPath"
+        exit 1
+    }
+
+    $leads = @($inbox.leads)
+    if ($leads.Count -eq 0) {
+        Write-Host "No active leads found in $InboxJsonPath to audit.`n" -ForegroundColor Yellow
+        exit 0
+    }
+
+    Write-Host "Auditing $($leads.Count) lead URLs in $InboxJsonPath...`n" -ForegroundColor Yellow
+
+    $passedCount = 0
+    $issuesCount = 0
+
+    foreach ($lead in $leads) {
+        $url = $lead.url
+        $company = $lead.company
+        $title = $lead.title
+
+        # 1. Pattern Check: Direct requisition URL vs generic portal root
+        $isGeneric = $false
+        $reason = ""
+
+        if ($url -match "greenhouse\.io" -and $url -notmatch "/jobs/\d+") {
+            $isGeneric = $true
+            $reason = "Missing numeric requisition ID (generic board root)"
+        } elseif ($url -match "ashbyhq\.com" -and $url -notmatch "[0-9a-fA-F]{8}-[0-9a-fA-F]{4}") {
+            $isGeneric = $true
+            $reason = "Missing job UUID (generic org board root)"
+        } elseif ($url -match "myworkdayjobs\.com" -and $url -notmatch "/job/") {
+            $isGeneric = $true
+            $reason = "Missing /job/ path (generic Workday root)"
+        } elseif ($url -match "lever\.co" -and $url -notmatch "lever\.co/[^/]+/[0-9a-fA-F]{8}-") {
+            $isGeneric = $true
+            $reason = "Missing job UUID (generic Lever root)"
+        }
+
+        if ($isGeneric) {
+            Write-Host "⚠️  GENERIC:  [$company] $title" -ForegroundColor Yellow
+            Write-Host "   URL:    $url" -ForegroundColor DarkGray
+            Write-Host "   Issue:  $reason" -ForegroundColor Yellow
+            $issuesCount++
+            continue
+        }
+
+        # 2. Fast Live HTTP Verification via curl.exe (Cloudflare/WAF resilient, header only)
+        $httpCode = "ERR"
+        $effectiveUrl = $url
+        try {
+            $curlOut = & curl.exe -s -L -m 5 -o NUL -w "%{http_code}|%{url_effective}" -A "Mozilla/5.0 (Windows NT 10.0; Win64; x64)" "$url" 2>$null
+            if ($curlOut -and $curlOut -match "^(\d+)\|(.*)$") {
+                $httpCode = $matches[1]
+                $effectiveUrl = $matches[2].Trim()
+            }
+        } catch {
+            $httpCode = "FAIL"
+        }
+
+        if ($httpCode -eq "200") {
+            Write-Host "🟢 LIVE:     [$company] $title (HTTP $httpCode)" -ForegroundColor Green
+            $passedCount++
+        } else {
+            Write-Host "❌ BROKEN:   [$company] $title (HTTP $httpCode)" -ForegroundColor Red
+            Write-Host "   URL:    $url" -ForegroundColor DarkGray
+            $issuesCount++
+        }
+    }
+
+    Write-Host "`n=== Audit Summary ===" -ForegroundColor Cyan
+    Write-Host "Verified Direct Links: $passedCount / $($leads.Count)" -ForegroundColor $(if ($passedCount -eq $leads.Count) { "Green" } else { "Yellow" })
+    if ($issuesCount -gt 0) {
+        Write-Host "Issues Detected:       $issuesCount" -ForegroundColor Red
+        Write-Host "`nAction Required: Update affected leads with verified direct requisition URLs before tailoring materials.`n" -ForegroundColor Yellow
+        exit 1
+    } else {
+        Write-Host "Status: All links are verified, active direct requisitions.`n" -ForegroundColor Green
+        exit 0
+    }
+}
 
 if (-not (Test-Path $ConfigPath)) {
     Write-Error "Config file not found at $ConfigPath"

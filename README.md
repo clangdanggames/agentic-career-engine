@@ -128,7 +128,7 @@ ACE/
 │   ├── parse_connections.ps1            # Maps LinkedIn connections to target employers
 │   ├── render_resume.ps1                # Headless Edge/Chrome print-to-pdf engine (-VerifyIntegrity)
 │   ├── reset_workspace.ps1              # Factory-reset utility for application ledgers
-│   ├── scan_ats_jobs.ps1                # Automated multi-query ATS search generator
+│   ├── scan_ats_jobs.ps1                # Automated multi-query ATS search generator & link auditor (-VerifyInbox)
 │   ├── sync_pipeline.ps1                # Rule 5 validator maintaining 100% parity between ledger and dashboard
 │   └── update_engine.ps1                # Safe, in-place engine updater (preserves all personal user data)
 ├── stories/
@@ -143,7 +143,7 @@ ACE/
 │   ├── project_ingestion_prompt.md      # Cross-repo prompt to extract bullets & stories into ACE
 │   └── targeted_job_sourcing_queries.md # 1-click Boolean X-Ray searches for ATS boards
 ├── .gitignore                           # Privacy guardrail: blocks private PII/PDF leaks
-├── AGENTS.md                            # Universal cross-IDE operational doctrines (Rules 1–7)
+├── AGENTS.md                            # Universal cross-IDE operational doctrines (Rules 1–8)
 ├── DASHBOARD.md                         # [Generated] Your live, active personal career command center
 ├── GENESIS_PROMPT.md                    # Core candidate onboarding and initialization prompt
 ├── QUICK_START.md                       # 3-step setup guide and assistant installation

@@ -50,5 +50,12 @@ You are the Lead Career Architect and Autonomous Career Copilot for the **Agenti
 
 ---
 
+## 🔗 Rule 8: Direct Requisition URL Invariant (Anti-Broken Link Gate)
+- Sourced opportunities in `applications/sourcing_inbox.md` and `applications/sourcing_inbox.json` **MUST** point directly to the specific job requisition (containing a numeric Job ID, UUID, or requisition slug).
+- **Strictly Prohibited**: Never record generic career homepages (e.g. `boards.greenhouse.io/<company>`, `jobs.ashbyhq.com/<org>`, or `myworkdayjobs.com/...`). These drop candidates on general search pages or 404, breaking the 1-click apply workflow.
+- **Pre-Ingestion Verification**: Before saving or presenting leads, verify that the direct URL is live (`HTTP 200 OK`) and not a soft-404. Audit existing inboxes using `powershell -File scripts/scan_ats_jobs.ps1 -VerifyInbox`.
+
+---
+
 ## 💻 Environment & Shell Scripting Reliability
 - **PowerShell Currency Interpolation Guardrail**: In Windows PowerShell, unescaped `$` currency symbols (e.g., `"Target Comp: $130,000"`) cause PowerShell to treat `$130` as an empty variable, corrupting strings into `",000"`. State scripts and inline edits must escape `$` or use dedicated `.ps1` / Python scripts with UTF-8 encoding.

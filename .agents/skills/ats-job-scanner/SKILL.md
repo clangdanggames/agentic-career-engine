@@ -41,27 +41,38 @@ Run searches using `search_web` across the ATS query categories constructed from
 
 ### Step 3: Extract & Evaluate Core Details
 For each discovered job posting:
-1. **Extract Metadata**: Job Title, Company, Location (Remote / Hybrid / Onsite), Job URL, Date Discovered.
-2. **Identify Compensation**:
+1. **Extract Metadata & Direct Requisition URL (MANDATORY INVARIANT)**:
+   - **Job Title**, **Company**, **Location** (Remote / Hybrid / Onsite), **Date Discovered**.
+   - **Direct Requisition URL**: The URL **MUST** be a deep link to the individual job posting containing the unique requisition ID or UUID.
+     > [!CAUTION]
+     > **Zero Generic Portal Links**: Never record root career homepages (e.g. `boards.greenhouse.io/<company>`, `jobs.ashbyhq.com/<org>`, or `myworkdayjobs.com/...`). These drop candidates on general search pages or 404, breaking the 1-click apply workflow.
+     - *Greenhouse*: `https://job-boards.greenhouse.io/<company>/jobs/<numeric_id>` or `https://boards.greenhouse.io/<company>/jobs/<numeric_id>`.
+     - *Ashby*: `https://jobs.ashbyhq.com/<org-slug>/<uuid>` (confirm exact slug—e.g. `wispr-flow`, `ease-health`).
+     - *Lever*: `https://jobs.lever.co/<company>/<uuid>`.
+     - *Workday*: `https://<tenant>.myworkdayjobs.com/en-US/<board>/job/<title>_<req-id>` (requires specific tenant like `wd12` / `wd108` and requisition ID).
+2. **Inline HTTP 200 Pre-Ingestion Gate**:
+   - Before qualifying or saving a lead, verify that the direct requisition URL is live and resolves to `HTTP 200 OK` (using `read_url_content`, `curl.exe`, or browser inspection).
+   - If the URL returns 404, redirects to a root career portal, or returns a generic title (e.g. `<title>Jobs</title>`), resolve the exact deep link or discard the lead.
+3. **Identify Compensation**:
    - If salary is stated in the posting, record the exact base salary range.
    - If salary is unlisted, estimate using the [4-Factor Compensation Estimator](../../../workflows/compensation_estimator.md) based on company tier and title.
-3. **Calculate Personal Fit Score (0–100%)**:
+4. **Calculate Personal Fit Score (0–100%)**:
    - Evaluate against the criteria in [Scoring Rubric](references/scoring_rubric.md):
      - **Core Technical Stack** (Languages, frameworks, tooling) $\rightarrow$ up to 40 pts.
      - **Architectural Scope** (System design, testing architecture, infrastructure, pipelines) $\rightarrow$ up to 30 pts.
      - **Seniority & Scale** (Level match, years of experience, distributed/production scale) $\rightarrow$ up to 20 pts.
      - **Domain Alignment** (Industry vertical, business model, problem space) $\rightarrow$ up to 10 pts.
-4. **Cross-Reference Network Contacts**:
+5. **Cross-Reference Network Contacts**:
    - Check the company name against [`network/contacts_ledger.md`](../../../network/contacts_ledger.md).
    - If a 1st-degree connection exists at the company, note the contact name, title, and profile link.
-5. **Determine Likelihood of Success**:
+6. **Determine Likelihood of Success**:
    - **High**: Title match + Location alignment + Compensation within target range + (Bonus: Internal referral exists).
    - **Medium**: Strong technical match, standard competitive pipeline, unlisted comp, or no immediate referral.
    - **Low**: Relocation required outside target regions or heavy non-aligned tech stack requirements.
 
 ### Step 4: Update Sourcing Inbox
-1. Append all qualified leads ($\text{Fit Score} \ge 65\%$) to [`applications/sourcing_inbox.json`](../../../applications/sourcing_inbox.json).
-2. Regenerate [`applications/sourcing_inbox.md`](../../../applications/sourcing_inbox.md) with a ranked visual table sorted by **Fit Score** and **Likelihood of Success**.
+1. Append all qualified leads ($\text{Fit Score} \ge 65\%$) with verified direct requisition URLs to [`applications/sourcing_inbox.json`](../../../applications/sourcing_inbox.json).
+2. Regenerate [`applications/sourcing_inbox.md`](../../../applications/sourcing_inbox.md) with a ranked visual table sorted by **Fit Score** and **Likelihood of Success**. Ensure all links point directly to the verified requisition URL with Requisition ID noted where available.
 
 ### Step 5: Report Highlights to the User
 Present the top 3–5 highest-scoring opportunities in your response, highlighting:
