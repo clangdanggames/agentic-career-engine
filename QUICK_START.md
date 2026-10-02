@@ -13,6 +13,9 @@ Open your preferred AI assistant. If you don't have one installed:
 
 ### Step 2: Open an Empty Folder
 1. Create a new folder on your computer (e.g., `Career` or `JobHunt`).
+   - ☁️ **Cloud Sync Friendly**: You can place this folder directly inside **Microsoft OneDrive**, **Google Drive**, **Dropbox**, or **iCloud** for automatic background backups with zero setup!
+   - 💻 **Offline & Local**: You can also use any regular local folder; ACE includes 1-click local snapshots (`scripts/backup_workspace.ps1`).
+   - 🐙 **Git Friendly**: If you prefer developer version control, private Git repositories are fully supported.
 2. Open that folder in your AI assistant (**File $\rightarrow$ Open Folder**).
 
 ### Step 3: Run the Setup Prompt
@@ -23,6 +26,9 @@ Clone https://github.com/clangdanggames/agentic-career-engine.git into this dire
 ```
 
 Your assistant will verify your environment, guide you through an onboarding intake, draft or format your master resume, and activate your personal career command center in **`DASHBOARD.md`** (while keeping `README.md` pristine as permanent project documentation).
+
+> [!NOTE]
+> **Zero Heavy Prerequisites**: ACE requires no Python, Node.js, or Git installation. It runs completely out of the box using built-in PowerShell and Microsoft Edge or Google Chrome.
 
 > [!TIP]
 > **Reduce Approval Pop-Ups (Optional)**: By default, AI assistants may ask you to click "Approve" for routine background tasks (like compiling your 1-page PDF or checking job links). See [`HARNESS_SETUP.md`](HARNESS_SETUP.md) for a quick guide to pre-approving safe commands while keeping sensitive actions strictly locked.

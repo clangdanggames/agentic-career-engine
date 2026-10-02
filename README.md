@@ -122,6 +122,7 @@ ACE/
 │   ├── resume_template.md               # Clean, 1-page typography-constrained template
 │   └── variants/                        # Multi-track baseline master resumes (TPM, SRE, Ops)
 ├── scripts/
+│   ├── backup_workspace.ps1             # Native 1-click snapshot utility (pure PowerShell, zero external dependencies)
 │   ├── check_pdf_pages.ps1              # Validates that compiled PDF is strictly 1 page
 │   ├── lint_resume_integrity.ps1        # Deterministic linter enforcing Rule 3 whitelist integrity & tag isolation
 │   ├── migrate_workspace.ps1            # Imports career history/dossiers from legacy or older ACE workspaces
@@ -141,6 +142,7 @@ ACE/
 │   ├── engine_lifecycle.md              # Lifecycle guide for in-place updates and workspace migration
 │   ├── job_hunt_workflow.md             # Operational Rules 1–5, 20-min SOP, & energy budgeting
 │   ├── project_ingestion_prompt.md      # Cross-repo prompt to extract bullets & stories into ACE
+│   ├── storage_and_backup.md            # Deterministic agent SOP for Git, Cloud Drive sync, & local snapshots
 │   └── targeted_job_sourcing_queries.md # 1-click Boolean X-Ray searches for ATS boards
 ├── .gitignore                           # Privacy guardrail: blocks private PII/PDF leaks
 ├── AGENTS.md                            # Universal cross-IDE operational doctrines (Rules 1–8)
@@ -198,11 +200,13 @@ Never fear Git merge conflicts when the engine evolves. ACE strictly isolates **
 
 ---
 
-## 🔒 Privacy & Security First
+## 🔒 Privacy, Storage & Security First
 
-- **100% Local**: All scripts, resumes, and contacts stay directly on your local computer.
-- **No Third-Party APIs Required**: Works with your local AI coding assistant.
-- **Built-in Git Safeguards**: The included `.gitignore` automatically prevents your personal resume markdown files, generated PDFs, application dossiers, and LinkedIn `Connections.csv` from ever being pushed to public GitHub repositories.
+- **Zero Heavy Prerequisites**: No Python, Node.js, or Git required. ACE runs out of the box using built-in PowerShell and Microsoft Edge or Google Chrome.
+- **Flexible Storage & Backups**: Works seamlessly inside **Microsoft OneDrive**, **Google Drive**, **Dropbox**, **iCloud**, private Git repositories, or offline local folders.
+- **1-Click Local Snapshots**: Includes `scripts/backup_workspace.ps1` to archive your personal career state to `.backups/` anytime with zero dependencies.
+- **100% Local**: All scripts, resumes, and contacts stay directly on your local computer or private cloud drive.
+- **Built-in Git Safeguards**: If Git is used, `.gitignore` automatically prevents personal resumes, generated PDFs, dossiers, and LinkedIn data from ever being pushed publicly. Rule 7 strictly locks push operations to your private repository.
 
 ---
 

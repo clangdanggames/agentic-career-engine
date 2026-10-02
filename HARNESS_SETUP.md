@@ -27,7 +27,7 @@ When configured according to this guide, your assistant can automatically:
 
 ### What Remains Strictly Locked & Protected (Safety Guarantees)
 Even with auto-approvals active, your assistant is **never** permitted to:
-- 🛑 **Push Code to Public Repositories**: Any `git push` command requires your explicit, manual approval, ensuring your personal resume, salary targets, and notes remain private (Rule 7).
+- 🛑 **Push Code to Public Repositories**: If Git is used, any `git push` command requires your explicit, manual approval, ensuring your personal resume, salary targets, and notes remain private (Rule 7). If Git is not used (e.g. running in OneDrive, Google Drive, iCloud, or local offline storage), your assistant will never attempt any git commands.
 - 🛑 **Delete Important Career Assets**: Your assistant cannot recursively delete core folders (`resumes/`, `applications/`, `stories/`, `network/`) or project root files.
 - 🛑 **Touch Files Outside Your Project**: File access is confined strictly to your workspace folder (with read-only access to your installed Chrome or Edge browser binary to generate PDFs).
 
@@ -76,13 +76,15 @@ pwsh -File scripts/sync_pipeline.ps1 *
 powershell -File scripts/scan_ats_jobs.ps1 *
 pwsh -File scripts/scan_ats_jobs.ps1 *
 
-# LinkedIn Connection Parser & Workspace Tools
+# LinkedIn Connection Parser, Engine Upgrades & Snapshots
 powershell -File scripts/parse_connections.ps1 *
 pwsh -File scripts/parse_connections.ps1 *
 powershell -File scripts/update_engine.ps1 *
 pwsh -File scripts/update_engine.ps1 *
+powershell -File scripts/backup_workspace.ps1 *
+pwsh -File scripts/backup_workspace.ps1 *
 
-# Safe Local Git Inspection & Milestone Tracking
+# Safe Local Git Inspection & Milestone Tracking (Optional: if Git is used)
 git status
 git diff*
 git log*
@@ -93,10 +95,13 @@ git commit *
 curl.exe *
 curl *
 
-# Scratch Execution & Parsing
+# Scratch Execution & Parsing (Optional: if Python is installed)
 python scratch/*
 python -c *
 ```
+
+> [!NOTE]
+> **Zero Prerequisites**: ACE core operations require only PowerShell and Microsoft Edge or Google Chrome. Git, Python, and Node.js are strictly optional capabilities. If Git or Python are not installed in your environment, simply omit those patterns—ACE functions completely without them.
 
 ### 2. Forbidden / Manually-Gated Commands
 

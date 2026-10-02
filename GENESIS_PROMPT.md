@@ -7,6 +7,11 @@ Please guide me through the following setup and onboarding protocol:
 ### Stage 1: Environment & Dependency Verification
 1. Verify that a Chromium-based browser (Microsoft Edge, Google Chrome, or Chromium) is present for PDF generation.
 2. Check available shell environment (PowerShell on Windows, Bash/Zsh on macOS/Linux).
+3. Silently inspect workspace storage and version control environment (per `workflows/storage_and_backup.md`):
+   - Check if Git is installed and whether the workspace is an initialized Git repository.
+   - Check if the workspace resides within a cloud sync folder (e.g. Microsoft OneDrive, Google Drive, Dropbox, iCloud).
+   - If neither, identify as a local-only directory.
+   *(Note: ACE core operations have zero heavy prerequisites; Git and Python are completely optional.)*
 
 ---
 
@@ -16,13 +21,26 @@ Please guide me through the following setup and onboarding protocol:
 
 ---
 
-### Stage 3: Agent Harness Permission Optimization (Optional)
+### Stage 3: Setup Preferences (Permissions & Storage Backup)
+Guide me through two quick, low-friction preference checks before our intake interview:
+
+#### Part A: Agent Harness Permission Optimization (Optional)
 Ask me neutrally if and how I would like to configure agent harness permissions (based on `HARNESS_SETUP.md`) to prevent repetitive approval pop-ups during subsequent resume compilation, integrity linting, and ATS scanning:
 - **Option A (Auto-Configuration — Easiest)**: If you support workspace configuration files (e.g. Cursor, Claude Code), offer to generate the local configuration file directly with pre-approved scripts and ATS domains.
 - **Option B (Manual Setup)**: Provide the step-by-step menu guide from `HARNESS_SETUP.md` for my specific environment.
 - **Option C (Skip for Now)**: Proceed directly without changing any permissions. (ACE functions out of the box using default prompt-by-prompt approvals; I can configure this at any time later.)
 
 Present this as an open choice without bias.
+
+#### Part B: Workspace Storage & Backup Checkpoint
+Confirm how I want to handle backups using a simple yes/no checkpoint based on what you detected in Stage 1:
+- State what storage was detected (e.g., *"OneDrive Cloud Sync detected"* or *"Local Directory detected"* or *"Git repository detected"*).
+- Ask: **"[Detected Storage] detected. Would you like to use this for backup?"**
+- **If Yes (or proceeded with default)**: Proceed with the detected storage (zero extra configuration needed!).
+- **If No (or asked to configure differently)**: Present the 3 storage models from `workflows/storage_and_backup.md` alongside your best recommendation based on what was found during environment detection:
+  1. **Private Git & GitHub** (Developer version control with commit milestones & branch tracking — *recommended first if Git is installed*).
+  2. **Cloud Drive Sync** (Automatic background sync in OneDrive, Google Drive, Dropbox, or iCloud — *recommended next if an installed cloud drive sync was detected*).
+  3. **Local Snapshots / Offline** (Local directory with on-demand 1-click zip backups via `scripts/backup_workspace.ps1`, or cancel configuring backup).
 
 ---
 
@@ -79,4 +97,4 @@ If a resume is provided or drafted:
 
 ---
 
-Greet me, verify my environment (Stage 1), inspect workspace integrity (Stage 2), and present the optional Stage 3 harness permission choices before introducing our Stage 4 intake questions!
+Greet me, verify my environment and storage (Stage 1), inspect workspace integrity (Stage 2), and present our Stage 3 preference checks (harness permissions and storage confirmation) before introducing our Stage 4 intake questions!

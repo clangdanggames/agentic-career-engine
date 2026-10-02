@@ -126,6 +126,7 @@ $coreWorkflowDocs = @(
     "compensation_estimator.md",
     "targeted_job_sourcing_queries.md",
     "project_ingestion_prompt.md",
+    "storage_and_backup.md",
     "engine_lifecycle.md"
 )
 foreach ($doc in $coreWorkflowDocs) {
