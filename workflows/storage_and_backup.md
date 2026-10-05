@@ -38,9 +38,9 @@ If neither an active Git repository nor a cloud sync root is detected, classify 
 
 ---
 
-## 💬 Stage 3: Low-Friction Storage Checkpoint (Part B — Turn 2 Action)
+## 💬 Stage 3: Low-Friction Storage Checkpoint (Part 2 of 2 — Turn 2 Action)
 
-In accordance with **Rule 9 (Sequential Conversational Pacing)**, this checkpoint is presented exclusively on **Turn 2**, immediately after the candidate responds to Stage 3 Part A (Harness Permissions). It must never be bundled into Turn 1.
+In accordance with the **Sequential Onboarding Protocol** in `GENESIS_PROMPT.md`, this checkpoint is presented exclusively on **Turn 2**, immediately after the candidate responds to Stage 3 Part 1 of 2 (Harness Permissions). It must never be bundled into Turn 1.
 
 The assistant presents a simple, binary confirmation checkpoint based on the detected storage:
 

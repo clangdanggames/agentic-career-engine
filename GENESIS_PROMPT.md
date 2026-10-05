@@ -6,19 +6,21 @@ Please guide me through the following setup and onboarding protocol.
 
 ## 🛑 Sequential Onboarding Protocol (MANDATORY)
 - **Strict Turn-by-Turn Pacing**: You MUST proceed strictly **one stage or part at a time** across sequential conversational turns. Never overwhelm the candidate by bundling multiple disparate stages, parts, or lines of questioning into a single message.
-- **Stage Progress Labeling**: Explicitly label every onboarding stage as **"Stage X of 6"** (e.g., *Stage 1 of 6*, *Stage 2 of 6*, *Stage 3 of 6*) to establish a cohesive visual hierarchy and implicitly communicate progress and expected effort.
-- **Concise Summaries**: Keep Stage 1 (Environment) and Stage 2 (Workspace Integrity) checks to a brief 2–3 line summary. Do NOT generate multi-row tables or verbose directory inventories.
+- **Stage & Part Progress Labeling**: 
+  - Explicitly label every onboarding stage as **"Stage X of 6"** (e.g., *Stage 1 of 6*, *Stage 2 of 6*, *Stage 3 of 6*) to establish a clear visual hierarchy and communicate overall progress.
+  - For multi-part stages, explicitly label the part as **"Part X of Y"** (e.g., *Part 1 of 2*, *Part 2 of 3*) to manage cognitive load and communicate expected effort within that stage.
+- **Concise Environmental Summaries**: Keep Stage 1 of 6 (Environment) and Stage 2 of 6 (Workspace Integrity) checks to a brief 2–3 line summary. Do NOT generate multi-row tables or verbose directory inventories.
 - **Turn 1 Directive**:
   1. Inspect environment, storage, and workspace integrity silently.
   2. Output a concise 2–3 line verification summary explicitly labeling **Stage 1 of 6 (Environment & Storage)** and **Stage 2 of 6 (Workspace Integrity)**.
-  3. Present **ONLY** **Stage 3 of 6: Setup Preferences (Part A: Agent Harness Permission Optimization)**.
-  4. **STOP execution and wait for my response.** Do NOT present Stage 3 Part B, Stage 4, or any intake questions in Turn 1!
-- **Sequential Follow-Up Across Subsequent Turns**:
-  - **Turn 2**: Acknowledge Part A, present **ONLY** **Stage 3 of 6: Setup Preferences (Part B: Workspace Storage & Backup Checkpoint)**, and STOP to wait for my response.
-  - **Turn 3**: Acknowledge Part B, present **ONLY** **Stage 4 of 6: Candidate Intake Interview (Part A: Identity & Target Roles)** with direct questions, and STOP to wait for my response.
-  - **Turn 4**: Acknowledge Part A, present **ONLY** **Stage 4 of 6: Candidate Intake Interview (Part B: Work Mode & Compensation Parameters)** with direct questions, and STOP to wait for my response.
-  - **Turn 5**: Acknowledge Part B, present **ONLY** **Stage 4 of 6: Candidate Intake Interview (Part C: Search Scope & Network Strategy)** with direct questions, and STOP to wait for my response.
-  - **Turn 6**: Acknowledge Part C, present **ONLY** **Stage 5 of 6: Master Resume** (Refine, Create, or Defer), and STOP to wait for my response.
+  3. Present **ONLY** **Stage 3 of 6 (Part 1 of 2: Agent Harness Permission Optimization)**.
+  4. **STOP execution and wait for my response.** Do NOT present Stage 3 Part 2, Stage 4, or any intake questions in Turn 1!
+- **Sequential Follow-Up Schedule (Turns 2–7)**:
+  - **Turn 2**: Acknowledge Part 1, present **ONLY** **Stage 3 of 6 (Part 2 of 2: Workspace Storage & Backup Checkpoint)**, and STOP to wait for my response.
+  - **Turn 3**: Acknowledge storage, present **ONLY** **Stage 4 of 6 (Part 1 of 3: Identity & Target Roles)** with direct questions, and STOP to wait for my response.
+  - **Turn 4**: Acknowledge target roles, present **ONLY** **Stage 4 of 6 (Part 2 of 3: Work Mode & Compensation Parameters)** with direct questions, and STOP to wait for my response.
+  - **Turn 5**: Acknowledge compensation, present **ONLY** **Stage 4 of 6 (Part 3 of 3: Search Scope & Network Strategy)** with concise strategy descriptions and the LinkedIn export check, and STOP to wait for my response.
+  - **Turn 6**: Acknowledge strategy, present **ONLY** **Stage 5 of 6: Master Resume** (Refine, Create, or Defer), and STOP to wait for my response.
   - **Turn 7**: **Stage 6 of 6: Calibration & Command Center Activation** (Dashboard launch and workflow tour).
 
 ---
@@ -42,7 +44,7 @@ Please guide me through the following setup and onboarding protocol.
 
 ### Stage 3 of 6: Setup Preferences (Permissions & Storage Backup)
 
-#### Part A: Agent Harness Permission Optimization (Optional) — [Turn 1 Action]
+#### Part 1 of 2: Agent Harness Permission Optimization (Optional) — [Turn 1 Action]
 Ask me neutrally if and how I would like to configure agent harness permissions (based on `HARNESS_SETUP.md`) to prevent repetitive approval pop-ups during subsequent resume compilation, integrity linting, and ATS scanning:
 - **Option A (Auto-Configuration — Easiest)**: If you support workspace configuration files (e.g. Cursor, Claude Code), offer to generate the local configuration file directly with pre-approved scripts and ATS domains.
 - **Option B (Manual Setup)**: Provide the step-by-step menu guide from `HARNESS_SETUP.md` for my specific environment.
@@ -50,8 +52,8 @@ Ask me neutrally if and how I would like to configure agent harness permissions 
 
 Present this as an open choice without bias, then **STOP execution and wait for my input**.
 
-#### Part B: Workspace Storage & Backup Checkpoint — [Turn 2 Action]
-*(Presented only after Stage 3 Part A is resolved)*
+#### Part 2 of 2: Workspace Storage & Backup Checkpoint — [Turn 2 Action]
+*(Presented only after Stage 3 Part 1 of 2 is resolved)*
 Confirm how I want to handle backups using a simple yes/no checkpoint based on what you detected in Stage 1:
 - State what storage was detected (e.g., *"OneDrive Cloud Sync detected"* or *"Local Directory detected"* or *"Git repository detected"*).
 - Ask: **"[Detected Storage] detected. Would you like to use this for backup?"**
@@ -67,8 +69,8 @@ Then **STOP execution and wait for my input**.
 
 ### Stage 4 of 6: Candidate Intake Interview
 
-#### Part A: Identity & Target Roles — [Turn 3 Action]
-*(Presented after Stage 3 Part B storage is resolved)*
+#### Part 1 of 3: Identity & Target Roles — [Turn 3 Action]
+*(Presented after Stage 3 Part 2 of 2 storage is resolved)*
 Acknowledge my storage selection, then prompt me with direct, guided questions to establish identity and target roles:
 > *"To tailor your job search parameters and personalize your command center, let's start with your identity and target roles:*
 > 1. *What is your full name, location (City, State/Country), email, phone, and LinkedIn URL?*
@@ -76,8 +78,8 @@ Acknowledge my storage selection, then prompt me with direct, guided questions t
 
 Then **STOP execution and wait for my input**. Do NOT ask about work mode, compensation, search scope, or resume preferences yet.
 
-#### Part B: Work Mode & Compensation Parameters — [Turn 4 Action]
-*(Presented after Stage 4 Part A is answered)*
+#### Part 2 of 3: Work Mode & Compensation Parameters — [Turn 4 Action]
+*(Presented after Stage 4 Part 1 of 3 is answered)*
 Acknowledge my target roles, then prompt me with direct, guided questions on work environment and compensation boundaries:
 > *"Next, let's establish your target work environment and compensation parameters:*
 > 1. *What is your preferred work mode: Fully Remote, Hybrid, or On-site? (If hybrid/onsite, which metropolitan regions?)*
@@ -85,15 +87,18 @@ Acknowledge my target roles, then prompt me with direct, guided questions on wor
 
 Then **STOP execution and wait for my input**. Do NOT ask about search scope or resume preferences yet.
 
-#### Part C: Search Scope & Network Strategy — [Turn 5 Action]
-*(Presented after Stage 4 Part B is answered)*
-Acknowledge my compensation boundaries, then prompt me with direct, guided questions on search strategy and network assets:
+#### Part 3 of 3: Search Scope & Network Strategy — [Turn 5 Action]
+*(Presented after Stage 4 Part 2 of 3 is answered)*
+Acknowledge my compensation boundaries, then concisely explain the three market search strategies and prompt me on strategy and referral assets:
 > *"Finally for intake, let's define your market search strategy and referral network:*
-> 1. *Which market search strategy do you prefer?*
->    - **Broad Market**: Scan all companies on Greenhouse, Ashby, Lever, and Workday matching your titles and salary floor.
->    - **Premier Employers**: Focus searches on established industry leaders and market frontrunners.
->    - **Targeted Wishlist**: Provide specific companies you want to track.
-> 2. *Do you have a LinkedIn `Connections.csv` export ready to place in `network/` for warm referral mapping, or should we skip this for now?"*
+>
+> **Market Search Strategies**:
+> - **Broad Market**: Sweeps all matching requisitions across Greenhouse, Ashby, Lever, and Workday above your salary floor. Ideal for casting a wide net across active hiring.
+> - **Premier Employers**: Focuses search specifically on tier-1 market leaders and established industry champions (from `companies/target_tier_list.md`). Ideal if you only want to target top-of-market organizations.
+> - **Targeted Wishlist**: Focuses strictly on a custom list of specific employers or niche sectors you provide.
+>
+> 1. *Which market search strategy would you like to start with? (Broad Market, Premier Employers, or Targeted Wishlist?)*
+> 2. *For warm referral mapping, do you already have your LinkedIn `Connections.csv` export, would you like quick 30-second instructions on how to download it from LinkedIn, or should we skip this step for now?"*
 
 Then **STOP execution and wait for my input**. Do NOT ask about resume preferences yet.
 
@@ -137,4 +142,4 @@ Then **STOP execution and wait for my input**.
 
 ---
 
-Greet me, label Stage 1 of 6 (Environment & Storage) and Stage 2 of 6 (Workspace Integrity) in a concise 2–3 line summary, present ONLY Stage 3 of 6 Part A (Agent Harness Permission Optimization), and STOP to wait for my response! Do NOT present Stage 3 Part B, Stage 4, or any intake questions yet.
+Greet me, label Stage 1 of 6 (Environment & Storage) and Stage 2 of 6 (Workspace Integrity) in a concise 2–3 line summary, present ONLY Stage 3 of 6 (Part 1 of 2: Agent Harness Permission Optimization), and STOP to wait for my response! Do NOT present Stage 3 Part 2, Stage 4, or any intake questions yet.
