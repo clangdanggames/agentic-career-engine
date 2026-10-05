@@ -5,7 +5,7 @@ Please guide me through the following setup and onboarding protocol.
 ---
 
 ## 🛑 Sequential Onboarding Protocol (MANDATORY)
-- **Strict Turn-by-Turn Pacing**: You MUST proceed strictly **one stage or step at a time** across sequential conversational turns. Never overwhelm the candidate by bundling multiple disparate stages or lines of questioning into a single message.
+- **Strict Turn-by-Turn Pacing**: You MUST proceed strictly **one stage or part at a time** across sequential conversational turns. Never overwhelm the candidate by bundling multiple disparate stages, parts, or lines of questioning into a single message.
 - **Stage Progress Labeling**: Explicitly label every onboarding stage as **"Stage X of 6"** (e.g., *Stage 1 of 6*, *Stage 2 of 6*, *Stage 3 of 6*) to establish a cohesive visual hierarchy and implicitly communicate progress and expected effort.
 - **Concise Summaries**: Keep Stage 1 (Environment) and Stage 2 (Workspace Integrity) checks to a brief 2–3 line summary. Do NOT generate multi-row tables or verbose directory inventories.
 - **Turn 1 Directive**:
@@ -15,9 +15,11 @@ Please guide me through the following setup and onboarding protocol.
   4. **STOP execution and wait for my response.** Do NOT present Stage 3 Part B, Stage 4, or any intake questions in Turn 1!
 - **Sequential Follow-Up Across Subsequent Turns**:
   - **Turn 2**: Acknowledge Part A, present **ONLY** **Stage 3 of 6: Setup Preferences (Part B: Workspace Storage & Backup Checkpoint)**, and STOP to wait for my response.
-  - **Turn 3**: Acknowledge Part B, begin **Stage 4 of 6: Candidate Intake Interview** with cohesive, grouped questions, and STOP to wait for my response.
-  - **Turn 4**: **Stage 5 of 6: Master Resume** (Refine, Create, or Defer), and wait for my response.
-  - **Turn 5**: **Stage 6 of 6: Calibration & Command Center Activation** (Dashboard launch and workflow tour).
+  - **Turn 3**: Acknowledge Part B, present **ONLY** **Stage 4 of 6: Candidate Intake Interview (Part A: Identity & Target Roles)** with direct questions, and STOP to wait for my response.
+  - **Turn 4**: Acknowledge Part A, present **ONLY** **Stage 4 of 6: Candidate Intake Interview (Part B: Work Mode & Compensation Parameters)** with direct questions, and STOP to wait for my response.
+  - **Turn 5**: Acknowledge Part B, present **ONLY** **Stage 4 of 6: Candidate Intake Interview (Part C: Search Scope & Network Strategy)** with direct questions, and STOP to wait for my response.
+  - **Turn 6**: Acknowledge Part C, present **ONLY** **Stage 5 of 6: Master Resume** (Refine, Create, or Defer), and STOP to wait for my response.
+  - **Turn 7**: **Stage 6 of 6: Calibration & Command Center Activation** (Dashboard launch and workflow tour).
 
 ---
 
@@ -63,23 +65,41 @@ Then **STOP execution and wait for my input**.
 
 ---
 
-### Stage 4 of 6: Candidate Intake Interview — [Turn 3 Action]
-*(Presented after Stage 3 preferences are completed)*
-Interview me conversationally. Group related questions cohesively into blocks rather than asking a disjointed list of separate questions:
+### Stage 4 of 6: Candidate Intake Interview
 
-1. **Identity & Target Roles**:
-   - Contact details: Full name, location (city/state), email, phone, and LinkedIn URL.
-   - Target roles: 2–4 job titles you are actively pursuing (e.g., *Senior Software Engineer, Operations Director, Product Lead*).
-2. **Work Mode & Compensation**:
-   - Location preference: Remote, Hybrid, or On-site (and any target metropolitan areas).
-   - Compensation goals: Target compensation, acceptable compensation floor, and relocation minimum (if applicable).
-3. **Search Scope & Network**:
-   - Market strategy: Broad Market (all matching ATS postings), Premier Employers (market leaders), or Targeted Wishlist (specific companies).
-   - LinkedIn Network (Optional): If you have a LinkedIn `Connections.csv`, we can parse it for warm referral paths; otherwise, skip.
+#### Part A: Identity & Target Roles — [Turn 3 Action]
+*(Presented after Stage 3 Part B storage is resolved)*
+Acknowledge my storage selection, then prompt me with direct, guided questions to establish identity and target roles:
+> *"To tailor your job search parameters and personalize your command center, let's start with your identity and target roles:*
+> 1. *What is your full name, location (City, State/Country), email, phone, and LinkedIn URL?*
+> 2. *What are 2–4 job titles you are actively pursuing (e.g., Senior Software Engineer, Product Manager, Director of Operations)?"*
+
+Then **STOP execution and wait for my input**. Do NOT ask about work mode, compensation, search scope, or resume preferences yet.
+
+#### Part B: Work Mode & Compensation Parameters — [Turn 4 Action]
+*(Presented after Stage 4 Part A is answered)*
+Acknowledge my target roles, then prompt me with direct, guided questions on work environment and compensation boundaries:
+> *"Next, let's establish your target work environment and compensation parameters:*
+> 1. *What is your preferred work mode: Fully Remote, Hybrid, or On-site? (If hybrid/onsite, which metropolitan regions?)*
+> 2. *What are your compensation parameters: target compensation, acceptable compensation floor (minimum), and relocation minimum (if applicable)?"*
+
+Then **STOP execution and wait for my input**. Do NOT ask about search scope or resume preferences yet.
+
+#### Part C: Search Scope & Network Strategy — [Turn 5 Action]
+*(Presented after Stage 4 Part B is answered)*
+Acknowledge my compensation boundaries, then prompt me with direct, guided questions on search strategy and network assets:
+> *"Finally for intake, let's define your market search strategy and referral network:*
+> 1. *Which market search strategy do you prefer?*
+>    - **Broad Market**: Scan all companies on Greenhouse, Ashby, Lever, and Workday matching your titles and salary floor.
+>    - **Premier Employers**: Focus searches on established industry leaders and market frontrunners.
+>    - **Targeted Wishlist**: Provide specific companies you want to track.
+> 2. *Do you have a LinkedIn `Connections.csv` export ready to place in `network/` for warm referral mapping, or should we skip this for now?"*
+
+Then **STOP execution and wait for my input**. Do NOT ask about resume preferences yet.
 
 ---
 
-### Stage 5 of 6: Master Resume (Refine, Create, or Defer) — [Turn 4 Action]
+### Stage 5 of 6: Master Resume (Refine, Create, or Defer) — [Turn 6 Action]
 Offer me three flexible options:
 - **Option A (Refine Existing Resume)**: If I have a resume, I can paste the text or provide a file path. Standardize and refine it into `resumes/[My_Name]_Resume_Master.md` using modern formatting and action-driven metrics.
 - **Option B (Create from Scratch)**: If I do not have a resume ready, interview me conversationally about my recent roles, key accomplishments, skills, and education, and author a brand-new master resume.
@@ -91,9 +111,11 @@ If a resume is provided or drafted:
 2. Validate that it fits strictly on 1 page:
    `powershell -ExecutionPolicy Bypass -File scripts/check_pdf_pages.ps1 -Path resumes/[My_Name]_Resume_Master.pdf`
 
+Then **STOP execution and wait for my input**.
+
 ---
 
-### Stage 6 of 6: Calibration & Command Center Activation — [Turn 5 Action]
+### Stage 6 of 6: Calibration & Command Center Activation — [Turn 7 Action]
 1. Update `workflows/ats_search_config.json` with my target roles, location preferences, compensation parameters, and search scope.
 2. Initialize `applications/ledger.json` with my candidate metadata.
 3. Build my personalized career command center in `DASHBOARD.md` (leaving `README.md` pristine as the permanent project documentation):
