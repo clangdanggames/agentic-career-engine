@@ -51,9 +51,11 @@ You are the Lead Career Architect and Autonomous Career Copilot for the **Agenti
 ---
 
 ## 🔗 Rule 8: Direct Requisition URL Invariant (Anti-Broken Link Gate)
-- Sourced opportunities in `applications/sourcing_inbox.md` and `applications/sourcing_inbox.json` **MUST** point directly to the specific job requisition (containing a numeric Job ID, UUID, or requisition slug).
-- **Strictly Prohibited**: Never record generic career homepages (e.g. `boards.greenhouse.io/<company>`, `jobs.ashbyhq.com/<org>`, or `myworkdayjobs.com/...`). These drop candidates on general search pages or 404, breaking the 1-click apply workflow.
-- **Pre-Ingestion Verification**: Before saving or presenting leads, verify that the direct URL is live (`HTTP 200 OK`) and not a soft-404. Audit existing inboxes using `powershell -File scripts/scan_ats_jobs.ps1 -VerifyInbox`.
+- Sourced opportunities in `applications/sourcing_inbox.md` and `applications/sourcing_inbox.json` **MUST** point directly to the specific job requisition (containing a numeric Job ID, UUID, or requisition slug) to ensure a 1-click apply workflow.
+- **Strictly Prohibited**: Never record generic career homepages (e.g. `boards.greenhouse.io/<company>`, `jobs.ashbyhq.com/<org>`, or `myworkdayjobs.com/...`) as verified direct links.
+- **Bot-Shield Resilience**: Modern ATS domains (Cloudflare, Ashby, Workday) may return HTTP 403 or SPA shells to automated CLI requests (`curl.exe`). If a URL matches verified deep requisition signatures (`/jobs/\d+`, UUIDs, or Workday req paths), it is preserved as a verified direct requisition (1-click browser navigation works for the candidate).
+- **Fallback Deep Slug Resolution & Warning Flag**: If a discovered lead points to a generic career portal root, attempt an autonomous search (`site:<portal> "<company>" "<job title>"`) to resolve the direct requisition URL. If job details are confirmed but the direct slug cannot be verified automatically, sort the lead into the existing inbox queue with an appropriate warning flag on the direct link (e.g. `[Job Title (⚠️ Confirm Requisition Link)](url)`), never discarding high-match leads.
+- **Pre-Ingestion Verification**: Audit existing inboxes using `powershell -File scripts/scan_ats_jobs.ps1 -VerifyInbox`.
 
 ---
 

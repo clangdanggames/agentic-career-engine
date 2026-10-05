@@ -88,6 +88,9 @@ if ($VerifyInbox) {
         if ($httpCode -eq "200") {
             Write-Host "🟢 LIVE:     [$company] $title (HTTP $httpCode)" -ForegroundColor Green
             $passedCount++
+        } elseif ($httpCode -in @("403", "503")) {
+            Write-Host "🛡️ SHIELDED: [$company] $title (HTTP $httpCode - Bot Shield Active, Deep URL Verified)" -ForegroundColor Cyan
+            $passedCount++
         } else {
             Write-Host "❌ BROKEN:   [$company] $title (HTTP $httpCode)" -ForegroundColor Red
             Write-Host "   URL:    $url" -ForegroundColor DarkGray

@@ -50,9 +50,12 @@ For each discovered job posting:
      - *Ashby*: `https://jobs.ashbyhq.com/<org-slug>/<uuid>` (confirm exact slug—e.g. `wispr-flow`, `ease-health`).
      - *Lever*: `https://jobs.lever.co/<company>/<uuid>`.
      - *Workday*: `https://<tenant>.myworkdayjobs.com/en-US/<board>/job/<title>_<req-id>` (requires specific tenant like `wd12` / `wd108` and requisition ID).
-2. **Inline HTTP 200 Pre-Ingestion Gate**:
-   - Before qualifying or saving a lead, verify that the direct requisition URL is live and resolves to `HTTP 200 OK` (using `read_url_content`, `curl.exe`, or browser inspection).
-   - If the URL returns 404, redirects to a root career portal, or returns a generic title (e.g. `<title>Jobs</title>`), resolve the exact deep link or discard the lead.
+2. **Resilient Direct Link Verification Gate**:
+   - **Live HTTP Check**: Check the direct requisition URL using `read_url_content`, `curl.exe`, or browser inspection.
+   - **Bot-Shield Resilience (HTTP 403 / 503 / SPA Shells)**: Platforms protected by Cloudflare or WAF (e.g. Ashby, Workday) may return HTTP 403 or client-side empty SPA shells to automated CLI requests. If the URL matches verified deep requisition signatures (`/jobs/\d+`, UUIDs, or Workday `/job/` paths), preserve it as a verified direct requisition (1-click browser navigation works for the candidate).
+   - **Generic Link Resolution (Fallback Search)**: If a search lead points only to a generic career root, attempt an autonomous search (`site:<ats_domain> "<company>" "<job title>"`) to resolve the deep URL.
+   - **Zero High-Match Discard**: If job details and match criteria are confirmed but the specific direct requisition slug cannot be verified automatically, sort the lead into the existing Sourcing Inbox queue with a warning flag on the link (e.g. `[Job Title (⚠️ Confirm Requisition Link)](url)`). Never discard a high-match opportunity solely due to automated link verification challenges.
+   - **True 404s**: If a URL returns a confirmed 404 and the search snippet is stale, discard or mark closed.
 3. **Identify Compensation**:
    - If salary is stated in the posting, record the exact base salary range.
    - If salary is unlisted, estimate using the [4-Factor Compensation Estimator](../../../workflows/compensation_estimator.md) based on company tier and title.
@@ -72,7 +75,7 @@ For each discovered job posting:
 
 ### Step 4: Update Sourcing Inbox
 1. Append all qualified leads ($\text{Fit Score} \ge 65\%$) with verified direct requisition URLs to [`applications/sourcing_inbox.json`](../../../applications/sourcing_inbox.json).
-2. Regenerate [`applications/sourcing_inbox.md`](../../../applications/sourcing_inbox.md) with a ranked visual table sorted by **Fit Score** and **Likelihood of Success**. Ensure all links point directly to the verified requisition URL with Requisition ID noted where available.
+2. Regenerate [`applications/sourcing_inbox.md`](../../../applications/sourcing_inbox.md) with a ranked visual table sorted by **Fit Score** and **Likelihood of Success**. Ensure links point directly to the verified requisition URL (or include `⚠️ Confirm Requisition Link` flag if direct slug was unresolvable), with Requisition ID noted where available.
 
 ### Step 5: Report Highlights to the User
 Present the top 3–5 highest-scoring opportunities in your response, highlighting:

@@ -121,13 +121,16 @@ The assistant reviews the JD against the candidate's Master Resume, Reserve Bank
 - Check if warm 1st-degree contacts exist in [`network/contacts_ledger.md`](../network/contacts_ledger.md).
 
 #### 3. Step 3: Tailoring, Conversational Review Gate & PDF Compilation (7 mins)
-- **3A. Tailored Markdown Generation & Integrity Lint (4 mins)**:
+- **3A. Tailored Markdown Generation & Integrity Lint Gate (4 mins)**:
   - Assistant creates the dossier folder: `applications/YYYY-MM-DD_[company]_[reqid]/` (falling back to `_[role_slug]/` if ReqID is absent, or appending `_2` on collision).
   - **Clean-Room Fork**: Assistant copies the candidate's pristine Master Resume (`resumes/[Candidate]_Resume_Master.md`) as the starting baseline (Rule 4). *Never copy or iterate off a past application dossier.*
   - Customizes by prioritizing matching bullets, swapping in 1–2 bullets from `resumes/modular_reserve_bank.md`, and tuning Summary and Skills to match the JD.
   - Generates tailored resume: `[Candidate]_Resume_[Company]_[ReqID].md`.
-  - Runs integrity linter: `powershell -File scripts/lint_resume_integrity.ps1 -TailoredResumePath ...`
-  - Generates [`application_form_guide.md`](../applications/dossier_template/application_form_guide.md) to pre-fill ATS portal questions.
+  - **Mandatory Integrity Linter Pre-Condition**: Run the integrity linter:
+    `powershell -File scripts/lint_resume_integrity.ps1 -TailoredResumePath ...`
+    The linter **MUST pass with 0 errors** before proceeding to PDF compilation. If any unverified competency token or skill is flagged, resolve it by swapping verified bullets from `resumes/modular_reserve_bank.md` or asking the candidate—**never** proceed to PDF compilation with unverified competencies.
+  - Generates [`application_form_guide.md`](../applications/dossier_template/application_form_guide.md) to pre-fill ATS portal questions:
+    - Pre-populates Field 9 with the candidate's current configured baseline (target base and floor dynamically read from `workflows/ats_search_config.json` or `applications/ledger.json`) alongside an analytically calibrated recommendation for this specific role (based on JD ranges, company tier benchmarks, candidate match tier, and portal text/numeric formatting strategy).
 - **3B. Conversational Calibration Gate (2 mins)**:
   Before launching browser PDF rendering, the assistant presents a 3-point check in chat:
   1. *Foregrounded Skills & Depth Check*: Confirms top highlighted skills are Level 1 (Hands-on Mastery) that the candidate is confident defending in technical screens.
@@ -135,6 +138,7 @@ The assistant reviews the JD against the candidate's Master Resume, Reserve Bank
   3. *Page Fit Check*: Confirms estimated line count is calibrated for strict 1-page output.
   *Candidate confirms ("Approved, render PDF") or requests a bullet swap from the Reserve Bank.*
 - **3C. 1-Page PDF Compilation & Verification (1 min)**:
+  - **Pre-Condition Gate**: Verify that the Step 3A integrity linter passed with 0 errors and candidate confirmed Step 3B calibration.
   - Compiles strict 1-page PDF: `powershell -File scripts/render_resume.ps1 -MarkdownPath ...`
   - Validates page count: `powershell -File scripts/check_pdf_pages.ps1 -Path ...`
 

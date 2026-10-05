@@ -22,8 +22,22 @@
 | **6** | **LinkedIn URL** | Optional | URL | `[Candidate LinkedIn URL]` |
 | **7** | **Work Authorization** | **Yes** | Select / Boolean | `Authorized to work in [Country] without sponsorship` |
 | **8** | **Location / State** | **Yes** | Autocomplete | `[City, State / Metro Region]` |
-| **9** | **Salary Expectations** | **Yes** | Number / Text | `$[Target Base, e.g. 150000]` *(Aligns with floor/target from `workflows/ats_search_config.json`)* |
+| **9** | **Salary Expectations** | **Yes** | Number / Text | **Configured Target**: `$[Target Base from ats_search_config.json]` *(Floor: `$[Floor]`)*<br>**Role Recommendation**: `$[Calibrated Target, e.g. 165000]` *(See strategy below)* |
 | **10** | **Custom Screening Question** | Optional | Text | *"[Pre-drafted concise answer highlighting verified Tier 1/2 experience]"* |
+
+---
+
+## 💰 Role-Calibrated Compensation Strategy
+
+*Use this analysis to balance compensation upside against ATS automated screening risk:*
+
+- **Configured Candidate Baseline**: Target Base: `$[Target Base from workflows/ats_search_config.json]` | Acceptable Floor: `$[Floor]` *(Remains editable at any time)*.
+- **Posting Compensation**: `$[Stated JD Range or "Unlisted (Estimated $Xk–$Yk via workflows/compensation_estimator.md)"]`
+- **Role-Calibrated Recommendation**: `$[Calculated Target, e.g. 165000]`
+  - **Strategic Positioning**: *[Analytically derived based on candidate fit tier (e.g. 70th percentile of posted band for strong Tier 1 matches; midpoint for transferable Tier 2 matches), company tier from target_tier_list.md, and local pay transparency benchmarks to maximize upside without triggering automated ATS budget cutoffs].*
+  - **Portal Formatting Tactics**:
+    - *If field permits text*: Enter `"Flexible / Competitive for level"` or `"Open to discuss (targeting $[Recommended] based on scope)"`.
+    - *If field is numeric-only*: Enter `[Recommended Number, e.g. 165000]`.
 
 ---
 
