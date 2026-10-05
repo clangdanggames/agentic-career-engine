@@ -6,10 +6,11 @@ Pair your job search with an autonomous AI coding assistant to automate ATS disc
 
 ## 📋 3-Step Setup
 
-### Step 1: Open Your AI Assistant
-Open your preferred AI assistant. If you don't have one installed:
-- **[Google Antigravity](https://antigravity.google)** (Desktop GUI application)
-- **[Cursor](https://cursor.com)** (Desktop AI editor & assistant)
+### Step 1: Launch an AI Assistant
+If you don't already have an AI desktop assistant installed, download and install one of the following:
+- **[Google Antigravity](https://antigravity.google/product/antigravity-2)** (Free desktop application with agentic workflows)
+- **[Cursor](https://cursor.com)** (Popular AI-powered desktop editor)
+Launch the application to get started.
 
 ### Step 2: Open an Empty Folder
 1. Create a new folder on your computer (e.g., `Career` or `JobHunt`).
