@@ -3,8 +3,8 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![Engine: Lightweight](https://img.shields.io/badge/Engine-Lightweight-success.svg)](#-privacy-storage--security-first)
 [![Zero Hallucinations](https://img.shields.io/badge/Guardrails-Zero--Hallucination-emerald.svg)](#-pillar-2-precision-engineering--factual-guardrails)
-[![Strict 1-Page PDF](https://img.shields.io/badge/PDF%20Engine-Strict%201--Page-orange.svg)](#-pillar-2-precision-engineering--factual-guardrails)
-[![AI Copilot](https://img.shields.io/badge/AI%20Copilot-Antigravity%20%7C%20Cursor%20%7C%20Claude-purple.svg)](HARNESS_SETUP.md)
+[![Strict 1-Page PDF](https://img.shields.io/badge/PDF-Strict%201--Page-orange.svg)](#-pillar-2-precision-engineering--factual-guardrails)
+[![AI Copilot: Adaptable](https://img.shields.io/badge/AI%20Copilot-Adaptable-purple.svg)](HARNESS_SETUP.md)
 [![Privacy: 100% Local](https://img.shields.io/badge/Privacy-100%25%20Local-blueviolet.svg)](#-privacy-storage--security-first)
 
 > **The open-source, agent-assisted career command center.**  
@@ -28,10 +28,11 @@ You can initialize your personalized career command center in three simple steps
 
 ### 1. Launch an AI Assistant
 If you don't already have an AI desktop assistant installed, download and install one of the following:
-- **[Google Antigravity](https://antigravity.google/product/antigravity-2)** (Free desktop application with agentic workflows)
-- **[Cursor](https://cursor.com)** (Popular AI-powered desktop editor)
+- **[Google Antigravity](https://antigravity.google/product/antigravity-2)** (Free desktop application with autonomous agent workflows)
+- **[Claude Desktop](https://claude.ai/download)** (Approachable desktop workspace with Cowork agent capabilities)
 
-Launch the app, select **File $\rightarrow$ Open Folder**, and open any empty folder (e.g. `Career` or `JobHunt` on your desktop, OneDrive, or Google Drive).
+Launch the app, select **File $\rightarrow$ Open Folder**, and open any empty folder (e.g. `Career` or `JobHunt` on your desktop, OneDrive, or Google Drive).  
+*(Developers and power users can also run ACE inside Cursor, Windsurf, or Claude Code).*
 
 ### 2. Run the Genesis Setup Prompt
 Copy the prompt below, paste it into your assistant's chat panel, and press **Enter**:

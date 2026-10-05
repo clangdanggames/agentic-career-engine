@@ -8,9 +8,10 @@ Pair your job search with an autonomous AI coding assistant to automate ATS disc
 
 ### Step 1: Launch an AI Assistant
 If you don't already have an AI desktop assistant installed, download and install one of the following:
-- **[Google Antigravity](https://antigravity.google/product/antigravity-2)** (Free desktop application with agentic workflows)
-- **[Cursor](https://cursor.com)** (Popular AI-powered desktop editor)
-Launch the application to get started.
+- **[Google Antigravity](https://antigravity.google/product/antigravity-2)** (Free desktop application with autonomous agent workflows)
+- **[Claude Desktop](https://claude.ai/download)** (Approachable desktop workspace with Cowork agent capabilities)
+Launch the application to get started.  
+*(Developers and power users can also run ACE inside Cursor, Windsurf, or Claude Code).*
 
 ### Step 2: Open an Empty Folder
 1. Create a new folder on your computer (e.g., `Career` or `JobHunt`).
