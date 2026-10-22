@@ -62,7 +62,7 @@ When evaluating an unlisted role, verify your calculation with a quick search qu
 
 Calibrate your personal search thresholds in `workflows/ats_search_config.json`:
 
-- 🟢 **Prime Target**: Estimated Base $\ge$ Your Target ($150,000+)
-- 🟡 **Acceptable Pipeline Fill**: Estimated Base between Floor and Target ($100,000 – $149,000)
-- 🔴 **Below Floor**: Skip unless exceptional equity, mission alignment, or lifestyle flexibility.
-- ✈️ **Relocation Threshold**: Requires relocation package + compensation premium.
+- 🟢 **Prime Target**: Estimated Base $\ge$ Configured Target ($[\text{Target}]+$)
+- 🟡 **Acceptable Pipeline Fill**: Estimated Base between Floor and Target ($[\text{Floor}] - \$[\text{Target}-1]$)
+- 🔴 **Below Floor**: Estimated Base $< \$[\text{Floor}]$. Skip unless exceptional equity, mission alignment, or lifestyle flexibility.
+- ✈️ **Relocation Threshold**: Requires relocation package + compensation premium ($[\text{Relocation Floor}]+$).

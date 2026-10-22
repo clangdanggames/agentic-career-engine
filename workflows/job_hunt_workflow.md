@@ -151,6 +151,20 @@ The assistant reviews the JD against the candidate's Master Resume, Reserve Bank
 
 ---
 
+## 📞 Post-Submission Protocol: Recruiter Screen & Compensation Calibration
+
+Once an application advances from `Applied` to initial recruiter outreach:
+
+1. **Atomic State Advance**: When the candidate confirms a scheduled screen, the assistant updates `applications/ledger.json` (`status: "screen_scheduled"`) and synchronizes `DASHBOARD.md` immediately per Rule 5.
+2. **Interview Prep Generation**: Prepare `applications/YYYY-MM-DD_[company]_[reqid]/interview_prep.md` tailored with company priorities, STAR stories, and strategic reverse questions.
+3. **The "Deflect & Solicit" Compensation Sequence**:
+   - In the initial recruiter screen, recruiters frequently probe for salary expectations to verify budget alignment.
+   - **Protocol**: Solicit the employer's approved band first (*"Given that [Company] has established bands for this role and level, what is the budgeted target salary range?"*).
+   - If required to anchor first, quote your calibrated target range (*"$[Target Min] to $[Target Max] base plus equity"*), emphasizing that total package and mission alignment provide flexibility.
+   - See [`workflows/compensation_estimator.md`](compensation_estimator.md) and [`applications/dossier_template/interview_prep.md`](../applications/dossier_template/interview_prep.md) for full verbal scripts.
+
+---
+
 ## ⏰ Sustainable Energy & Time Budgeting
 
 To maintain steady momentum and avoid job search burnout:

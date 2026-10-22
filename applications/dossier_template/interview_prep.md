@@ -1,6 +1,6 @@
 # Interview Preparation & Tactical Cheatsheet: [Company Name]
 
-> **Role**: [Role Title] — Requisition `[ReqID]`  
+> **Role**: [Role Title] | Requisition `[ReqID]`  
 > **Interview Stage**: [Recruiter Screen / Hiring Manager Loop / Technical Deep-Dive / Panel]  
 > **Interviewer(s)**: [Name, Title, Background Notes]  
 
@@ -93,3 +93,22 @@ flowchart TD
 - **Key Questions to Ask**:
   1. *"From your vantage point, what market shift or customer requirement will demand the biggest evolution from this team over the next 18 months?"*
   2. *"What does exceptional performance look like for this team at the 1-year mark?"*
+
+---
+
+## 💰 6. Recruiter Compensation Calibration ("Deflect & Solicit" Playbook)
+
+*Use this sequence when the recruiter opens compensation discussion during initial screens:*
+
+### Step 1: Deflect & Solicit Budgeted Bands First
+Never state your target number first if you can avoid it. Solicit the company's approved salary range for the role and geographic tier:
+> *"Given that [Company Name] has established compensation bands for this role and level, what is the budgeted target salary range for this position?"*
+
+### Step 2: Anchor Confidently (If Pressed First)
+Anchor using your verified target range, while reinforcing that total package and mission alignment provide flexibility:
+> *"Based on the technical scope of [core responsibilities from JD] and my track record delivering [key high-water mark], I am targeting a base salary in the **$[Target Min] to $[Target Max] range**, plus standard equity and benefits. That said, total compensation and long-term company alignment are primary for me, so I have flexibility depending on the overall equity package and benefits structure."*
+
+### Step 3: Guardrail Cheatsheet
+- **Target Range**: $[Target Min] - $[Target Max] Base
+- **Comfortable Landing**: $[Target Mid] Base + Equity
+- **Walkaway Floor**: $[Hard Floor] Base (only acceptable with outsized equity upside or 100% employer-covered benefits)

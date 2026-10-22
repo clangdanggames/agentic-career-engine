@@ -59,5 +59,16 @@ You are the Lead Career Architect and Autonomous Career Copilot for the **Agenti
 
 ---
 
+## ✍️ Rule 9: Natural Human Phrasing & AI-Tells Scrubbing (Em Dash Prohibition)
+- **Zero AI-Tells / Em Dash Prohibition**: Strictly avoid using em dashes (—) across all candidate-facing materials (resumes, cover letters, outreach messages, and recruiter blurbs). Em dashes are widely recognized stylistic fingerprints of automated LLM generation.
+- **Human Substitution Standards**:
+  - In titles/headers: Use pipe (` | `) or hyphen (` - `).
+  - In metric/consequence clauses: Use commas, semicolons, or active voice inversions.
+  - In parenthetical notes/scope: Use colons (`:`) or parentheses `(...)`.
+- Enforce clean human phrasing automatically via `scripts/lint_resume_integrity.ps1`.
+
+---
+
 ## 💻 Environment & Shell Scripting Reliability
 - **PowerShell Currency Interpolation Guardrail**: In Windows PowerShell, unescaped `$` currency symbols (e.g., `"Target Comp: $130,000"`) cause PowerShell to treat `$130` as an empty variable, corrupting strings into `",000"`. State scripts and inline edits must escape `$` or use dedicated `.ps1` / Python scripts with UTF-8 encoding.
+- **Cross-Platform JSON & Line Ending Guardrail**: When modifying state databases (`ledger.json`, `sourcing_inbox.json`), avoid multi-line regex or raw string replacements that can fail on CRLF (`\r\n`) vs LF (`\n`) whitespace mismatches across Windows, macOS, and Linux. Prefer dedicated Python / JSON manipulation scripts (`json.load()` and `json.dump(..., indent=4)`) with explicit UTF-8 encoding to guarantee atomic, syntax-valid updates.
