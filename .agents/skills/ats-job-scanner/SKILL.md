@@ -43,6 +43,7 @@ Run searches using `search_web` across the ATS query categories constructed from
 For each discovered job posting:
 1. **Extract Metadata & Direct Requisition URL (MANDATORY INVARIANT)**:
    - **Job Title**, **Company**, **Location** (Remote / Hybrid / Onsite), **Date Discovered**.
+   - **Schema.org JSON-LD Extraction**: Modern ATS platforms (Ashby, Greenhouse, Lever) embed `<script type="application/ld+json">` containing structured `JobPosting` schema in their initial HTML payload. Extract this block first: it provides exact base salary ranges (`baseSalary.value.minValue` and `maxValue`), location type (`jobLocationType: TELECOMMUTE`), official job title, and hiring organization with zero regex fragility or client-side rendering failures.
    - **Direct Requisition URL**: The URL **MUST** be a deep link to the individual job posting containing the unique requisition ID or UUID.
      > [!CAUTION]
      > **Zero Generic Portal Links**: Never record root career homepages (e.g. `boards.greenhouse.io/<company>`, `jobs.ashbyhq.com/<org>`, or `myworkdayjobs.com/...`). These drop candidates on general search pages or 404, breaking the 1-click apply workflow.

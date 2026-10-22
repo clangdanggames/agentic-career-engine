@@ -1,15 +1,15 @@
-# Cover Letter: [Role Title] — [Company Name]
+# Cover Letter: [Role Title] | [Company Name]
 
 **Candidate**: [Candidate Name]  
 **Location**: [City, State / Remote] | [Email] | [Phone] | [LinkedIn Profile URL]  
-**Target Role**: [Role Title] — Requisition `[ReqID / Link]`  
+**Target Role**: [Role Title] | Requisition `[ReqID / Link]`  
 **Company**: [Company Name]  
 
 ---
 
 Dear [Hiring Manager / Team Name] Leadership,
 
-When I read the core mission for the [Role Title] role at [Company Name]—*"[Quote 1 high-impact priority or challenge directly from the job description]"*—it immediately resonated with the work I find most energizing. Throughout my career in [Candidate Primary Discipline / Industry], solving [core operational, technical, or strategic problem] and building scalable, reliable solutions has been my central focus.
+When I read the core mission for the [Role Title] role at [Company Name]: *"[Quote 1 high-impact priority or challenge directly from the job description]"*, it immediately resonated with the work I find most energizing. Throughout my career in [Candidate Primary Discipline / Industry], solving [core operational, technical, or strategic problem] and building scalable, reliable solutions has been my central focus.
 
 Most recently at [Current or Previous Organization], I led [Major Initiative / Project], delivering [Quantifiable Metric 1, e.g. 35% reduction in cycle times, $1.2M in annual savings, or 99.99% uptime]. I understand the discipline required to align cross-functional teams, navigate complex constraints, and execute against aggressive deadlines.
 

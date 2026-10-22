@@ -17,14 +17,14 @@
 
 ## ✉️ Sent Communications & Outreach Log
 
-### Touchpoint 1: [YYYY-MM-DD] — [Internal Referral Request / Application Note]
+### Touchpoint 1: [YYYY-MM-DD] | [Internal Referral Request / Application Note]
 - **Recipient**: [Name, Title]
 - **Channel**: [LinkedIn InMail / Email / Slack Community]
 - **Message Sent**:
   > *"[Paste exact message sent to keep your communication history organized and context-ready]"*
 - **Outcome / Response**: [e.g. Referred via internal portal / Awaiting reply]
 
-### Touchpoint 2: [YYYY-MM-DD] — [Follow-Up or Thank You Note]
+### Touchpoint 2: [YYYY-MM-DD] | [Follow-Up or Thank You Note]
 - **Recipient**: [Name, Title]
 - **Channel**: [Email / LinkedIn]
 - **Message Sent**:

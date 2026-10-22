@@ -2,10 +2,10 @@
 .SYNOPSIS
     Integrity Linter for Tailored Resumes against Master Resume and Reserve Bank.
 .DESCRIPTION
-    Enforces Operational Rule 3 (The Closed-Set Whitelist Rule):
+    Enforces Operational Rule 3 (The Closed-Set Whitelist Rule) and Rule 9 (Em Dash Prohibition):
     Verifies that no unverified technical tools, certifications, platforms, or buzzwords
     appear in a tailored resume unless they are explicitly present in the candidate's
-    Master Resume or Modular Reserve Bank.
+    Master Resume or Modular Reserve Bank, and enforces zero AI em dashes.
 .PARAMETER TailoredResumePath
     Path to the tailored markdown resume to verify.
 .PARAMETER MasterResumePath
@@ -81,7 +81,7 @@ if (Test-Path $resolvedReserve) {
 }
 
 Write-Host "==========================================================" -ForegroundColor Cyan
-Write-Host "🛡️  ACE RESUME INTEGRITY LINTER (Rule 3 Whitelist Check)" -ForegroundColor Cyan
+Write-Host "[*] ACE RESUME INTEGRITY LINTER (Rule 3 Whitelist & Rule 9 AI Scrub)" -ForegroundColor Cyan
 Write-Host "Target:   $(Split-Path $TailoredResumePath -Leaf)" -ForegroundColor Cyan
 Write-Host "Master:   $(Split-Path $MasterResumePath -Leaf)" -ForegroundColor Cyan
 if ($hasReserve) {
@@ -146,7 +146,7 @@ function Extract-CompetencyTokens {
 $skills = Extract-CompetencyTokens -content $tailoredText
 $unverifiedSkills = [System.Collections.Generic.List[string]]::new()
 
-Write-Host "`nVerifying $($skills.Count) competency tokens against Master Resume whitelist..." -ForegroundColor Yellow
+Write-Host "`n[*] Verifying $($skills.Count) competency tokens against Master Resume whitelist..." -ForegroundColor Yellow
 
 foreach ($skill in $skills) {
     $parts = $skill -split "/"
@@ -186,12 +186,17 @@ foreach ($m in $depthTagMatches) {
     $leakedTags.Add($m.Value)
 }
 
-# 5. Report Findings & Determine Status
+# 5. Check for AI Stylistic Fingerprints (Rule 9: Em Dash Prohibition)
+$emDashChar = [string][char]0x2014
+$emDashMatches = [regex]::Matches($tailoredText, $emDashChar)
+$emDashCount = $emDashMatches.Count
+
+# 6. Report Findings & Determine Status
 $hasFailure = $false
 
 if ($hallucinatedFound.Count -gt 0) {
     $hasFailure = $true
-    Write-Host "`n❌ CRITICAL: Unverified JD-backfilled buzzwords detected:" -ForegroundColor Red
+    Write-Host "`n[!] CRITICAL: Unverified JD-backfilled buzzwords detected:" -ForegroundColor Red
     foreach ($h in ($hallucinatedFound | Select-Object -Unique)) {
         Write-Host "   - $h" -ForegroundColor Red
     }
@@ -199,7 +204,7 @@ if ($hallucinatedFound.Count -gt 0) {
 
 if ($suspiciousFamiliar.Count -gt 0) {
     $hasFailure = $true
-    Write-Host "`n❌ VIOLATION: Unverified skills tagged with '(Familiar)' or '(Proficient)':" -ForegroundColor Red
+    Write-Host "`n[!] VIOLATION: Unverified skills tagged with '(Familiar)' or '(Proficient)':" -ForegroundColor Red
     foreach ($f in ($suspiciousFamiliar | Select-Object -Unique)) {
         Write-Host "   - $f" -ForegroundColor Red
     }
@@ -207,7 +212,7 @@ if ($suspiciousFamiliar.Count -gt 0) {
 
 if ($unverifiedSkills.Count -gt 0) {
     $hasFailure = $true
-    Write-Host "`n❌ VIOLATION: The following competencies/skills do NOT exist in the Master Resume whitelist:" -ForegroundColor Red
+    Write-Host "`n[!] VIOLATION: The following competencies/skills do NOT exist in the Master Resume whitelist:" -ForegroundColor Red
     foreach ($u in ($unverifiedSkills | Select-Object -Unique)) {
         Write-Host "   - $u" -ForegroundColor Red
     }
@@ -215,18 +220,25 @@ if ($unverifiedSkills.Count -gt 0) {
 
 if ($leakedTags.Count -gt 0) {
     $hasFailure = $true
-    Write-Host "`n❌ VIOLATION: Internal evaluation depth tags detected in candidate-facing resume:" -ForegroundColor Red
+    Write-Host "`n[!] VIOLATION: Internal evaluation depth tags detected in candidate-facing resume:" -ForegroundColor Red
     foreach ($lt in ($leakedTags | Select-Object -Unique)) {
         Write-Host "   - $lt" -ForegroundColor Red
     }
     Write-Host "   Internal depth classifications ([Level 1/2/3]) must remain internal to evaluation notes and never appear in public resume text." -ForegroundColor Yellow
 }
 
+if ($emDashCount -gt 0) {
+    $hasFailure = $true
+    Write-Host "`n[!] STYLISTIC VIOLATION: $emDashCount em dash character(s) detected in candidate-facing resume:" -ForegroundColor Red
+    Write-Host "   Em dashes are prominent stylistic fingerprints of AI-generated text." -ForegroundColor Yellow
+    Write-Host "   Action: Replace with a comma, colon, pipe, hyphen, or rewrite the sentence to maintain human, punchy phrasing." -ForegroundColor Yellow
+}
+
 if ($hasFailure) {
-    Write-Host "`n🚫 INTEGRITY LINT FAILED: Rule 3 (Closed-Set Whitelist & Depth Calibration) violated." -ForegroundColor Red
-    Write-Host "Action Required: Remove or replace these unverified items/internal tags with authentic Master Resume capabilities before proceeding to PDF compilation or submission.`n" -ForegroundColor Red
+    Write-Host "`n[-] INTEGRITY LINT FAILED: Rule 3 (Whitelist) or Rule 9 (Em Dash Prohibition) violated." -ForegroundColor Red
+    Write-Host "Action Required: Remove or replace these unverified items/internal tags/em dashes before proceeding to PDF compilation or submission.`n" -ForegroundColor Red
     exit 1
 } else {
-    Write-Host "`n✅ INTEGRITY LINT PASSED: All competency tokens strictly verified in Master Resume whitelist and zero internal tags leaked.`n" -ForegroundColor Green
+    Write-Host "`n[+] INTEGRITY LINT PASSED: All competency tokens strictly verified in Master Resume whitelist, zero internal tags leaked, and zero AI em dashes detected.`n" -ForegroundColor Green
     exit 0
 }

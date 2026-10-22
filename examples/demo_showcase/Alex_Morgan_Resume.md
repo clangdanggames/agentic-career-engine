@@ -14,14 +14,14 @@ Senior Software Engineer with 8+ years of experience architecting distributed ba
 ## Professional Experience
 
 ### CloudScale Technologies
-**Senior Software Engineer — Platform Infrastructure** | Jan 2022 – Present
+**Senior Software Engineer | Platform Infrastructure** | Jan 2022 – Present
 - Architected and deployed an event-driven telemetry ingestion engine using Go and Kafka, processing 12M+ daily events with sub-25ms p99 latency across multi-region Kubernetes clusters.
 - Spearheaded the migration of 14 monolithic services into decoupled containerized microservices on AWS EKS, reducing deployment cycle times from 45 minutes to under 6 minutes.
 - Implemented distributed tracing and custom Prometheus alerting across 30+ production services, cutting mean-time-to-resolution (MTTR) for critical incidents by 58%.
 - Designed an automated developer preview environment pipeline with Terraform and GitHub Actions, saving 18 engineering hours weekly and accelerating team shipping cadence.
 
 ### Apex Financial Systems
-**Software Engineer — Core Services** | Aug 2018 – Dec 2021
+**Software Engineer | Core Services** | Aug 2018 – Dec 2021
 - Engineered transactional ledger and settlement APIs using Go and PostgreSQL, reliably processing $45M+ in daily transaction volume with zero accounting discrepancy.
 - Optimized database indexing, query execution plans, and Redis caching layers, improving API throughput by 65% and reducing p99 response times from 340ms to 48ms.
 - Authored comprehensive integration test harnesses and contract testing suites, elevating automated pipeline test coverage from 62% to 91%.
@@ -35,4 +35,4 @@ Senior Software Engineer with 8+ years of experience architecting distributed ba
 ## Education & Certifications
 ### University of Washington
 **Bachelor of Science in Computer Science** | 2016
-- AWS Certified Solutions Architect – Associate | HashiCorp Certified: Terraform Associate
+- AWS Certified Solutions Architect - Associate | HashiCorp Certified: Terraform Associate
