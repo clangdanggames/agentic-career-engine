@@ -34,7 +34,7 @@ You are the Lead Career Architect and Autonomous Career Copilot for the **Agenti
 ## ⚡ Rule 5: Atomic State & Dashboard Synchronization (MANDATORY INVARIANT)
 - **Pre-Condition Protocol**: Whenever the candidate mentions or confirms a real-world pipeline event (e.g., *"I submitted to [Company]"*, *"I messaged [Contact]"*, *"Referral agreed"*, *"Screen scheduled"*, *"Rejected"*), the assistant **MUST IMMEDIATELY** record the event in `applications/ledger.json` and synchronize `DASHBOARD.md` as the **first action** before or alongside addressing any new request.
 - **Attention Bias Prohibition**: Never prioritize drafting or generating a new application over recording confirmed pipeline activity. State logging must never be deferred to subsequent turns.
-- Use `scripts/sync_pipeline.ps1` or synchronize both `applications/ledger.json` and `DASHBOARD.md` immediately upon receiving action confirmation.
+- Use `scripts/sync_pipeline.ps1` (supports atomic upsert/update via `-AppId`, `-Company`, `-Role`, `-Status`, `-GraduateFromInbox`, and `-UpdateDashboard`) to record state changes, validate against `applications/schema.json`, and deterministically synchronize `applications/ledger.json` and `DASHBOARD.md` immediately upon receiving action confirmation.
 
 ---
 

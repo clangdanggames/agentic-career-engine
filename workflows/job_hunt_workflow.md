@@ -147,7 +147,7 @@ The assistant reviews the JD against the candidate's Master Resume, Reserve Bank
 
 #### 5. Step 5: Atomic Ledger & Dashboard Synchronization (Instant)
 - Enforcing **Rule 5**, the assistant immediately records the submission in [`applications/ledger.json`](../applications/ledger.json), updates [`DASHBOARD.md`](../DASHBOARD.md), and freezes the resume artifacts.
-- Runs `powershell -File scripts/sync_pipeline.ps1` to audit and enforce 100% lockstep parity between the ledger database and the markdown dashboard.
+- Runs `powershell -File scripts/sync_pipeline.ps1 -Company "..." -Role "..." -Status "applied" -GraduateFromInbox -UpdateDashboard` (or `-AppId "..." -Status "applied" -UpdateDashboard`) to validate schema integrity, graduate the lead from the sourcing inbox, deterministically regenerate funnel counts and table rows in `DASHBOARD.md`, and audit 100% lockstep parity.
 
 ---
 
