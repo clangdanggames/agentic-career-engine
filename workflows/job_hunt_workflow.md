@@ -122,7 +122,7 @@ The assistant reviews the JD against the candidate's Master Resume, Reserve Bank
 
 #### 3. Step 3: Tailoring, Conversational Review Gate & PDF Compilation (7 mins)
 - **3A. Tailored Markdown Generation & Integrity Lint Gate (4 mins)**:
-  - Assistant creates the dossier folder: `applications/YYYY-MM-DD_[company]_[reqid]/` (falling back to `_[role_slug]/` if ReqID is absent, or appending `_2` on collision).
+  - Assistant creates the dossier folder: `applications/YYYY-MM-DD_[company]_[reqid]/` (falling back to `_[role_slug]/` if ReqID is absent, or appending `_2` on collision) via `powershell -File scripts/init_dossier.ps1 -Company "..." -Role "..." -RequisitionId "..." -Url "..." -PostingCompensation "..." -RegisterInLedger`.
   - **Clean-Room Fork**: Assistant copies the candidate's pristine Master Resume (`resumes/[Candidate]_Resume_Master.md`) as the starting baseline (Rule 4). *Never copy or iterate off a past application dossier.*
   - Customizes by prioritizing matching bullets, swapping in 1–2 bullets from `resumes/modular_reserve_bank.md`, and tuning Summary and Skills to match the JD.
   - Generates tailored resume: `[Candidate]_Resume_[Company]_[ReqID].md`.

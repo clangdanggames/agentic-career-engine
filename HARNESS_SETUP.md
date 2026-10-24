@@ -58,6 +58,10 @@ This section defines the precise operational boundaries, command patterns, domai
 The following command patterns should be configured for automatic execution (auto-approval) without interactive prompts:
 
 ```text
+# Application Dossier Scaffolding & Clean-Room Forking
+powershell -File scripts/init_dossier.ps1 *
+pwsh -File scripts/init_dossier.ps1 *
+
 # Resume PDF Rendering & Page Validation
 powershell -File scripts/render_resume.ps1 *
 pwsh -File scripts/render_resume.ps1 *
@@ -145,15 +149,18 @@ pip install --break-system-packages *
 The assistant should be permitted to make outbound HTTP GET/HEAD requests and fetch page content across the following domain patterns:
 
 ```text
-# Primary Applicant Tracking Systems (ATS)
+# Primary Applicant Tracking Systems (ATS) & Public Board APIs
 *.greenhouse.io
 job-boards.greenhouse.io
 boards.greenhouse.io
+boards-api.greenhouse.io
 *.ashbyhq.com
 jobs.ashbyhq.com
 app.ashbyhq.com
+api.ashbyhq.com
 *.lever.co
 jobs.lever.co
+api.lever.co
 *.myworkdayjobs.com
 *.smartrecruiters.com
 *.icims.com
