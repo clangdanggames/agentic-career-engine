@@ -233,6 +233,15 @@ if (Test-Path $sourceAppsDir) {
     if (Test-Path $sourceInboxMd) {
         Copy-MigratedFile -SourceFile $sourceInboxMd -DestinationDir $targetAppsDir
     }
+
+    # Normalize migrated ledger.json and sourcing_inbox.json against schema.json
+    $syncScriptPath = Join-Path $PSScriptRoot "sync_pipeline.ps1"
+    if (-not $DryRun -and (Test-Path $syncScriptPath) -and (Test-Path $targetLedger)) {
+        try {
+            $null = & powershell -NoProfile -ExecutionPolicy Bypass -File $syncScriptPath *>&1
+            $global:LASTEXITCODE = 0
+        } catch {}
+    }
 } else {
     Write-Host "  No applications/ folder found in source." -ForegroundColor DarkGray
 }

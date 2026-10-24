@@ -48,7 +48,8 @@ param (
     [switch]$Ingest,
     [switch]$RenderInboxMd,
     [switch]$VerifyInbox,
-    [switch]$DryRun
+    [switch]$DryRun,
+    [switch]$Force
 )
 
 $ErrorActionPreference = "Stop"
@@ -692,7 +693,8 @@ function Get-JobFitEvaluation {
 function Update-SourcingInboxMarkdown {
     param (
         [string]$JsonFilePath,
-        [string]$MdFilePath
+        [string]$MdFilePath,
+        [switch]$ForceOverwrite
     )
 
     if (-not (Test-Path $JsonFilePath)) { return }
@@ -700,6 +702,22 @@ function Update-SourcingInboxMarkdown {
     $allLeads = @($inboxObj.leads | Where-Object { $null -ne $_ })
     $activeLeads = @($allLeads | Where-Object { [string]$_.status -notin @("archived", "passed", "graduated", "closed") } | Sort-Object -Property @{Expression = { [double]$_.fit_score }; Descending = $true })
     $archivedLeads = @($allLeads | Where-Object { [string]$_.status -in @("archived", "passed") })
+
+    # Safeguard: Do not overwrite a manually populated sourcing_inbox.md if sourcing_inbox.json is empty unless -ForceOverwrite is passed
+    if ($activeLeads.Count -eq 0 -and $archivedLeads.Count -eq 0 -and -not $ForceOverwrite -and (Test-Path $MdFilePath)) {
+        $existingMdLines = Get-Content -Path $MdFilePath -Encoding UTF8
+        $existingLeadRows = 0
+        foreach ($mLine in $existingMdLines) {
+            $tLine = $mLine.Trim()
+            if ($tLine -match "^\|" -and $tLine -notmatch "Fit Score" -and $tLine -notmatch "^\|[\s:\-\|]+\|$" -and $tLine -notmatch "No leads yet") {
+                $existingLeadRows++
+            }
+        }
+        if ($existingLeadRows -gt 0) {
+            Write-Host "[!] Preserving existing $MdFilePath ($existingLeadRows active markdown rows) because $JsonFilePath has 0 leads. Use -Force to overwrite." -ForegroundColor Yellow
+            return
+        }
+    }
 
     $inboxEmoji = [char]::ConvertFromUtf32(0x1F4E5)
     $starEmoji = [char]::ConvertFromUtf32(0x1F31F)
@@ -890,7 +908,7 @@ if ($VerifyInbox) {
 
 # --- 2. STANDALONE MARKDOWN RENDER MODE (-RenderInboxMd) ---
 if ($RenderInboxMd -and -not $FetchBoards -and [string]::IsNullOrWhiteSpace($ExtractUrl) -and [string]::IsNullOrWhiteSpace($MockSourcePath) -and $Boards.Count -eq 0) {
-    Update-SourcingInboxMarkdown -JsonFilePath $InboxJsonPath -MdFilePath $InboxMdPath
+    Update-SourcingInboxMarkdown -JsonFilePath $InboxJsonPath -MdFilePath $InboxMdPath -ForceOverwrite:$Force
     exit 0
 }
 

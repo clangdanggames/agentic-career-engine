@@ -399,8 +399,8 @@ if (-not (Test-Path $OutputPath)) {
 $pageCount = Get-PdfPageCount -PdfFile $OutputPath
 $activeDensity = $Density
 
-# Automatic 1-page density stepping when overflow occurs and AutoFit is enabled (or default Density was used)
-if ($pageCount -gt 1 -and ($AutoFit -or -not $PSBoundParameters.ContainsKey("Density")) -and $DocumentType -eq "Resume") {
+# Automatic 1-page density stepping when minor 2-page overflow occurs and AutoFit is enabled (or default Density was used)
+if ($pageCount -eq 2 -and ($AutoFit -or -not $PSBoundParameters.ContainsKey("Density")) -and $DocumentType -eq "Resume") {
     $fallbackPresets = @("Compact", "Tight") | Where-Object { $_ -ne $Density }
     foreach ($preset in $fallbackPresets) {
         Write-Host "Page count is $pageCount (> 1). Auto-fitting with '$preset' density preset..." -ForegroundColor Yellow
@@ -412,6 +412,14 @@ if ($pageCount -gt 1 -and ($AutoFit -or -not $PSBoundParameters.ContainsKey("Den
         if ($pageCount -eq 1) {
             break
         }
+    }
+    # If document is still > 1 page even at Tight density (e.g. a genuine 2-page Master CV), restore original Density so typography is not needlessly squished
+    if ($pageCount -gt 1 -and $activeDensity -ne $Density) {
+        $activeDensity = $Density
+        $fullHtml = Build-DocumentHtml -BodyContent $bodyHtml -TitleText $candidateName -DocType $DocumentType -DensityPreset $Density
+        Set-Content -Path $HtmlPath -Value $fullHtml -Encoding UTF8
+        $null = Start-Process -FilePath $BrowserPath -ArgumentList $processArgs -PassThru -Wait -NoNewWindow
+        $pageCount = Get-PdfPageCount -PdfFile $OutputPath
     }
 }
 

@@ -214,6 +214,32 @@ if ((Test-Path $upstreamConfigPath) -and (Test-Path $targetConfigPath)) {
 
         Merge-ConfigProperties -UpstreamObj $upstreamConfig -TargetObj $targetConfig
 
+        # Migrate legacy flat root keys into nested search_criteria if present
+        if ($targetConfig.PSObject.Properties["target_roles"] -and $targetConfig.target_roles) {
+            $targetConfig.search_criteria.roles = $targetConfig.target_roles
+            $script:mergedAny = $true
+        }
+        if ($targetConfig.PSObject.Properties["preferred_locations"] -and $targetConfig.preferred_locations) {
+            $targetConfig.search_criteria.locations = $targetConfig.preferred_locations
+            $script:mergedAny = $true
+        }
+        if ($targetConfig.PSObject.Properties["negative_keywords"] -and $targetConfig.negative_keywords) {
+            $targetConfig.search_criteria.negative_keywords = $targetConfig.negative_keywords
+            $script:mergedAny = $true
+        }
+        if ($targetConfig.PSObject.Properties["compensation_floor"] -and $null -ne $targetConfig.compensation_floor) {
+            $targetConfig.search_criteria.compensation.floor = $targetConfig.compensation_floor
+            $script:mergedAny = $true
+        }
+        if ($targetConfig.PSObject.Properties["target_compensation"] -and $null -ne $targetConfig.target_compensation) {
+            $targetConfig.search_criteria.compensation.target = $targetConfig.target_compensation
+            $script:mergedAny = $true
+        }
+        if ($targetConfig.PSObject.Properties["target_company_domains"] -and $targetConfig.target_company_domains -and @($targetConfig.target_companies).Count -eq 0) {
+            $targetConfig.target_companies = $targetConfig.target_company_domains
+            $script:mergedAny = $true
+        }
+
         if ($script:mergedAny -and -not $DryRun) {
             $targetConfig | ConvertTo-Json -Depth 10 | Set-Content $targetConfigPath -Encoding UTF8
             Write-Host "  Schema fields merged into ats_search_config.json." -ForegroundColor Green
@@ -223,6 +249,15 @@ if ((Test-Path $upstreamConfigPath) -and (Test-Path $targetConfigPath)) {
     } catch {
         Write-Warning "Could not merge search config schema: $_"
     }
+}
+
+# Normalize legacy ledger.json / sourcing_inbox.json fields in-place via sync_pipeline.ps1
+$syncScriptPath = Join-Path $workspaceRoot "scripts\sync_pipeline.ps1"
+if (-not $DryRun -and (Test-Path $syncScriptPath) -and (Test-Path (Join-Path $workspaceRoot "applications\ledger.json"))) {
+    try {
+        $null = & powershell -NoProfile -ExecutionPolicy Bypass -File $syncScriptPath *>&1
+        $global:LASTEXITCODE = 0
+    } catch {}
 }
 
 # ----------------------------------------------------

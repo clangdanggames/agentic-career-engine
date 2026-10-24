@@ -43,7 +43,15 @@ if (-not (Test-Path $TailoredResumePath)) {
 # Auto-detect master resume if not explicitly passed
 if ([string]::IsNullOrWhiteSpace($MasterResumePath)) {
     $resumesDir = Join-Path $workspaceRoot "resumes"
-    $masters = Get-ChildItem -Path $resumesDir -Filter "*_Resume_Master.md" -File -ErrorAction SilentlyContinue
+    $masters = @(Get-ChildItem -Path $resumesDir -Filter "*_Resume_Master.md" -File -ErrorAction SilentlyContinue)
+    if ($masters.Count -eq 0) {
+        $masters = @(Get-ChildItem -Path $resumesDir -Filter "*Master*.md" -File -ErrorAction SilentlyContinue)
+    }
+    if ($masters.Count -eq 0) {
+        $masters = @(Get-ChildItem -Path $resumesDir -Filter "*.md" -File -ErrorAction SilentlyContinue | Where-Object {
+            $_.Name -notin @("modular_reserve_bank.md", "resume_template.md", "README.md")
+        })
+    }
     if ($masters.Count -gt 0) {
         $MasterResumePath = $masters[0].FullName
     } else {

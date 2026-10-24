@@ -118,6 +118,176 @@ function Set-OrAddProperty {
     $Object | Add-Member -NotePropertyName $Name -NotePropertyValue $Value -Force
 }
 
+function Normalize-StatusString {
+    param ([string]$RawStatus)
+    if ([string]::IsNullOrWhiteSpace($RawStatus)) { return "" }
+    $s = ($RawStatus.Trim().ToLowerInvariant() -replace "[\s\-]+", "_")
+    if ($validStatuses -contains $s) { return $s }
+
+    switch -Regex ($s) {
+        "^submitted$"                                                    { return "applied" }
+        "^(warm_outreach|outreach|contacted|messaged|referral_requested|pending_referral)$" { return "outreach_sent" }
+        "^referral_agreed$"                                              { return "referral_package_sent" }
+        "^(phone_screen|recruiter_screen|screen)$"                       { return "screen_scheduled" }
+        "^(technical|tech_screen|interview|interviewing|coding_challenge)$" { return "technical_screen" }
+        "^(final_round|panel|final_loop)$"                               { return "onsite" }
+        "^(ghosted|passed|declined|expired)$"                            { return "archived" }
+        "^rejected_"                                                     { return "rejected" }
+        default                                                          { return $RawStatus }
+    }
+}
+
+function Normalize-LedgerObject {
+    param ($LedgerObj, [string]$TodayStr)
+    if ($null -eq $LedgerObj) { return $false }
+    $healed = $false
+
+    if ($null -eq $LedgerObj.PSObject.Properties["meta"] -or $null -eq $LedgerObj.meta) {
+        Set-OrAddProperty -Object $LedgerObj -Name "meta" -Value ([PSCustomObject]@{
+            candidate    = "Candidate Name"
+            last_updated = $TodayStr
+        })
+        $healed = $true
+    } else {
+        if ([string]::IsNullOrWhiteSpace([string]$LedgerObj.meta.candidate)) {
+            Set-OrAddProperty -Object $LedgerObj.meta -Name "candidate" -Value "Candidate Name"
+            $healed = $true
+        }
+        if ([string]::IsNullOrWhiteSpace([string]$LedgerObj.meta.last_updated)) {
+            $fallbackDate = if (-not [string]::IsNullOrWhiteSpace([string]$LedgerObj.meta.updated_at)) { [string]$LedgerObj.meta.updated_at } else { $TodayStr }
+            Set-OrAddProperty -Object $LedgerObj.meta -Name "last_updated" -Value $fallbackDate
+            $healed = $true
+        }
+    }
+
+    if ($null -eq $LedgerObj.PSObject.Properties["applications"]) {
+        Set-OrAddProperty -Object $LedgerObj -Name "applications" -Value @()
+        $healed = $true
+        return $healed
+    }
+
+    $idx = 1
+    foreach ($app in @($LedgerObj.applications)) {
+        if ($null -eq $app) { continue }
+
+        # Map legacy title/job_title/position -> role
+        if ([string]::IsNullOrWhiteSpace([string]$app.role)) {
+            foreach ($altRole in @("title", "job_title", "position")) {
+                if (-not [string]::IsNullOrWhiteSpace([string]$app.$altRole)) {
+                    Set-OrAddProperty -Object $app -Name "role" -Value ([string]$app.$altRole)
+                    $healed = $true
+                    break
+                }
+            }
+        }
+
+        # Auto-generate missing id
+        if ([string]::IsNullOrWhiteSpace([string]$app.id) -and -not [string]::IsNullOrWhiteSpace([string]$app.company)) {
+            $cSlug = (([string]$app.company).ToLowerInvariant() -replace "[^a-z0-9]+", "_").Trim("_")
+            $dSlug = ($TodayStr -replace "-", "")
+            Set-OrAddProperty -Object $app -Name "id" -Value "app_${dSlug}_${cSlug}_${idx}"
+            $healed = $true
+        }
+
+        # Normalize status
+        if (-not [string]::IsNullOrWhiteSpace([string]$app.status)) {
+            $origStatus = [string]$app.status
+            $normStatus = Normalize-StatusString -RawStatus $origStatus
+            if ($normStatus -ne $origStatus) {
+                Set-OrAddProperty -Object $app -Name "status" -Value $normStatus
+                if ($origStatus -match "^rejected_" -and $origStatus -ne "rejected_post_vp_screen") {
+                    $existingNotes = [string]$app.notes
+                    if ($existingNotes -notmatch [regex]::Escape($origStatus)) {
+                        $mergedNotes = if ([string]::IsNullOrWhiteSpace($existingNotes)) { "Original status: $origStatus" } else { "$existingNotes (Original status: $origStatus)" }
+                        Set-OrAddProperty -Object $app -Name "notes" -Value $mergedNotes
+                    }
+                }
+                $healed = $true
+            }
+        }
+
+        # Normalize string fit_score like "88%" or "88/100"
+        if ($null -ne $app.fit_score -and $app.fit_score -is [string] -and -not [string]::IsNullOrWhiteSpace([string]$app.fit_score)) {
+            $cleanScoreStr = ([string]$app.fit_score -replace "(%|/100|\s)", "")
+            $parsedScore = 0.0
+            if ([double]::TryParse($cleanScoreStr, [ref]$parsedScore)) {
+                Set-OrAddProperty -Object $app -Name "fit_score" -Value $parsedScore
+                $healed = $true
+            }
+        }
+        $idx++
+    }
+    return $healed
+}
+
+function Normalize-InboxObject {
+    param ($InboxObj)
+    if ($null -eq $InboxObj) { return $false }
+    $healed = $false
+
+    if ($null -eq $InboxObj.PSObject.Properties["leads"]) {
+        Set-OrAddProperty -Object $InboxObj -Name "leads" -Value @()
+        $healed = $true
+    }
+    $allLeads = @($InboxObj.leads | Where-Object { $null -ne $_ })
+    $activeCount = @($allLeads | Where-Object { [string]$_.status -notin @("archived", "passed", "graduated", "closed") }).Count
+
+    if ($null -eq $InboxObj.PSObject.Properties["meta"] -or $null -eq $InboxObj.meta) {
+        Set-OrAddProperty -Object $InboxObj -Name "meta" -Value ([PSCustomObject]@{
+            title        = "Job Sourcing Lead Inbox"
+            last_scanned = $null
+            total_leads  = $allLeads.Count
+            active_leads = $activeCount
+        })
+        $healed = $true
+    } else {
+        if ([string]::IsNullOrWhiteSpace([string]$InboxObj.meta.title)) {
+            Set-OrAddProperty -Object $InboxObj.meta -Name "title" -Value "Job Sourcing Lead Inbox"
+            $healed = $true
+        }
+        if ($null -eq $InboxObj.meta.total_leads) {
+            Set-OrAddProperty -Object $InboxObj.meta -Name "total_leads" -Value $allLeads.Count
+            $healed = $true
+        }
+        if ($null -eq $InboxObj.meta.active_leads) {
+            Set-OrAddProperty -Object $InboxObj.meta -Name "active_leads" -Value $activeCount
+            $healed = $true
+        }
+    }
+
+    foreach ($lead in $allLeads) {
+        if ([string]::IsNullOrWhiteSpace([string]$lead.title) -and -not [string]::IsNullOrWhiteSpace([string]$lead.role)) {
+            Set-OrAddProperty -Object $lead -Name "title" -Value ([string]$lead.role)
+            $healed = $true
+        }
+        if ($null -eq $lead.fit_score -or [string]$lead.fit_score -eq "") {
+            Set-OrAddProperty -Object $lead -Name "fit_score" -Value 75
+            $healed = $true
+        } elseif ($lead.fit_score -is [string]) {
+            $cleanScoreStr = ([string]$lead.fit_score -replace "(%|/100|\s)", "")
+            $parsedScore = 0.0
+            if ([double]::TryParse($cleanScoreStr, [ref]$parsedScore)) {
+                Set-OrAddProperty -Object $lead -Name "fit_score" -Value $parsedScore
+                $healed = $true
+            }
+        }
+        if (-not [string]::IsNullOrWhiteSpace([string]$lead.likelihood)) {
+            $rawLike = ([string]$lead.likelihood).Trim()
+            if ($validLikelihoods -notcontains $rawLike) {
+                $normLike = if ($rawLike -match "(?i)^high") { "High" }
+                    elseif ($rawLike -match "(?i)^med") { "Medium" }
+                    elseif ($rawLike -match "(?i)^low") { "Low" }
+                    else { $rawLike }
+                if ($normLike -ne $rawLike) {
+                    Set-OrAddProperty -Object $lead -Name "likelihood" -Value $normLike
+                    $healed = $true
+                }
+            }
+        }
+    }
+    return $healed
+}
+
 function Test-LedgerSchema {
     param ($LedgerObj)
     $errors = [System.Collections.Generic.List[string]]::new()
@@ -313,7 +483,8 @@ if (-not (Test-Path $ledgerPath)) {
     exit 1
 }
 
-# 1. Load and parse ledger.json
+# 1. Load, auto-normalize legacy fields, and parse ledger.json
+$today = (Get-Date).ToString("yyyy-MM-dd")
 $rawLedger = Get-Content -Path $ledgerPath -Raw -Encoding UTF8
 try {
     $ledger = $rawLedger | ConvertFrom-Json
@@ -322,13 +493,20 @@ try {
     exit 1
 }
 
-# Validate initial ledger schema (unless we are about to populate a new record, in which case we validate before & after)
-if (-not [string]::IsNullOrWhiteSpace($Status) -and ($validStatuses -notcontains $Status)) {
-    Write-Host "[!] ERROR: Invalid -Status '$Status'. Allowed values in schema.json: $($validStatuses -join ', ')" -ForegroundColor Red
-    exit 1
+$ledgerHealed = Normalize-LedgerObject -LedgerObj $ledger -TodayStr $today
+if ($ledgerHealed) {
+    Write-Host "[i] Auto-normalized legacy fields/statuses in ledger.json to match schema.json." -ForegroundColor Cyan
 }
 
-# Load and validate sourcing_inbox.json if present
+if (-not [string]::IsNullOrWhiteSpace($Status)) {
+    $Status = Normalize-StatusString -RawStatus $Status
+    if ($validStatuses -notcontains $Status) {
+        Write-Host "[!] ERROR: Invalid -Status '$Status'. Allowed values in schema.json: $($validStatuses -join ', ')" -ForegroundColor Red
+        exit 1
+    }
+}
+
+# Load, auto-normalize, and validate sourcing_inbox.json if present
 $inbox = $null
 $activeInboxLeadsCount = 0
 $totalInboxLeadsCount = 0
@@ -339,6 +517,11 @@ if (Test-Path $inboxJsonPath) {
     } catch {
         Write-Host "[!] ERROR: Failed to parse sourcing_inbox.json. Invalid JSON syntax: $_" -ForegroundColor Red
         exit 1
+    }
+    $inboxHealed = Normalize-InboxObject -InboxObj $inbox
+    if ($inboxHealed) {
+        $inbox | ConvertTo-Json -Depth 10 | Set-Content -Path $inboxJsonPath -Encoding UTF8
+        Write-Host "[i] Auto-normalized legacy fields in sourcing_inbox.json to match schema.json." -ForegroundColor Cyan
     }
     $inboxErrors = Test-InboxSchema -InboxObj $inbox
     if ($inboxErrors.Count -gt 0) {
@@ -351,8 +534,7 @@ if (Test-Path $inboxJsonPath) {
 }
 
 # 2. Perform atomic CRUD / Upsert mutation if specified
-$today = (Get-Date).ToString("yyyy-MM-dd")
-$didMutate = $false
+$didMutate = $ledgerHealed
 
 $hasMutationInput = (-not [string]::IsNullOrWhiteSpace($AppId)) -or (-not [string]::IsNullOrWhiteSpace($Company)) -or (-not [string]::IsNullOrWhiteSpace($Status))
 if ($hasMutationInput) {
@@ -547,6 +729,23 @@ if ($null -ne $inbox) {
     }
 }
 
+# Fallback: if sourcing_inbox.json has 0 active leads, check sourcing_inbox.md for markdown-only leads
+$inboxMdPath = Join-Path $workspaceRoot "applications/sourcing_inbox.md"
+if ($activeInboxLeadsCount -eq 0 -and (Test-Path $inboxMdPath)) {
+    $mdLines = Get-Content -Path $inboxMdPath -Encoding UTF8
+    $mdLeadRows = 0
+    foreach ($line in $mdLines) {
+        $t = $line.Trim()
+        if ($t -match "^\|" -and $t -notmatch "Fit Score" -and $t -notmatch "^\|[\s:\-\|]+\|$" -and $t -notmatch "No leads yet") {
+            $mdLeadRows++
+        }
+    }
+    if ($mdLeadRows -gt 0) {
+        $activeInboxLeadsCount = $mdLeadRows
+        if ($totalInboxLeadsCount -lt $mdLeadRows) { $totalInboxLeadsCount = $mdLeadRows }
+    }
+}
+
 if (-not (Test-Path $dashboardPath)) {
     Write-Host "[!] DASHBOARD.md not found at root (workspace may be in onboarding or template state)." -ForegroundColor Yellow
     Write-Host "    Ledger schema check passed. Skipping markdown dashboard parity audit." -ForegroundColor Yellow
@@ -584,20 +783,49 @@ if ($UpdateDashboard -or $didMutate) {
     $updatedDash = [regex]::Replace($updatedDash, '(Technical\["[^"\(\r\n]*?\()\d+(\)"\])', "`${1}$funnelTechCount`${2}")
     $updatedDash = [regex]::Replace($updatedDash, '(Offer\["[^"\(\r\n]*?\()\d+(\)"\])', "`${1}$funnelOfferCount`${2}")
 
-    # 4b. Regenerate Active Application Status markdown table rows
+    # 4b. Regenerate Active Application Status markdown table rows (preserving custom cells from existing DASHBOARD.md rows when ledger fields are null)
+    $existingRowMap = @{}
+    $existingTableMatch = [regex]::Match($dashRaw, '(?ms)### [^\r\n]*Active Application Status\s*\r?\n\|[^\r\n]+\|\r?\n\|[\s:\-\|]+\|\r?\n((?:\|[^\r\n]+\|\r?\n?)+)')
+    if ($existingTableMatch.Success) {
+        $rawRowLines = $existingTableMatch.Groups[1].Value -split "\r?\n"
+        foreach ($rLine in $rawRowLines) {
+            $trimmedRow = $rLine.Trim()
+            if (-not $trimmedRow.StartsWith("|") -or $trimmedRow -match "No active applications") { continue }
+            $cells = @($trimmedRow.Trim('|') -split '(?<!\\)\|' | ForEach-Object { $_.Trim() })
+            if ($cells.Count -ge 7) {
+                $compKey = (($cells[0] -replace "\*", "").Trim()).ToLowerInvariant()
+                if (-not [string]::IsNullOrWhiteSpace($compKey)) {
+                    $existingRowMap[$compKey] = [PSCustomObject]@{
+                        RoleCell   = $cells[1]
+                        DateCell   = $cells[2]
+                        CompCell   = $cells[3]
+                        ConnCell   = $cells[4]
+                        StatusCell = $cells[5]
+                        AssetsCell = $cells[6]
+                    }
+                }
+            }
+        }
+    }
+
     $tableRows = [System.Collections.Generic.List[string]]::new()
     if ($activeApps.Count -eq 0) {
         $tableRows.Add("| *No active applications* | *Select a lead from Sourcing Inbox to begin* | - | - | - | - | - |")
     } else {
         foreach ($app in $activeApps) {
+            $compKey = (([string]$app.company).Trim()).ToLowerInvariant()
+            $priorRow = if ($existingRowMap.ContainsKey($compKey)) { $existingRowMap[$compKey] } else { $null }
+
             $compCell = "**$($app.company)**"
             $roleCell = [string]$app.role
             if (-not [string]::IsNullOrWhiteSpace([string]$app.requisition_id)) {
                 $cleanReq = ([string]$app.requisition_id).TrimStart('#')
                 $roleCell = "$roleCell (``#$cleanReq``)"
+            } elseif ($null -ne $priorRow -and $priorRow.RoleCell -match '\(`#[^`]+`\)') {
+                $roleCell = $priorRow.RoleCell
             }
 
-            $dateVal = $today
+            $dateVal = ""
             if ($null -ne $app.dates) {
                 if (-not [string]::IsNullOrWhiteSpace([string]$app.dates.applied)) {
                     $dateVal = [string]$app.dates.applied
@@ -607,7 +835,12 @@ if ($UpdateDashboard -or $didMutate) {
                     $dateVal = [string]$app.dates.created
                 }
             }
-            $dateCell = "``$dateVal``"
+            if ([string]::IsNullOrWhiteSpace($dateVal) -and $null -ne $priorRow -and $priorRow.DateCell -notin @("-", "")) {
+                $dateCell = $priorRow.DateCell
+            } else {
+                if ([string]::IsNullOrWhiteSpace($dateVal)) { $dateVal = $today }
+                $dateCell = "``$dateVal``"
+            }
 
             $compValCell = "*TBD*"
             if ($null -ne $app.compensation -and -not [string]::IsNullOrWhiteSpace([string]$app.compensation)) {
@@ -616,16 +849,23 @@ if ($UpdateDashboard -or $didMutate) {
                 } else {
                     $compValCell = "**$([string]$app.compensation)**"
                 }
+            } elseif ($null -ne $priorRow -and $priorRow.CompCell -notin @("*TBD*", "-", "")) {
+                $compValCell = $priorRow.CompCell
             }
 
             $connCell = "*Direct Apply*"
             if (-not [string]::IsNullOrWhiteSpace([string]$app.referral_contact) -and [string]$app.referral_contact -ne "Direct Apply") {
                 $connCell = [string]$app.referral_contact
+            } elseif ($null -ne $priorRow -and $priorRow.ConnCell -notin @("*Direct Apply*", "-", "")) {
+                $connCell = $priorRow.ConnCell
             }
 
             $appliedDateForBadge = if ($null -ne $app.dates) { [string]$app.dates.applied } else { "" }
             $statusCell = Get-StatusBadge -StatusVal ([string]$app.status) -AppliedDate $appliedDateForBadge
             $assetsCell = Get-VerifiedAssetsCell -App $app -RootPath $workspaceRoot
+            if ($assetsCell -eq "*Pending Dossier*" -and $null -ne $priorRow -and $priorRow.AssetsCell -notin @("*Pending Dossier*", "-", "")) {
+                $assetsCell = $priorRow.AssetsCell
+            }
 
             $tableRows.Add("| $compCell | $roleCell | $dateCell | $compValCell | $connCell | $statusCell | $assetsCell |")
         }

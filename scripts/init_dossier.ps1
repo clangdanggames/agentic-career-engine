@@ -93,7 +93,15 @@ if (-not (Test-Path $templateDir)) {
 
 # 1. Resolve Master Resume Path (Rule 4 Clean-Room Source)
 if ([string]::IsNullOrWhiteSpace($MasterResumePath)) {
-    $candidates = @(Get-ChildItem -Path $resumesDir -Filter "*_Master.md" -File -ErrorAction SilentlyContinue)
+    $candidates = @(Get-ChildItem -Path $resumesDir -Filter "*_Resume_Master.md" -File -ErrorAction SilentlyContinue)
+    if ($candidates.Count -eq 0) {
+        $candidates = @(Get-ChildItem -Path $resumesDir -Filter "*Master*.md" -File -ErrorAction SilentlyContinue)
+    }
+    if ($candidates.Count -eq 0) {
+        $candidates = @(Get-ChildItem -Path $resumesDir -Filter "*.md" -File -ErrorAction SilentlyContinue | Where-Object {
+            $_.Name -notin @("modular_reserve_bank.md", "resume_template.md", "README.md")
+        })
+    }
     if ($candidates.Count -gt 0) {
         $MasterResumePath = $candidates[0].FullName
     } else {
