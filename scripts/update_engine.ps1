@@ -1,3 +1,4 @@
+#!/usr/bin/env pwsh
 # Engine In-Place Update Utility
 # Safely updates core ACE engine scripts, skills, and SOP workflows from GitHub upstream.
 # Strictly preserves all personal user state (resumes, application dossiers, story banks, ledgers, contacts).
@@ -13,7 +14,7 @@ $ErrorActionPreference = "Stop"
 $global:ProgressPreference = "SilentlyContinue"
 [Console]::OutputEncoding = [System.Text.Encoding]::UTF8
 
-$workspaceRoot = (Resolve-Path "$PSScriptRoot\..").Path
+$workspaceRoot = (Resolve-Path (Join-Path $PSScriptRoot "..")).Path
 $backupRootDir = Join-Path $workspaceRoot ".backups"
 
 Write-Host "======================================================" -ForegroundColor Cyan
@@ -43,7 +44,7 @@ if (-not $SkipBackup -and -not $DryRun) {
     New-Item -ItemType Directory -Path $backupDir -Force | Out-Null
 
     # Backup engine components
-    $backupItems = @("scripts", ".agents", "workflows", "applications\dossier_template", "AGENTS.md", "HARNESS_SETUP.md")
+    $backupItems = @("scripts", ".agents", "workflows", "applications/dossier_template", "AGENTS.md", "HARNESS_SETUP.md")
     foreach ($item in $backupItems) {
         $sourceItem = Join-Path $workspaceRoot $item
         if (Test-Path $sourceItem) {
@@ -185,8 +186,8 @@ if (Test-Path $targetReadme) {
 # 4. Intelligently Merge Search Configuration Keys
 # ----------------------------------------------------
 Write-Host "`n[4/5] Merging Schema Updates into workflows/ats_search_config.json..." -ForegroundColor Cyan
-$upstreamConfigPath = Join-Path $upstreamRoot "workflows\ats_search_config.json"
-$targetConfigPath = Join-Path $workspaceRoot "workflows\ats_search_config.json"
+$upstreamConfigPath = Join-Path $upstreamRoot "workflows/ats_search_config.json"
+$targetConfigPath = Join-Path $workspaceRoot "workflows/ats_search_config.json"
 
 if ((Test-Path $upstreamConfigPath) -and (Test-Path $targetConfigPath)) {
     try {
@@ -252,10 +253,10 @@ if ((Test-Path $upstreamConfigPath) -and (Test-Path $targetConfigPath)) {
 }
 
 # Normalize legacy ledger.json / sourcing_inbox.json fields in-place via sync_pipeline.ps1
-$syncScriptPath = Join-Path $workspaceRoot "scripts\sync_pipeline.ps1"
-if (-not $DryRun -and (Test-Path $syncScriptPath) -and (Test-Path (Join-Path $workspaceRoot "applications\ledger.json"))) {
+$syncScriptPath = Join-Path $workspaceRoot "scripts/sync_pipeline.ps1"
+if (-not $DryRun -and (Test-Path $syncScriptPath) -and (Test-Path (Join-Path $workspaceRoot "applications/ledger.json"))) {
     try {
-        $null = & powershell -NoProfile -ExecutionPolicy Bypass -File $syncScriptPath *>&1
+        $null = & $syncScriptPath *>&1
         $global:LASTEXITCODE = 0
     } catch {}
 }

@@ -1,3 +1,4 @@
+#!/usr/bin/env pwsh
 <#
 .SYNOPSIS
     ACE Pipeline & Dashboard Synchronization Engine (Rule 5 Enforcer)
@@ -83,7 +84,7 @@ param (
 $ErrorActionPreference = "Stop"
 [Console]::OutputEncoding = [System.Text.Encoding]::UTF8
 
-$workspaceRoot = (Resolve-Path "$PSScriptRoot/..").Path
+$workspaceRoot = (Resolve-Path (Join-Path $PSScriptRoot "..")).Path
 $ledgerPath = Join-Path $workspaceRoot "applications/ledger.json"
 $inboxJsonPath = Join-Path $workspaceRoot "applications/sourcing_inbox.json"
 $dashboardPath = Join-Path $workspaceRoot "DASHBOARD.md"
@@ -210,7 +211,7 @@ function Normalize-LedgerObject {
         if ($null -ne $app.fit_score -and $app.fit_score -is [string] -and -not [string]::IsNullOrWhiteSpace([string]$app.fit_score)) {
             $cleanScoreStr = ([string]$app.fit_score -replace "(%|/100|\s)", "")
             $parsedScore = 0.0
-            if ([double]::TryParse($cleanScoreStr, [ref]$parsedScore)) {
+            if ([double]::TryParse($cleanScoreStr, [System.Globalization.NumberStyles]::Any, [System.Globalization.CultureInfo]::InvariantCulture, [ref]$parsedScore)) {
                 Set-OrAddProperty -Object $app -Name "fit_score" -Value $parsedScore
                 $healed = $true
             }
@@ -266,7 +267,7 @@ function Normalize-InboxObject {
         } elseif ($lead.fit_score -is [string]) {
             $cleanScoreStr = ([string]$lead.fit_score -replace "(%|/100|\s)", "")
             $parsedScore = 0.0
-            if ([double]::TryParse($cleanScoreStr, [ref]$parsedScore)) {
+            if ([double]::TryParse($cleanScoreStr, [System.Globalization.NumberStyles]::Any, [System.Globalization.CultureInfo]::InvariantCulture, [ref]$parsedScore)) {
                 Set-OrAddProperty -Object $lead -Name "fit_score" -Value $parsedScore
                 $healed = $true
             }
@@ -340,7 +341,7 @@ function Test-LedgerSchema {
 
         if ($null -ne $app.fit_score -and [string]$app.fit_score -ne "") {
             $scoreVal = 0.0
-            if (-not [double]::TryParse([string]$app.fit_score, [ref]$scoreVal) -or $scoreVal -lt 0 -or $scoreVal -gt 100) {
+            if (-not [double]::TryParse([string]$app.fit_score, [System.Globalization.NumberStyles]::Any, [System.Globalization.CultureInfo]::InvariantCulture, [ref]$scoreVal) -or $scoreVal -lt 0 -or $scoreVal -gt 100) {
                 $errors.Add("ledger.json application [$label] has invalid fit_score '$($app.fit_score)' (must be 0-100).")
             }
         }
@@ -392,7 +393,7 @@ function Test-InboxSchema {
             $errors.Add("sourcing_inbox.json [$label] is missing required field 'fit_score'.")
         } else {
             $scoreVal = 0.0
-            if (-not [double]::TryParse([string]$lead.fit_score, [ref]$scoreVal) -or $scoreVal -lt 0 -or $scoreVal -gt 100) {
+            if (-not [double]::TryParse([string]$lead.fit_score, [System.Globalization.NumberStyles]::Any, [System.Globalization.CultureInfo]::InvariantCulture, [ref]$scoreVal) -or $scoreVal -lt 0 -or $scoreVal -gt 100) {
                 $errors.Add("sourcing_inbox.json [$label] has invalid fit_score '$($lead.fit_score)' (must be 0-100).")
             }
         }
@@ -421,8 +422,8 @@ function Get-StatusBadge {
     $dateSuffix = ""
     if (-not [string]::IsNullOrWhiteSpace($AppliedDate)) {
         $parsedDate = [datetime]::MinValue
-        if ([datetime]::TryParse($AppliedDate, [ref]$parsedDate)) {
-            $dateSuffix = " *($($parsedDate.ToString('MMM d')))*"
+        if ([datetime]::TryParse($AppliedDate, [System.Globalization.CultureInfo]::InvariantCulture, [System.Globalization.DateTimeStyles]::None, [ref]$parsedDate)) {
+            $dateSuffix = " *($($parsedDate.ToString('MMM d', [System.Globalization.CultureInfo]::InvariantCulture)))*"
         }
     }
 

@@ -1,3 +1,4 @@
+#!/usr/bin/env pwsh
 # Agentic Career Engine (ACE) - Workspace Backup & Snapshot Utility
 # Creates timestamped .zip snapshots of personal candidate state or entire workspace.
 # Pure PowerShell: Zero dependencies on Python, Git, or external archive utilities.
@@ -14,7 +15,7 @@ $ErrorActionPreference = "Stop"
 $global:ProgressPreference = "SilentlyContinue"
 [Console]::OutputEncoding = [System.Text.Encoding]::UTF8
 
-$workspaceRoot = (Resolve-Path "$PSScriptRoot\..").Path
+$workspaceRoot = (Resolve-Path (Join-Path $PSScriptRoot "..")).Path
 $backupRootDir = Join-Path $workspaceRoot ".backups"
 
 # --- LIST BACKUPS MODE ---
@@ -72,7 +73,7 @@ if ([string]::IsNullOrWhiteSpace($Destination)) {
         if (-not [string]::IsNullOrWhiteSpace($parentDir) -and -not (Test-Path $parentDir)) {
             New-Item -ItemType Directory -Path $parentDir -Force | Out-Null
         }
-        $targetZip = [System.IO.Path]::GetFullPath($Destination)
+        $targetZip = $ExecutionContext.SessionState.Path.GetUnresolvedProviderPathFromPSPath($Destination)
     } else {
         # Treat as directory path to create
         if (-not (Test-Path $Destination)) {
@@ -142,7 +143,7 @@ try {
         Remove-Item -Path $targetZip -Force
     }
 
-    Compress-Archive -Path "$tempStageDir\*" -DestinationPath $targetZip -CompressionLevel Optimal
+    Compress-Archive -Path (Join-Path $tempStageDir "*") -DestinationPath $targetZip -CompressionLevel Optimal
 
     $zipInfo = Get-Item $targetZip
     $sizeMB = [math]::Round($zipInfo.Length / 1MB, 2)

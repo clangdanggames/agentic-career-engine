@@ -1,3 +1,4 @@
+#!/usr/bin/env pwsh
 <#
 .SYNOPSIS
     ACE Automated ATS Job Scanner, Public API Fetcher & Sourcing Inbox Engine
@@ -115,7 +116,7 @@ function Get-MaxSalaryNumeric {
     foreach ($m in $matchesList) {
         $numStr = $m.Groups[1].Value -replace ",", ""
         $val = 0
-        if ([double]::TryParse($numStr, [ref]$val)) {
+        if ([double]::TryParse($numStr, [System.Globalization.NumberStyles]::Any, [System.Globalization.CultureInfo]::InvariantCulture, [ref]$val)) {
             if ($m.Groups[2].Success -or $val -lt 1000) {
                 $val = $val * 1000
             }
@@ -268,11 +269,11 @@ function ConvertFrom-AtsPayload {
                         $minV = $item.baseSalary.value.minValue
                         $maxV = $item.baseSalary.value.maxValue
                         if ($null -ne $minV -and $null -ne $maxV) {
-                            $minFormatted = ([double]$minV).ToString("N0")
-                            $maxFormatted = ([double]$maxV).ToString("N0")
+                            $minFormatted = ([double]$minV).ToString("N0", [System.Globalization.CultureInfo]::InvariantCulture)
+                            $maxFormatted = ([double]$maxV).ToString("N0", [System.Globalization.CultureInfo]::InvariantCulture)
                             $compBand = "`$$minFormatted - `$$maxFormatted"
                         } elseif ($null -ne $item.baseSalary.value.value) {
-                            $valFormatted = ([double]$item.baseSalary.value.value).ToString("N0")
+                            $valFormatted = ([double]$item.baseSalary.value.value).ToString("N0", [System.Globalization.CultureInfo]::InvariantCulture)
                             $compBand = "`$$valFormatted"
                         }
                     }
@@ -469,8 +470,8 @@ function ConvertFrom-AtsPayload {
 
             $compBand = $null
             if ($null -ne $j.salaryRange -and $null -ne $j.salaryRange.min -and $null -ne $j.salaryRange.max) {
-                $minFormatted = ([double]$j.salaryRange.min).ToString("N0")
-                $maxFormatted = ([double]$j.salaryRange.max).ToString("N0")
+                $minFormatted = ([double]$j.salaryRange.min).ToString("N0", [System.Globalization.CultureInfo]::InvariantCulture)
+                $maxFormatted = ([double]$j.salaryRange.max).ToString("N0", [System.Globalization.CultureInfo]::InvariantCulture)
                 $compBand = "`$$minFormatted - `$$maxFormatted"
             }
             if ([string]::IsNullOrWhiteSpace($compBand)) {
@@ -637,7 +638,7 @@ function Get-JobFitEvaluation {
         $deduction = if ($null -ne $ConfigObj.scoring_weights.gap_advisory_deduction) { [int]$ConfigObj.scoring_weights.gap_advisory_deduction } else { 15 }
         $rawScore = [math]::Max(0, $rawScore - $deduction)
         $belowFloor = $true
-        $notesParts.Add("Advisory: Listed max salary ($($Job.compensation)) is below configured floor (`$$($compFloor.ToString('N0'))).")
+        $notesParts.Add("Advisory: Listed max salary ($($Job.compensation)) is below configured floor (`$$($compFloor.ToString('N0', [System.Globalization.CultureInfo]::InvariantCulture))).")
     }
 
     # 7. Network Contact Cross-Reference

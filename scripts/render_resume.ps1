@@ -1,3 +1,4 @@
+#!/usr/bin/env pwsh
 param (
     [Parameter(Mandatory = $true)]
     [string]$MarkdownPath,
@@ -55,7 +56,7 @@ if (-not $OutputPath) {
     $BaseName = [System.IO.Path]::GetFileNameWithoutExtension($ResolvedMd)
     $OutputPath = Join-Path $WorkDir "$BaseName.pdf"
 } else {
-    $OutputPath = [System.IO.Path]::GetFullPath($OutputPath)
+    $OutputPath = $ExecutionContext.SessionState.Path.GetUnresolvedProviderPathFromPSPath($OutputPath)
 }
 
 $HtmlPath = [System.IO.Path]::ChangeExtension($OutputPath, ".html")
@@ -381,15 +382,35 @@ if ($null -eq $BrowserPath) {
 
 Write-Host "Compiling clean PDF via Headless Browser: $BrowserPath"
 $fileUri = [System.Uri]::new($HtmlPath).AbsoluteUri
-$processArgs = @(
-    "--headless",
-    "--disable-gpu",
-    "--print-to-pdf-no-header",
-    "--print-to-pdf=`"$OutputPath`"",
-    "`"$fileUri`""
-)
 
-$null = Start-Process -FilePath $BrowserPath -ArgumentList $processArgs -PassThru -Wait -NoNewWindow
+function Invoke-HeadlessPdfCompile {
+    param (
+        [string]$BrowserBin,
+        [string]$SourceUri,
+        [string]$PdfOutPath
+    )
+    if ($env:OS -eq "Windows_NT") {
+        $browserArgs = @(
+            "--headless",
+            "--disable-gpu",
+            "--print-to-pdf-no-header",
+            "--print-to-pdf=`"$PdfOutPath`"",
+            "`"$SourceUri`""
+        )
+    } else {
+        $browserArgs = @(
+            "--headless",
+            "--disable-gpu",
+            "--no-sandbox",
+            "--print-to-pdf-no-header",
+            "--print-to-pdf=$PdfOutPath",
+            "$SourceUri"
+        )
+    }
+    $null = Start-Process -FilePath $BrowserBin -ArgumentList $browserArgs -PassThru -Wait -NoNewWindow
+}
+
+Invoke-HeadlessPdfCompile -BrowserBin $BrowserPath -SourceUri $fileUri -PdfOutPath $OutputPath
 
 if (-not (Test-Path $OutputPath)) {
     Write-Error "Failed to generate PDF at $OutputPath"
@@ -407,7 +428,7 @@ if ($pageCount -eq 2 -and ($AutoFit -or -not $PSBoundParameters.ContainsKey("Den
         $activeDensity = $preset
         $fullHtml = Build-DocumentHtml -BodyContent $bodyHtml -TitleText $candidateName -DocType $DocumentType -DensityPreset $preset
         Set-Content -Path $HtmlPath -Value $fullHtml -Encoding UTF8
-        $null = Start-Process -FilePath $BrowserPath -ArgumentList $processArgs -PassThru -Wait -NoNewWindow
+        Invoke-HeadlessPdfCompile -BrowserBin $BrowserPath -SourceUri $fileUri -PdfOutPath $OutputPath
         $pageCount = Get-PdfPageCount -PdfFile $OutputPath
         if ($pageCount -eq 1) {
             break
@@ -418,7 +439,7 @@ if ($pageCount -eq 2 -and ($AutoFit -or -not $PSBoundParameters.ContainsKey("Den
         $activeDensity = $Density
         $fullHtml = Build-DocumentHtml -BodyContent $bodyHtml -TitleText $candidateName -DocType $DocumentType -DensityPreset $Density
         Set-Content -Path $HtmlPath -Value $fullHtml -Encoding UTF8
-        $null = Start-Process -FilePath $BrowserPath -ArgumentList $processArgs -PassThru -Wait -NoNewWindow
+        Invoke-HeadlessPdfCompile -BrowserBin $BrowserPath -SourceUri $fileUri -PdfOutPath $OutputPath
         $pageCount = Get-PdfPageCount -PdfFile $OutputPath
     }
 }

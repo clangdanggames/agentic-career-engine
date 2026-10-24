@@ -1,3 +1,4 @@
+#!/usr/bin/env pwsh
 # Workspace Migration Utility
 # Migrates career assets, application dossiers, and ledgers from a previous ACE workspace or legacy project (e.g. 'Job Hunt').
 # Ensures zero data loss and clean separation of user state from engine files.
@@ -12,7 +13,7 @@ param (
 $ErrorActionPreference = "Stop"
 [Console]::OutputEncoding = [System.Text.Encoding]::UTF8
 
-$targetRoot = (Resolve-Path "$PSScriptRoot\..").Path
+$targetRoot = (Resolve-Path (Join-Path $PSScriptRoot "..")).Path
 $targetAppsDir = Join-Path $targetRoot "applications"
 $targetResumesDir = Join-Path $targetRoot "resumes"
 $targetStoriesDir = Join-Path $targetRoot "stories"
@@ -238,7 +239,7 @@ if (Test-Path $sourceAppsDir) {
     $syncScriptPath = Join-Path $PSScriptRoot "sync_pipeline.ps1"
     if (-not $DryRun -and (Test-Path $syncScriptPath) -and (Test-Path $targetLedger)) {
         try {
-            $null = & powershell -NoProfile -ExecutionPolicy Bypass -File $syncScriptPath *>&1
+            $null = & $syncScriptPath *>&1
             $global:LASTEXITCODE = 0
         } catch {}
     }

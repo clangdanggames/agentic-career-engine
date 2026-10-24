@@ -1,3 +1,4 @@
+#!/usr/bin/env pwsh
 # Script to parse LinkedIn Connections.csv and analyze network against target companies
 param (
     [string]$CsvPath = "./network/Connections.csv",

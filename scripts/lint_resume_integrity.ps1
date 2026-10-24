@@ -1,3 +1,4 @@
+#!/usr/bin/env pwsh
 <#
 .SYNOPSIS
     Integrity Linter for Tailored Resumes against Master Resume and Reserve Bank.
@@ -27,7 +28,7 @@ param (
 $ErrorActionPreference = "Stop"
 [Console]::OutputEncoding = [System.Text.Encoding]::UTF8
 
-$workspaceRoot = (Resolve-Path "$PSScriptRoot\..").Path
+$workspaceRoot = (Resolve-Path (Join-Path $PSScriptRoot "..")).Path
 
 # Resolve tailored resume path
 if (-not (Test-Path $TailoredResumePath)) {
@@ -56,7 +57,7 @@ if ([string]::IsNullOrWhiteSpace($MasterResumePath)) {
         $MasterResumePath = $masters[0].FullName
     } else {
         # Fall back to demo or template
-        $demoMaster = Join-Path $workspaceRoot "examples\demo_showcase\Alex_Morgan_Resume.md"
+        $demoMaster = Join-Path $workspaceRoot "examples/demo_showcase/Alex_Morgan_Resume.md"
         if (Test-Path $demoMaster) {
             $MasterResumePath = $demoMaster
         } else {

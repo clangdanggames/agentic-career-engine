@@ -1,3 +1,4 @@
+#!/usr/bin/env pwsh
 # Workspace Reset Utility
 # Cleans test application dossiers and re-initializes ledgers to a pristine state.
 # SAFETY GUARD: Requires explicit human confirmation to prevent accidental data loss.
@@ -8,7 +9,7 @@ param (
 $ErrorActionPreference = "Stop"
 [Console]::OutputEncoding = [System.Text.Encoding]::UTF8
 
-$workspaceRoot = (Resolve-Path "$PSScriptRoot\..").Path
+$workspaceRoot = (Resolve-Path (Join-Path $PSScriptRoot "..")).Path
 $appsDir = Join-Path $workspaceRoot "applications"
 $ledgerPath = Join-Path $appsDir "ledger.json"
 $inboxJsonPath = Join-Path $appsDir "sourcing_inbox.json"

@@ -1,3 +1,4 @@
+#!/usr/bin/env pwsh
 <#
 .SYNOPSIS
     ACE Application Dossier Scaffolder & Clean-Room Resume Forker (Rule 3 & Rule 4 Enforcer)
@@ -79,7 +80,7 @@ param (
 $ErrorActionPreference = "Stop"
 [Console]::OutputEncoding = [System.Text.Encoding]::UTF8
 
-$workspaceRoot = (Resolve-Path "$PSScriptRoot/..").Path
+$workspaceRoot = (Resolve-Path (Join-Path $PSScriptRoot "..")).Path
 $applicationsDir = Join-Path $workspaceRoot "applications"
 $templateDir = Join-Path $applicationsDir "dossier_template"
 $resumesDir = Join-Path $workspaceRoot "resumes"
@@ -201,7 +202,7 @@ if ($calibratedComp -le 0) {
         $numMatches = [regex]::Matches($normComp, '\$?([0-9]{2,3}(?:,[0-9]{3})+|[0-9]{2,3})([kK])?')
         foreach ($m in $numMatches) {
             $val = 0.0
-            if ([double]::TryParse(($m.Groups[1].Value -replace ",", ""), [ref]$val)) {
+            if ([double]::TryParse(($m.Groups[1].Value -replace ",", ""), [System.Globalization.NumberStyles]::Any, [System.Globalization.CultureInfo]::InvariantCulture, [ref]$val)) {
                 if ($m.Groups[2].Success -or $val -lt 1000) { $val = $val * 1000 }
                 if ($val -ge 30000) { $nums.Add($val) }
             }
@@ -222,11 +223,12 @@ if ($calibratedComp -le 0) {
     }
 }
 
-$targetCompStr = "`$$($targetComp.ToString('N0'))"
-$floorCompStr = "`$$($floorComp.ToString('N0'))"
-$calibratedCompStr = "`$$($calibratedComp.ToString('N0'))"
+$invCulture = [System.Globalization.CultureInfo]::InvariantCulture
+$targetCompStr = "`$$($targetComp.ToString('N0', $invCulture))"
+$floorCompStr = "`$$($floorComp.ToString('N0', $invCulture))"
+$calibratedCompStr = "`$$($calibratedComp.ToString('N0', $invCulture))"
 $targetMaxComp = [int]([math]::Round(($targetComp * 1.15) / 1000.0) * 1000)
-$targetMaxCompStr = "`$$($targetMaxComp.ToString('N0'))"
+$targetMaxCompStr = "`$$($targetMaxComp.ToString('N0', $invCulture))"
 
 # 4. Resolve ATS Platform, Slugs, and Dossier Directory Path
 if ([string]::IsNullOrWhiteSpace($AtsPlatform)) {

@@ -1,0 +1,6 @@
+# Auto-detect text files and normalize line endings to LF in the repository
+* text=auto
+
+# Enforce LF line endings on scripts so #!/usr/bin/env shebangs work reliably on POSIX (macOS/Linux/WSL)
+*.ps1 text eol=lf
+*.sh text eol=lf
