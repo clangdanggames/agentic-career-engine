@@ -20,19 +20,24 @@ if (-not (Test-Path $CsvPath)) {
 $keywords = @()
 
 if ($TargetCompanies.Count -gt 0) {
-    $keywords = $TargetCompanies
+    $keywords = @($TargetCompanies | Where-Object { -not [string]::IsNullOrWhiteSpace($_) })
 } elseif (Test-Path $ConfigFile) {
     try {
         $cfg = Get-Content $ConfigFile -Raw -Encoding UTF8 | ConvertFrom-Json
-        if ($cfg.target_companies) {
-            $keywords = @($cfg.target_companies)
+        if ($cfg.target_companies -and @($cfg.target_companies).Count -gt 0) {
+            $keywords += @($cfg.target_companies)
         }
+        if ($keywords.Count -eq 0 -and $cfg.premier_employers -and @($cfg.premier_employers).Count -gt 0) {
+            $keywords += @($cfg.premier_employers)
+        }
+        $keywords = @($keywords | Where-Object { -not [string]::IsNullOrWhiteSpace($_) } | Select-Object -Unique)
     } catch {
         Write-Warning "Could not parse target_companies from $ConfigFile"
     }
 }
 
 # Fallback default target company keywords across major sectors if none specified
+if ($keywords.Count -eq 0) {
     $keywords = @(
         # Big Tech, Platforms & Cloud
         "Google", "Microsoft", "Amazon", "AWS", "Apple", "Meta", "Netflix", "NVIDIA", "Oracle", "Salesforce", "Adobe", "Cisco", "IBM", "SAP", "ServiceNow", "Workday",
@@ -89,7 +94,8 @@ foreach ($conn in $connections) {
     if ([string]::IsNullOrWhiteSpace($comp)) { continue }
     
     foreach ($kw in $keywords) {
-        if ($comp -like "*$kw*") {
+        $escapedKw = [regex]::Escape($kw.Trim())
+        if ($comp -match "(?i)(?<![a-zA-Z0-9])$escapedKw(?![a-zA-Z0-9])") {
             $matchedConnections += [PSCustomObject]@{
                 Name = "$($conn.'First Name') $($conn.'Last Name')".Trim()
                 Company = $conn.Company

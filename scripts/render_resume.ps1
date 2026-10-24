@@ -43,10 +43,29 @@ $HtmlPath = [System.IO.Path]::ChangeExtension($OutputPath, ".html")
 
 $mdContent = Get-Content -Path $ResolvedMd -Raw -Encoding UTF8
 
+function Escape-HtmlEntities {
+    param ([string]$Text)
+    if ([string]::IsNullOrEmpty($Text)) { return $Text }
+    $escaped = $Text -replace '&', '&amp;'
+    $escaped = $escaped -replace '<', '&lt;'
+    $escaped = $escaped -replace '>', '&gt;'
+    return $escaped
+}
+
+function Format-InlineMarkdown {
+    param ([string]$Text)
+    $safe = Escape-HtmlEntities -Text $Text
+    $safe = [regex]::Replace($safe, '\*\*(.+?)\*\*', '<strong>$1</strong>')
+    $safe = [regex]::Replace($safe, '\*(.+?)\*', '<em>$1</em>')
+    $safe = [regex]::Replace($safe, '\[(.+?)\]\((.+?)\)', '<a href="$2">$1</a>')
+    $safe = [regex]::Replace($safe, '`(.+?)`', '<code>$1</code>')
+    return $safe
+}
+
 # Extract candidate name from first H1 if present, else fallback
 $candidateName = "Candidate Resume"
 if ($mdContent -match "(?m)^#\s+([^\r\n]+)") {
-    $candidateName = $matches[1].Trim()
+    $candidateName = Escape-HtmlEntities -Text $matches[1].Trim()
 }
 
 function Convert-MarkdownToHtmlBody {
@@ -69,17 +88,20 @@ function Convert-MarkdownToHtmlBody {
         }
 
         if ($trimmed -match "^# (.+)$") {
-            $htmlLines += "<h1 class='candidate-name'>$($matches[1])</h1>"
+            $h1Text = Escape-HtmlEntities -Text $matches[1]
+            $htmlLines += "<h1 class='candidate-name'>$h1Text</h1>"
             continue
         }
 
         if ($trimmed -match "^## (.+)$") {
-            $htmlLines += "<h2 class='section-title'>$($matches[1])</h2>"
+            $h2Text = Escape-HtmlEntities -Text $matches[1]
+            $htmlLines += "<h2 class='section-title'>$h2Text</h2>"
             continue
         }
 
         if ($trimmed -match "^### (.+)$") {
-            $htmlLines += "<h3 class='job-company'>$($matches[1])</h3>"
+            $h3Text = Format-InlineMarkdown -Text $matches[1]
+            $htmlLines += "<h3 class='job-company'>$h3Text</h3>"
             continue
         }
 
@@ -92,20 +114,12 @@ function Convert-MarkdownToHtmlBody {
                 $htmlLines += "<ul class='bullet-list'>"
                 $inList = $true
             }
-            $itemContent = $matches[1]
-            $itemContent = [regex]::Replace($itemContent, '\*\*(.+?)\*\*', '<strong>$1</strong>')
-            $itemContent = [regex]::Replace($itemContent, '\*(.+?)\*', '<em>$1</em>')
-            $itemContent = [regex]::Replace($itemContent, '\[(.+?)\]\((.+?)\)', '<a href="$2">$1</a>')
-            $itemContent = [regex]::Replace($itemContent, '`(.+?)`', '<code>$1</code>')
+            $itemContent = Format-InlineMarkdown -Text $matches[1]
             $htmlLines += "<li>$itemContent</li>"
             continue
         }
 
-        $para = $trimmed
-        $para = [regex]::Replace($para, '\*\*(.+?)\*\*', '<strong>$1</strong>')
-        $para = [regex]::Replace($para, '\*(.+?)\*', '<em>$1</em>')
-        $para = [regex]::Replace($para, '\[(.+?)\]\((.+?)\)', '<a href="$2">$1</a>')
-        $para = [regex]::Replace($para, '`(.+?)`', '<code>$1</code>')
+        $para = Format-InlineMarkdown -Text $trimmed
         
         if ($para -match "^<strong>(.+?)</strong>\s*\|\s*(.+)$") {
             $htmlLines += "<div class='job-subheading'><span class='job-title'>$($matches[1])</span><span class='job-dates'>$($matches[2])</span></div>"

@@ -6,11 +6,13 @@
 
 ## 🎯 1. The 45-Second "Tell Me About Yourself" Pitch
 
+*Tip: Ask your AI assistant to customize this pitch using your Master Resume and the target role's job description.*
+
 > *"I am a [Target Title / Core Discipline] with [X] years of experience specializing in [Domain A], [Domain B], and [Domain C].*
 > 
-> *Most recently at [Previous Organization], I led [Major Initiative], where my team [mention key outcome, e.g. scaled platform capacity by 3x / reduced delivery cycle by 35% / managed a $15M operational budget]. Over the past several months, I've paired that foundational experience with focused R&D into [Modern Tool / Methodology, e.g. modern AI-assisted workflows and cloud automation].*
+> *Most recently at [Current or Previous Organization], I led [Major Initiative], where I [mention key outcome, e.g. scaled platform capacity by 3x / reduced delivery cycle by 35% / managed a $15M operational budget]. Alongside that core track record, I've been focused on [mention current focus, specialized expertise, or recent initiative relevant to the JD].*
 > 
-> *I'm now looking for my next long-term home where I can bring that combination of battle-tested operational discipline and modern tooling to help a team [mention 1 high-priority goal, e.g. scale reliably / modernize core processes]."*
+> *What drew me to [Company Name] is your focus on [Company Initiative / Problem Space]. I'm looking for my next long-term home where I can bring my background in [Core Strength] to help your team [mention 1 high-priority goal from the JD]."*
 
 ---
 

@@ -1,0 +1,123 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "ACE Applications & Sourcing Inbox Schema",
+  "description": "JSON Schema validating both applications/ledger.json and applications/sourcing_inbox.json in the Agentic Career Engine (ACE).",
+  "type": "object",
+  "oneOf": [
+    {
+      "title": "ACE Application Ledger",
+      "required": ["meta", "applications"],
+      "properties": {
+        "$schema": { "type": "string" },
+        "meta": {
+          "type": "object",
+          "required": ["candidate", "last_updated"],
+          "properties": {
+            "candidate": { "type": "string" },
+            "last_updated": { "type": "string" },
+            "compensation_target": {
+              "type": "object",
+              "properties": {
+                "target": { "type": "number" },
+                "minimum": { "type": "number" },
+                "relocation_minimum": { "type": "number" }
+              }
+            },
+            "notes": { "type": "string" }
+          }
+        },
+        "applications": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["id", "company", "role", "status"],
+            "properties": {
+              "id": { "type": "string" },
+              "company": { "type": "string" },
+              "role": { "type": "string" },
+              "requisition_id": { "type": ["string", "null"] },
+              "url": { "type": ["string", "null"] },
+              "status": {
+                "type": "string",
+                "enum": [
+                  "sourced",
+                  "in_progress",
+                  "outreach_sent",
+                  "referral_package_sent",
+                  "referral_submitted",
+                  "applied",
+                  "screen_scheduled",
+                  "screen_completed",
+                  "technical_screen",
+                  "onsite",
+                  "offer",
+                  "rejected",
+                  "rejected_post_vp_screen",
+                  "withdrawn",
+                  "archived",
+                  "closed"
+                ]
+              },
+              "dossier_path": { "type": ["string", "null"] },
+              "fit_score": { "type": ["number", "null"] },
+              "compensation": { "type": ["string", "object", "null"] },
+              "referral_contact": { "type": ["string", "null"] },
+              "dates": {
+                "type": "object",
+                "properties": {
+                  "created": { "type": ["string", "null"] },
+                  "applied": { "type": ["string", "null"] },
+                  "last_activity": { "type": ["string", "null"] }
+                }
+              },
+              "notes": { "type": ["string", "null"] }
+            }
+          }
+        }
+      }
+    },
+    {
+      "title": "ACE Sourcing Inbox",
+      "required": ["meta", "leads"],
+      "properties": {
+        "$schema": { "type": "string" },
+        "meta": {
+          "type": "object",
+          "required": ["title", "total_leads", "active_leads"],
+          "properties": {
+            "title": { "type": "string" },
+            "last_scanned": { "type": ["string", "null"] },
+            "total_leads": { "type": "integer", "minimum": 0 },
+            "active_leads": { "type": "integer", "minimum": 0 }
+          }
+        },
+        "leads": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["company", "title", "url", "fit_score"],
+            "properties": {
+              "id": { "type": "string" },
+              "company": { "type": "string" },
+              "title": { "type": "string" },
+              "requisition_id": { "type": ["string", "null"] },
+              "url": { "type": "string" },
+              "ats_platform": { "type": ["string", "null"] },
+              "location": { "type": ["string", "null"] },
+              "compensation": { "type": ["string", "null"] },
+              "fit_score": { "type": "number", "minimum": 0, "maximum": 100 },
+              "likelihood": {
+                "type": "string",
+                "enum": ["High", "Medium", "Low"]
+              },
+              "warm_contact": { "type": ["string", "null"] },
+              "discovered_date": { "type": ["string", "null"] },
+              "status": { "type": ["string", "null"] },
+              "notes": { "type": ["string", "null"] }
+            }
+          }
+        }
+      }
+    }
+  ]
+}

@@ -120,6 +120,16 @@ Update-EngineDirectory -SubPath "scripts"
 Update-EngineDirectory -SubPath ".agents\skills"
 Update-EngineDirectory -SubPath "applications\dossier_template"
 
+$srcAppSchema = Join-Path $upstreamRoot "applications\schema.json"
+$tgtAppSchema = Join-Path $workspaceRoot "applications\schema.json"
+if (Test-Path $srcAppSchema) {
+    Write-Host "  -> Updating applications/schema.json..." -ForegroundColor DarkGray
+    if (-not $DryRun) {
+        Copy-Item -Path $srcAppSchema -Destination $tgtAppSchema -Force
+    }
+    $updatedCount++
+}
+
 # Update Core Workflow SOPs (never overwrite ats_search_config.json directly)
 $coreWorkflowDocs = @(
     "job_hunt_workflow.md",
@@ -182,17 +192,29 @@ if ((Test-Path $upstreamConfigPath) -and (Test-Path $targetConfigPath)) {
         $upstreamConfig = Get-Content $upstreamConfigPath -Raw -Encoding UTF8 | ConvertFrom-Json
         $targetConfig = Get-Content $targetConfigPath -Raw -Encoding UTF8 | ConvertFrom-Json
 
-        $mergedAny = $false
-        foreach ($prop in $upstreamConfig.PSObject.Properties) {
-            if (-not $targetConfig.PSObject.Properties[$prop.Name]) {
-                Write-Host "  -> Adding new schema field: $($prop.Name)" -ForegroundColor DarkGray
-                $targetConfig | Add-Member -MemberType NoteProperty -Name $prop.Name -Value $prop.Value
-                $mergedAny = $true
+        $script:mergedAny = $false
+        function Merge-ConfigProperties {
+            param (
+                $UpstreamObj,
+                $TargetObj,
+                [string]$PathPrefix = ""
+            )
+            foreach ($prop in $UpstreamObj.PSObject.Properties) {
+                $fullKey = if ($PathPrefix) { "$PathPrefix.$($prop.Name)" } else { $prop.Name }
+                if (-not $TargetObj.PSObject.Properties[$prop.Name]) {
+                    Write-Host "  -> Adding new schema field: $fullKey" -ForegroundColor DarkGray
+                    $TargetObj | Add-Member -MemberType NoteProperty -Name $prop.Name -Value $prop.Value
+                    $script:mergedAny = $true
+                } elseif ($null -ne $prop.Value -and $prop.Value.GetType().Name -eq "PSCustomObject" -and $null -ne $TargetObj.($prop.Name) -and $TargetObj.($prop.Name).GetType().Name -eq "PSCustomObject") {
+                    Merge-ConfigProperties -UpstreamObj $prop.Value -TargetObj $TargetObj.($prop.Name) -PathPrefix $fullKey
+                }
             }
         }
 
-        if ($mergedAny -and -not $DryRun) {
-            $targetConfig | ConvertTo-Json -Depth 5 | Set-Content $targetConfigPath -Encoding UTF8
+        Merge-ConfigProperties -UpstreamObj $upstreamConfig -TargetObj $targetConfig
+
+        if ($script:mergedAny -and -not $DryRun) {
+            $targetConfig | ConvertTo-Json -Depth 10 | Set-Content $targetConfigPath -Encoding UTF8
             Write-Host "  Schema fields merged into ats_search_config.json." -ForegroundColor Green
         } else {
             Write-Host "  ats_search_config.json is already up to date." -ForegroundColor DarkGray

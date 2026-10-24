@@ -286,15 +286,52 @@ if ((Test-Path $srcSearchConfig) -and (Test-Path $tgtSearchConfig)) {
         $srcConfig = Get-Content $srcSearchConfig -Raw -Encoding UTF8 | ConvertFrom-Json
         $tgtConfig = Get-Content $tgtSearchConfig -Raw -Encoding UTF8 | ConvertFrom-Json
 
-        if ($srcConfig.target_roles) { $tgtConfig.target_roles = $srcConfig.target_roles }
-        if ($srcConfig.compensation_floor) { $tgtConfig.compensation_floor = $srcConfig.compensation_floor }
-        if ($srcConfig.target_compensation) { $tgtConfig.target_compensation = $srcConfig.target_compensation }
-        if ($srcConfig.preferred_locations) { $tgtConfig.preferred_locations = $srcConfig.preferred_locations }
-        if ($srcConfig.target_company_domains) { $tgtConfig.target_company_domains = $srcConfig.target_company_domains }
-        if ($srcConfig.negative_keywords) { $tgtConfig.negative_keywords = $srcConfig.negative_keywords }
+        # 1. Merge modern nested search_criteria schema
+        if ($srcConfig.search_criteria) {
+            $sc = $srcConfig.search_criteria
+            if ($sc.industry) { $tgtConfig.search_criteria.industry = $sc.industry }
+            if ($sc.roles) { $tgtConfig.search_criteria.roles = $sc.roles }
+            if ($sc.ats_domains) { $tgtConfig.search_criteria.ats_domains = $sc.ats_domains }
+            if ($sc.locations) { $tgtConfig.search_criteria.locations = $sc.locations }
+            if ($sc.negative_keywords) { $tgtConfig.search_criteria.negative_keywords = $sc.negative_keywords }
+            if ($sc.search_scope) { $tgtConfig.search_criteria.search_scope = $sc.search_scope }
+            if ($sc.compensation) {
+                if ($null -ne $sc.compensation.floor) { $tgtConfig.search_criteria.compensation.floor = $sc.compensation.floor }
+                if ($null -ne $sc.compensation.target) { $tgtConfig.search_criteria.compensation.target = $sc.compensation.target }
+                if ($null -ne $sc.compensation.relocation_floor) { $tgtConfig.search_criteria.compensation.relocation_floor = $sc.compensation.relocation_floor }
+                if ($sc.compensation.currency) { $tgtConfig.search_criteria.compensation.currency = $sc.compensation.currency }
+            }
+        } else {
+            # 2. Fallback: Map legacy flat keys into modern nested search_criteria schema
+            if ($srcConfig.target_roles) { $tgtConfig.search_criteria.roles = $srcConfig.target_roles }
+            if ($srcConfig.preferred_locations) { $tgtConfig.search_criteria.locations = $srcConfig.preferred_locations }
+            if ($srcConfig.negative_keywords) { $tgtConfig.search_criteria.negative_keywords = $srcConfig.negative_keywords }
+            if ($null -ne $srcConfig.compensation_floor) { $tgtConfig.search_criteria.compensation.floor = $srcConfig.compensation_floor }
+            if ($null -ne $srcConfig.target_compensation) { $tgtConfig.search_criteria.compensation.target = $srcConfig.target_compensation }
+            if ($srcConfig.target_company_domains -and (-not $srcConfig.target_companies)) {
+                $tgtConfig.target_companies = $srcConfig.target_company_domains
+            }
+        }
+
+        # 3. Merge top-level lists and custom scoring/batch settings
+        if ($srcConfig.target_companies -and @($srcConfig.target_companies).Count -gt 0) {
+            $tgtConfig.target_companies = $srcConfig.target_companies
+        }
+        if ($srcConfig.premier_employers -and @($srcConfig.premier_employers).Count -gt 0) {
+            $tgtConfig.premier_employers = $srcConfig.premier_employers
+        }
+        if ($srcConfig.scoring_weights) {
+            $tgtConfig.scoring_weights = $srcConfig.scoring_weights
+        }
+        if ($srcConfig.execution_settings) {
+            $tgtConfig.execution_settings = $srcConfig.execution_settings
+        }
+        if ($srcConfig.search_batches) {
+            $tgtConfig | Add-Member -NotePropertyName "search_batches" -NotePropertyValue $srcConfig.search_batches -Force
+        }
 
         if (-not $DryRun) {
-            $tgtConfig | ConvertTo-Json -Depth 5 | Set-Content $tgtSearchConfig -Encoding UTF8
+            $tgtConfig | ConvertTo-Json -Depth 10 | Set-Content $tgtSearchConfig -Encoding UTF8
         }
         Write-Host "  -> Merged personal search filters into workflows/ats_search_config.json" -ForegroundColor DarkGray
         $summary.ConfigMerged = $true

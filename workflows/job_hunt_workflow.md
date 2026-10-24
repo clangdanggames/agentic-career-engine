@@ -54,7 +54,7 @@ ACE enforces honest depth calibration across all professions to prevent embarras
 > Every tailored resume MUST be generated as a fresh, clean-room fork directly from the candidate's Master Resume (`resumes/[Name]_Resume_Master.md`) and Modular Reserve Bank (`resumes/modular_reserve_bank.md`).
 > 
 > - **Prohibition on Sequential Iteration**: The assistant must **NEVER** inspect, duplicate, copy, or iterate off a previously tailored resume (`applications/YYYY-MM-DD_*/*.md`) when preparing a new application.
-> - **Why this causes template slop**: When an AI agent iterates off an already-tailored document, formatting standards shift, bullet verbs soften, metrics degrade, and passive voice creeps in—causing compounding linguistic drift ("telephone game slop").
+> - **Why this causes template slop**: When an AI agent iterates off an already-tailored document, formatting standards shift, bullet verbs soften, metrics degrade, and passive voice creeps in, causing compounding linguistic drift ("telephone game slop").
 > - **Immutable Baseline**: Every new application dossier starts from the pristine Master Resume. Tailoring consists strictly of:
 >   1. Filtering and re-ordering bullets to highlight JD alignment.
 >   2. Swapping in 1–2 verified bullets from `resumes/modular_reserve_bank.md`.
@@ -128,7 +128,7 @@ The assistant reviews the JD against the candidate's Master Resume, Reserve Bank
   - Generates tailored resume: `[Candidate]_Resume_[Company]_[ReqID].md`.
   - **Mandatory Integrity Linter Pre-Condition**: Run the integrity linter:
     `powershell -File scripts/lint_resume_integrity.ps1 -TailoredResumePath ...`
-    The linter **MUST pass with 0 errors** before proceeding to PDF compilation. If any unverified competency token or skill is flagged, resolve it by swapping verified bullets from `resumes/modular_reserve_bank.md` or asking the candidate—**never** proceed to PDF compilation with unverified competencies.
+    The linter **MUST pass with 0 errors** before proceeding to PDF compilation. If any unverified competency token or skill is flagged, resolve it by swapping verified bullets from `resumes/modular_reserve_bank.md` or asking the candidate; **never** proceed to PDF compilation with unverified competencies.
   - Generates [`application_form_guide.md`](../applications/dossier_template/application_form_guide.md) to pre-fill ATS portal questions:
     - Pre-populates Field 9 with the candidate's current configured baseline (target base and floor dynamically read from `workflows/ats_search_config.json` or `applications/ledger.json`) alongside an analytically calibrated recommendation for this specific role (based on JD ranges, company tier benchmarks, candidate match tier, and portal text/numeric formatting strategy).
 - **3B. Conversational Calibration Gate (2 mins)**:

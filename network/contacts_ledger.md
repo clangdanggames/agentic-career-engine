@@ -4,7 +4,7 @@
 
 ---
 
-## 🎯 Target Companies — Direct Referral Paths
+## 🎯 Target Companies | Direct Referral Paths
 
 | Organization | Contact Name | Current Title / Role | Relationship / History | LinkedIn Profile | Strategic Action / Status |
 | :--- | :--- | :--- | :--- | :--- | :--- |
@@ -17,11 +17,11 @@
 Group your key connections by previous organizations, universities, or professional communities:
 
 ### Previous Organization A
-- **[Contact Name]** — *[Current Title] @ [Company]* | [LinkedIn Profile](https://linkedin.com)
-- **[Contact Name]** — *[Current Title] @ [Company]* | [LinkedIn Profile](https://linkedin.com)
+- **[Contact Name]** | *[Current Title] @ [Company]* | [LinkedIn Profile](https://linkedin.com)
+- **[Contact Name]** | *[Current Title] @ [Company]* | [LinkedIn Profile](https://linkedin.com)
 
 ### Previous Organization B
-- **[Contact Name]** — *[Current Title] @ [Company]* | [LinkedIn Profile](https://linkedin.com)
+- **[Contact Name]** | *[Current Title] @ [Company]* | [LinkedIn Profile](https://linkedin.com)
 
 ---
 

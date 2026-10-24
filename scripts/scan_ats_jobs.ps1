@@ -125,10 +125,14 @@ Write-Host "Compensation Floor: $($config.search_criteria.compensation.floor) $(
 
 # Initialize Sourcing Inbox JSON if it doesn't exist
 if (-not (Test-Path $InboxJsonPath)) {
-    $initialData = @{
-        schema = "./schema.json"
-        last_scan = (Get-Date -Format "yyyy-MM-ddTHH:mm:ss")
-        total_discovered = 0
+    $initialData = [ordered]@{
+        "`$schema" = "./schema.json"
+        meta = [ordered]@{
+            title = "Job Sourcing Lead Inbox"
+            last_scanned = (Get-Date -Format "yyyy-MM-ddTHH:mm:ss")
+            total_leads = 0
+            active_leads = 0
+        }
         leads = @()
     }
     $initialData | ConvertTo-Json -Depth 5 | Set-Content $InboxJsonPath -Encoding UTF8

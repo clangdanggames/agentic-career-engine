@@ -1,6 +1,6 @@
 # 🌉 Reusable Project-to-Resume Extraction Prompt
 
-> **Purpose**: Use this prompt in any other project, repository, or agent workspace (Antigravity, Cursor, Claude Code, ChatGPT, etc.) to extract clean, production-calibrated resume bullets, skills matrix additions, and STAR interview stories from that project into your ACE career command center—without modifying any files in the source workspace.
+> **Purpose**: Use this prompt in any other project, repository, or agent workspace (Antigravity, Cursor, Claude Code, ChatGPT, etc.) to extract clean, production-calibrated resume bullets, skills matrix additions, and STAR interview stories from that project into your ACE career command center without modifying any files in the source workspace.
 
 ---
 
@@ -23,7 +23,7 @@ Your task is to analyze our current codebase, project documentation, spreadsheet
 - **Experience Depth & Ownership Calibration (Crucial)**:
   Distinguish between:
   - **Level 1 (Core / Direct Hands-on Mastery)**: Methodologies, protocols, tools, or code you directly execute, author, or calculate, and can comfortably defend or execute in an interview without AI.
-  - **Level 2 (Architectural / AI-Assisted / "Tool-Authored")**: Solutions where AI agents did the heavy coding or data manipulation lifting, but you directed the business logic, requirements, validation, and integration. **Frame these around problem-solving, system design, and AI-accelerated delivery velocity—never claim raw syntax or software engineering specialization if you are non-technical.**
+  - **Level 2 (Architectural / AI-Assisted / "Tool-Authored")**: Solutions where AI agents did the heavy coding or data manipulation lifting, but you directed the business logic, requirements, validation, and integration. **Frame these around problem-solving, system design, and AI-accelerated delivery velocity; never claim raw syntax or software engineering specialization if you are non-technical.**
   - **Level 3 (Incidental Exposure)**: Third-party platforms, ERPs, CRMs, or libraries touched transiently.
 
 ---

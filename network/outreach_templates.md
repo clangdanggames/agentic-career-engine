@@ -17,7 +17,7 @@ I'm currently exploring my next career chapter and focusing on [domain / role ty
 
 I noticed [Company] has an opening for [Role Title] on the [Team/Department Name] team. Given my background in [mention 1 core strength relevant to role, e.g. scaling cross-functional programs / leading multi-million dollar budgets / driving customer retention], it looks like an exciting match.
 
-If you're comfortable submitting an internal referral or introducing me to the hiring team, I'd really appreciate it. Absolutely no pressure either way—happy to share my resume or grab a quick virtual coffee to catch up regardless!
+If you're comfortable submitting an internal referral or introducing me to the hiring team, I'd really appreciate it. Absolutely no pressure either way; happy to share my resume or grab a quick virtual coffee to catch up regardless!
 
 Best,
 [Your Name]
