@@ -52,6 +52,7 @@
     "Nike", "Target", "Disney", "Salesforce", "Deloitte"
   ],
   "target_companies": [],
+  "ats_boards": [],
   "scoring_weights": {
     "core_competencies": {
       "max_points": 40,

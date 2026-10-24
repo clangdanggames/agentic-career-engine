@@ -28,22 +28,23 @@ Follow this 5-step procedure to execute an ATS job scan:
 2. Note the configured roles, ATS domains, locations, and negative filters.
 3. Check existing URLs in [`applications/sourcing_inbox.json`](../../../applications/sourcing_inbox.json) to prevent processing duplicate leads.
 
-### Step 2: Execute Targeted Web Searches
-Run searches using `search_web` across the ATS query categories constructed from the configuration:
-1. **Primary Remote Target Roles**:
-   Search across configured ATS domains (`boards.greenhouse.io`, `jobs.lever.co`, `jobs.ashbyhq.com`, `myworkdayjobs.com`) filtering for remote roles and target titles.
-2. **Specialized Target Roles & Tech Stacks**:
-   Search focusing on the candidate's core language/technology preferences and high-priority specializations.
-3. **Target Regional / Metro Openings**:
-   Search focusing on preferred local or hybrid geographic regions if specified.
-4. **Target Company Career Pages**:
-   Search specific target company domains configured in `ats_search_config.json` where internal network contacts exist.
+### Step 2: Execute Targeted Web Searches & Direct ATS Board API Scans
+1. **Direct Public ATS Board APIs (Fastest & Zero Generic Links)**:
+   - For known target boards on Greenhouse, Lever, or Ashby (configured in `ats_boards` in `workflows/ats_search_config.json` or passed directly), run:
+     `powershell -File scripts/scan_ats_jobs.ps1 -Boards @("greenhouse:<slug>", "lever:<slug>", "ashby:<slug>") -Ingest` (or `-FetchBoards -Ingest`).
+   - This directly queries the unauthenticated public JSON endpoints (`boards-api.greenhouse.io`, `api.lever.co`, `api.ashbyhq.com`), scores every posting against the 100-point rubric, cross-references `network/contacts_ledger.md`, and populates `sourcing_inbox.json` and `sourcing_inbox.md`.
+2. **Broad Market Web Search Batches**:
+   - Run `powershell -File scripts/scan_ats_jobs.ps1 -DryRun` to generate optimized Boolean search batches from `workflows/ats_search_config.json`, then execute searches using `search_web`:
+     - **Primary Remote Target Roles**: Search across configured ATS domains (`boards.greenhouse.io`, `jobs.lever.co`, `jobs.ashbyhq.com`, `myworkdayjobs.com`) filtering for remote roles and target titles.
+     - **Specialized Target Roles & Tech Stacks**: Search focusing on the candidate's core language/technology preferences and high-priority specializations.
+     - **Target Regional / Metro Openings**: Search focusing on preferred local or hybrid geographic regions if specified.
+     - **Target Company Career Pages**: Search specific target company domains configured in `ats_search_config.json` where internal network contacts exist.
 
 ### Step 3: Extract & Evaluate Core Details
 For each discovered job posting:
 1. **Extract Metadata & Direct Requisition URL (MANDATORY INVARIANT)**:
    - **Job Title**, **Company**, **Location** (Remote / Hybrid / Onsite), **Date Discovered**.
-   - **Schema.org JSON-LD Extraction**: Modern ATS platforms (Ashby, Greenhouse, Lever) embed `<script type="application/ld+json">` containing structured `JobPosting` schema in their initial HTML payload. Extract this block first: it provides exact base salary ranges (`baseSalary.value.minValue` and `maxValue`), location type (`jobLocationType: TELECOMMUTE`), official job title, and hiring organization with zero regex fragility or client-side rendering failures.
+   - **Schema.org JSON-LD & Single-URL Extraction**: Modern ATS platforms (Ashby, Greenhouse, Lever) embed `<script type="application/ld+json">` containing structured `JobPosting` schema in their initial HTML payload, or expose single-posting JSON APIs. You can extract and score any direct URL via `powershell -File scripts/scan_ats_jobs.ps1 -ExtractUrl "<url>" -Ingest`: it extracts exact base salary ranges (`baseSalary.value.minValue` and `maxValue`), location type (`jobLocationType: TELECOMMUTE`), official job title, and hiring organization with zero regex fragility or client-side rendering failures.
    - **Direct Requisition URL**: The URL **MUST** be a deep link to the individual job posting containing the unique requisition ID or UUID.
      > [!CAUTION]
      > **Zero Generic Portal Links**: Never record root career homepages (e.g. `boards.greenhouse.io/<company>`, `jobs.ashbyhq.com/<org>`, or `myworkdayjobs.com/...`). These drop candidates on general search pages or 404, breaking the 1-click apply workflow.
@@ -74,9 +75,10 @@ For each discovered job posting:
    - **Medium**: Strong technical match, standard competitive pipeline, unlisted comp, or no immediate referral.
    - **Low**: Relocation required outside target regions or heavy non-aligned tech stack requirements.
 
-### Step 4: Update Sourcing Inbox
-1. Append all qualified leads ($\text{Fit Score} \ge 65\%$) with verified direct requisition URLs to [`applications/sourcing_inbox.json`](../../../applications/sourcing_inbox.json).
-2. Regenerate [`applications/sourcing_inbox.md`](../../../applications/sourcing_inbox.md) with a ranked visual table sorted by **Fit Score** and **Likelihood of Success**. Ensure links point directly to the verified requisition URL (or include `⚠️ Confirm Requisition Link` flag if direct slug was unresolvable), with Requisition ID noted where available.
+### Step 4: Update & Audit Sourcing Inbox
+1. Append all qualified leads ($\text{Fit Score} \ge 65\%$) with verified direct requisition URLs to [`applications/sourcing_inbox.json`](../../../applications/sourcing_inbox.json) (either automatically via `-Ingest` or by adding structured records and running `powershell -File scripts/scan_ats_jobs.ps1 -RenderInboxMd`).
+2. Regenerate [`applications/sourcing_inbox.md`](../../../applications/sourcing_inbox.md) (`powershell -File scripts/scan_ats_jobs.ps1 -RenderInboxMd`) with a ranked visual table sorted by **Fit Score** and **Likelihood of Success**. Ensure links point directly to the verified requisition URL (or include `⚠️ Confirm Requisition Link` flag if direct slug was unresolvable), with Requisition ID noted where available.
+3. Audit direct link integrity via `powershell -File scripts/scan_ats_jobs.ps1 -VerifyInbox`.
 
 ### Step 5: Report Highlights to the User
 Present the top 3–5 highest-scoring opportunities in your response, highlighting:

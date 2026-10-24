@@ -320,6 +320,9 @@ if ((Test-Path $srcSearchConfig) -and (Test-Path $tgtSearchConfig)) {
         if ($srcConfig.premier_employers -and @($srcConfig.premier_employers).Count -gt 0) {
             $tgtConfig.premier_employers = $srcConfig.premier_employers
         }
+        if ($srcConfig.ats_boards -and @($srcConfig.ats_boards).Count -gt 0) {
+            $tgtConfig | Add-Member -NotePropertyName "ats_boards" -NotePropertyValue $srcConfig.ats_boards -Force
+        }
         if ($srcConfig.scoring_weights) {
             $tgtConfig.scoring_weights = $srcConfig.scoring_weights
         }
