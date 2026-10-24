@@ -130,7 +130,7 @@ ACE/
 ├── scripts/                       # Automation scripts (PDF rendering, linting, syncing, backups)
 ├── stories/                       # STAR+R stories, screen cheatsheets, & gap framing
 ├── workflows/                     # Search configs, 20-min SOP, & compensation models
-├── AGENTS.md                      # Operational doctrines (Rules 1–8)
+├── AGENTS.md                      # Operational doctrines (Rules 1–9)
 ├── DASHBOARD.md                   # [Generated] Your live personal career command center
 ├── GENESIS_PROMPT.md              # Candidate onboarding protocol
 ├── HARNESS_SETUP.md               # Agent harness permissions & security guide

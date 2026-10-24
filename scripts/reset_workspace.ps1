@@ -130,3 +130,4 @@ Write-Host "  applications/sourcing_inbox.md reset to empty state." -ForegroundC
 
 Write-Host "`nSUCCESS: Workspace has been reset cleanly to factory defaults!" -ForegroundColor Green
 Write-Host "Demo showcase files in 'examples/' and configuration in 'workflows/' were preserved." -ForegroundColor Gray
+exit 0

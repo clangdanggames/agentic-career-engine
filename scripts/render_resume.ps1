@@ -6,7 +6,21 @@ param (
     [string]$OutputPath,
 
     [Parameter(Mandatory = $false)]
-    [switch]$VerifyIntegrity
+    [switch]$VerifyIntegrity,
+
+    [Parameter(Mandatory = $false)]
+    [ValidateSet("Standard", "Compact", "Tight")]
+    [string]$Density = "Standard",
+
+    [Parameter(Mandatory = $false)]
+    [ValidateSet("Resume", "CoverLetter")]
+    [string]$DocumentType = "Resume",
+
+    [Parameter(Mandatory = $false)]
+    [switch]$AutoFit,
+
+    [Parameter(Mandatory = $false)]
+    [switch]$CleanHtml
 )
 
 $ErrorActionPreference = "Stop"
@@ -20,11 +34,16 @@ if (-not (Test-Path $MarkdownPath)) {
 $ResolvedMd = (Resolve-Path $MarkdownPath).Path
 $WorkDir = Split-Path -Parent $ResolvedMd
 
-if ($VerifyIntegrity) {
+# Auto-detect CoverLetter document type if filename matches cover_letter*.md
+if (-not $PSBoundParameters.ContainsKey("DocumentType") -and (Split-Path $ResolvedMd -Leaf) -match "(?i)cover[_-]?letter") {
+    $DocumentType = "CoverLetter"
+}
+
+if ($VerifyIntegrity -and $DocumentType -eq "Resume") {
     $linterScript = Join-Path $PSScriptRoot "lint_resume_integrity.ps1"
     if (Test-Path $linterScript) {
         Write-Host "Running Resume Integrity Linter prior to compilation..." -ForegroundColor Cyan
-        & powershell -ExecutionPolicy Bypass -File $linterScript -TailoredResumePath $ResolvedMd
+        & $linterScript -TailoredResumePath $ResolvedMd
         if ($LASTEXITCODE -ne 0) {
             Write-Error "Integrity check failed. Compilation aborted."
             exit 1
@@ -137,12 +156,72 @@ function Convert-MarkdownToHtmlBody {
 
 $bodyHtml = Convert-MarkdownToHtmlBody -md $mdContent
 
-$fullHtml = @"
+function Build-DocumentHtml {
+    param (
+        [string]$BodyContent,
+        [string]$TitleText,
+        [string]$DocType = "Resume",
+        [string]$DensityPreset = "Standard"
+    )
+
+    if ($DocType -eq "CoverLetter") {
+        $fontSize = "10.25pt"
+        $lineHeight = "1.45"
+        $bodyPadding = "0.60in 0.70in"
+        $h1Size = "16pt"
+        $h2Size = "10.5pt"
+        $h3Size = "10pt"
+        $pMargin = "8px"
+        $secTop = "12px"
+        $secBottom = "6px"
+        $liMargin = "4px"
+    } else {
+        switch ($DensityPreset) {
+            "Compact" {
+                $fontSize = "8.35pt"
+                $lineHeight = "1.19"
+                $bodyPadding = "0.23in 0.34in"
+                $h1Size = "16pt"
+                $h2Size = "9.1pt"
+                $h3Size = "8.9pt"
+                $pMargin = "2px"
+                $secTop = "4px"
+                $secBottom = "2px"
+                $liMargin = "1px"
+            }
+            "Tight" {
+                $fontSize = "8.05pt"
+                $lineHeight = "1.14"
+                $bodyPadding = "0.19in 0.30in"
+                $h1Size = "15pt"
+                $h2Size = "8.8pt"
+                $h3Size = "8.6pt"
+                $pMargin = "1.5px"
+                $secTop = "3px"
+                $secBottom = "1.5px"
+                $liMargin = "0.75px"
+            }
+            default {
+                $fontSize = "8.65pt"
+                $lineHeight = "1.25"
+                $bodyPadding = "0.28in 0.38in"
+                $h1Size = "17pt"
+                $h2Size = "9.5pt"
+                $h3Size = "9.25pt"
+                $pMargin = "2.5px"
+                $secTop = "5px"
+                $secBottom = "2.5px"
+                $liMargin = "1.5px"
+            }
+        }
+    }
+
+    return @"
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>$candidateName</title>
+    <title>$TitleText</title>
     <style>
         @page {
             size: letter;
@@ -157,40 +236,40 @@ $fullHtml = @"
             background-color: #ffffff;
             color: #1e293b;
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-            font-size: 8.65pt;
-            line-height: 1.25;
+            font-size: $fontSize;
+            line-height: $lineHeight;
             -webkit-print-color-adjust: exact;
         }
         body {
-            padding: 0.28in 0.38in;
+            padding: $bodyPadding;
         }
         .candidate-name {
-            font-size: 17pt;
+            font-size: $h1Size;
             font-weight: 700;
             color: #0f172a;
             letter-spacing: -0.02em;
             margin-bottom: 2px;
         }
         p {
-            margin-bottom: 2.5px;
+            margin-bottom: $pMargin;
         }
         a {
             color: #2563eb;
             text-decoration: none;
         }
         .section-title {
-            font-size: 9.5pt;
+            font-size: $h2Size;
             font-weight: 700;
             text-transform: uppercase;
             letter-spacing: 0.05em;
             color: #0f172a;
             border-bottom: 1.25px solid #0f172a;
             padding-bottom: 1px;
-            margin-top: 5px;
-            margin-bottom: 2.5px;
+            margin-top: $secTop;
+            margin-bottom: $secBottom;
         }
         .job-company {
-            font-size: 9.25pt;
+            font-size: $h3Size;
             font-weight: 700;
             color: #1e293b;
             margin-top: 3.5px;
@@ -214,10 +293,10 @@ $fullHtml = @"
         }
         .bullet-list {
             margin-left: 14px;
-            margin-bottom: 2.5px;
+            margin-bottom: $pMargin;
         }
         .bullet-list li {
-            margin-bottom: 1.5px;
+            margin-bottom: $liMargin;
             padding-left: 1px;
         }
         code {
@@ -234,18 +313,28 @@ $fullHtml = @"
     </style>
 </head>
 <body>
-    $bodyHtml
+    $BodyContent
 </body>
 </html>
 "@
+}
+
+function Get-PdfPageCount {
+    param ([string]$PdfFile)
+    if (-not (Test-Path $PdfFile)) { return 0 }
+    $bytes = [System.IO.File]::ReadAllBytes((Resolve-Path $PdfFile).Path)
+    $text = [System.Text.Encoding]::ASCII.GetString($bytes)
+    return ([regex]::Matches($text, "/Type\s*/Page[^s]")).Count
+}
 
 $htmlParent = Split-Path -Parent $HtmlPath
 if (-not [string]::IsNullOrWhiteSpace($htmlParent) -and -not (Test-Path $htmlParent)) {
     New-Item -ItemType Directory -Path $htmlParent -Force | Out-Null
 }
 
+$fullHtml = Build-DocumentHtml -BodyContent $bodyHtml -TitleText $candidateName -DocType $DocumentType -DensityPreset $Density
 Set-Content -Path $HtmlPath -Value $fullHtml -Encoding UTF8
-Write-Host "Generated HTML at: $HtmlPath"
+Write-Host "Generated HTML ($DocumentType, Density: $Density) at: $HtmlPath"
 
 # Locate Chromium-based headless browser (Edge or Chrome)
 $BrowserPath = $null
@@ -291,7 +380,7 @@ if ($null -eq $BrowserPath) {
 }
 
 Write-Host "Compiling clean PDF via Headless Browser: $BrowserPath"
-$fileUri = "file:///" + ($HtmlPath -replace '\\', '/')
+$fileUri = [System.Uri]::new($HtmlPath).AbsoluteUri
 $processArgs = @(
     "--headless",
     "--disable-gpu",
@@ -300,9 +389,40 @@ $processArgs = @(
     "`"$fileUri`""
 )
 
-$proc = Start-Process -FilePath $BrowserPath -ArgumentList $processArgs -PassThru -Wait -NoNewWindow
-if (Test-Path $OutputPath) {
-    Write-Host "SUCCESS: PDF generated cleanly at $OutputPath"
-} else {
+$null = Start-Process -FilePath $BrowserPath -ArgumentList $processArgs -PassThru -Wait -NoNewWindow
+
+if (-not (Test-Path $OutputPath)) {
     Write-Error "Failed to generate PDF at $OutputPath"
+    exit 1
 }
+
+$pageCount = Get-PdfPageCount -PdfFile $OutputPath
+$activeDensity = $Density
+
+# Automatic 1-page density stepping when overflow occurs and AutoFit is enabled (or default Density was used)
+if ($pageCount -gt 1 -and ($AutoFit -or -not $PSBoundParameters.ContainsKey("Density")) -and $DocumentType -eq "Resume") {
+    $fallbackPresets = @("Compact", "Tight") | Where-Object { $_ -ne $Density }
+    foreach ($preset in $fallbackPresets) {
+        Write-Host "Page count is $pageCount (> 1). Auto-fitting with '$preset' density preset..." -ForegroundColor Yellow
+        $activeDensity = $preset
+        $fullHtml = Build-DocumentHtml -BodyContent $bodyHtml -TitleText $candidateName -DocType $DocumentType -DensityPreset $preset
+        Set-Content -Path $HtmlPath -Value $fullHtml -Encoding UTF8
+        $null = Start-Process -FilePath $BrowserPath -ArgumentList $processArgs -PassThru -Wait -NoNewWindow
+        $pageCount = Get-PdfPageCount -PdfFile $OutputPath
+        if ($pageCount -eq 1) {
+            break
+        }
+    }
+}
+
+if ($CleanHtml -and (Test-Path $HtmlPath)) {
+    Remove-Item -Path $HtmlPath -Force -ErrorAction SilentlyContinue
+}
+
+Write-Host "SUCCESS: PDF generated cleanly at $OutputPath" -ForegroundColor Green
+if ($pageCount -eq 1) {
+    Write-Host "PASS: Strict 1-page constraint verified (1 page | Mode: $DocumentType | Density: $activeDensity)." -ForegroundColor Green
+} elseif ($pageCount -gt 1) {
+    Write-Warning "OVERFLOW: Compiled PDF is $pageCount pages even at '$activeDensity' density. Trim 1-2 bullets to fit strictly on 1 page."
+}
+exit 0

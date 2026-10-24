@@ -10,6 +10,7 @@ param (
 )
 
 $ErrorActionPreference = "Stop"
+$global:ProgressPreference = "SilentlyContinue"
 [Console]::OutputEncoding = [System.Text.Encoding]::UTF8
 
 $workspaceRoot = (Resolve-Path "$PSScriptRoot\..").Path
@@ -117,11 +118,11 @@ function Update-EngineDirectory {
 
 # Update Scripts & Skills
 Update-EngineDirectory -SubPath "scripts"
-Update-EngineDirectory -SubPath ".agents\skills"
-Update-EngineDirectory -SubPath "applications\dossier_template"
+Update-EngineDirectory -SubPath ".agents/skills"
+Update-EngineDirectory -SubPath "applications/dossier_template"
 
-$srcAppSchema = Join-Path $upstreamRoot "applications\schema.json"
-$tgtAppSchema = Join-Path $workspaceRoot "applications\schema.json"
+$srcAppSchema = Join-Path $upstreamRoot "applications/schema.json"
+$tgtAppSchema = Join-Path $workspaceRoot "applications/schema.json"
 if (Test-Path $srcAppSchema) {
     Write-Host "  -> Updating applications/schema.json..." -ForegroundColor DarkGray
     if (-not $DryRun) {
@@ -140,8 +141,8 @@ $coreWorkflowDocs = @(
     "engine_lifecycle.md"
 )
 foreach ($doc in $coreWorkflowDocs) {
-    $srcDoc = Join-Path $upstreamRoot "workflows\$doc"
-    $tgtDoc = Join-Path $workspaceRoot "workflows\$doc"
+    $srcDoc = Join-Path $upstreamRoot "workflows/$doc"
+    $tgtDoc = Join-Path $workspaceRoot "workflows/$doc"
     if (Test-Path $srcDoc) {
         Write-Host "  -> Updating workflows/$doc..." -ForegroundColor DarkGray
         if (-not $DryRun) {
@@ -237,3 +238,4 @@ Write-Host "======================================================" -ForegroundC
 Write-Host "Engine Files Updated   : $updatedCount" -ForegroundColor White
 Write-Host "Personal User State    : Strictly Preserved (0 files touched)" -ForegroundColor White
 Write-Host "Backup Snapshot        : $(if (-not $SkipBackup -and -not $DryRun) { $backupDir } else { 'Skipped' })`n" -ForegroundColor White
+exit 0

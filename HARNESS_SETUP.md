@@ -261,7 +261,7 @@ You are configuring your execution permissions for the Agentic Career Engine (AC
 Please review the Technical Specification in HARNESS_SETUP.md:
 1. Inspect your current runtime environment. Identify your specific agent harness (for example: Cursor, Claude Code, Antigravity, Windsurf, VS Code extension like Cline or Roo Code, or any other agentic environment). Do not assume you are in one of the example environments if your runtime indicates otherwise.
 2. Determine how your harness manages tool approvals (e.g. workspace settings file, global config, or manual UI toggles).
-3. If your harness supports workspace-level configuration files (such as `.cursor/settings.json` or `.claude/config.json`), offer to generate the configuration file directly using the exact allowed commands and domains from HARNESS_SETUP.md. If configuration requires manual UI toggles, provide step-by-step instructions specific to this environment.
+3. If your harness supports workspace-level configuration or rule pointer files (such as `.cursor/settings.json`, `.cursorrules`, `.claude/config.json`, or `CLAUDE.md`), offer to generate the local configuration file(s) directly using the exact allowed commands and domains from HARNESS_SETUP.md (and referencing `AGENTS.md` as the single source of operational truth). If configuration requires manual UI toggles, provide step-by-step instructions specific to this environment.
 4. Enforce the Scratchpad Exemption: Verify that transient file creation and cleanup inside `scratch/*` is permitted, while any deletion outside `scratch/` or any `git push` remains strictly locked behind manual human confirmation.
 5. Present a clear, concise summary of the active or recommended permissions.
 ```

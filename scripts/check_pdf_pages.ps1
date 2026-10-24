@@ -28,4 +28,5 @@ if ($pageCount -eq 1) {
     Write-Warning "Could not detect page count via stream marker inspection."
 }
 
+$global:LASTEXITCODE = 0
 return $pageCount

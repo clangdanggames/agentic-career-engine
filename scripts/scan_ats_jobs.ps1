@@ -1,9 +1,9 @@
 # Automated ATS Job Scanner & Ingestion Script
 param (
-    [string]$ConfigPath = ".\workflows\ats_search_config.json",
-    [string]$InboxJsonPath = ".\applications\sourcing_inbox.json",
-    [string]$InboxMdPath = ".\applications\sourcing_inbox.md",
-    [string]$ContactsLedgerPath = ".\network\contacts_ledger.md",
+    [string]$ConfigPath = "./workflows/ats_search_config.json",
+    [string]$InboxJsonPath = "./applications/sourcing_inbox.json",
+    [string]$InboxMdPath = "./applications/sourcing_inbox.md",
+    [string]$ContactsLedgerPath = "./network/contacts_ledger.md",
     [switch]$VerifyInbox,
     [switch]$DryRun
 )
@@ -65,35 +65,46 @@ if ($VerifyInbox) {
         }
 
         if ($isGeneric) {
-            Write-Host "⚠️  GENERIC:  [$company] $title" -ForegroundColor Yellow
-            Write-Host "   URL:    $url" -ForegroundColor DarkGray
-            Write-Host "   Issue:  $reason" -ForegroundColor Yellow
+            Write-Host "[!] GENERIC:  [$company] $title" -ForegroundColor Yellow
+            Write-Host "    URL:      $url" -ForegroundColor DarkGray
+            Write-Host "    Issue:    $reason" -ForegroundColor Yellow
             $issuesCount++
             continue
         }
 
-        # 2. Fast Live HTTP Verification via curl.exe (Cloudflare/WAF resilient, header only)
+        # 2. Fast Live HTTP Verification via curl (Cloudflare/WAF resilient, cross-platform)
         $httpCode = "ERR"
         $effectiveUrl = $url
         try {
-            $curlOut = & curl.exe -s -L -m 5 -o NUL -w "%{http_code}|%{url_effective}" -A "Mozilla/5.0 (Windows NT 10.0; Win64; x64)" "$url" 2>$null
-            if ($curlOut -and $curlOut -match "^(\d+)\|(.*)$") {
-                $httpCode = $matches[1]
-                $effectiveUrl = $matches[2].Trim()
+            $curlBin = if (Get-Command "curl.exe" -ErrorAction SilentlyContinue) { "curl.exe" } elseif (Get-Command "curl" -ErrorAction SilentlyContinue) { "curl" } else { $null }
+            $nullDev = if ($env:OS -eq "Windows_NT") { "NUL" } else { "/dev/null" }
+            if ($curlBin) {
+                $curlOut = & $curlBin -s -L -m 5 -o $nullDev -w "%{http_code}|%{url_effective}" -A "Mozilla/5.0 (Windows NT 10.0; Win64; x64)" "$url" 2>$null
+                if ($curlOut -and $curlOut -match "^(\d+)\|(.*)$") {
+                    $httpCode = $matches[1]
+                    $effectiveUrl = $matches[2].Trim()
+                }
+            } else {
+                $resp = Invoke-WebRequest -Uri $url -Method Head -MaximumRedirection 5 -TimeoutSec 5 -UseBasicParsing -ErrorAction Stop
+                $httpCode = [string]$resp.StatusCode
             }
         } catch {
-            $httpCode = "FAIL"
+            if ($_.Exception.Response -and $_.Exception.Response.StatusCode) {
+                $httpCode = [string][int]$_.Exception.Response.StatusCode
+            } else {
+                $httpCode = "FAIL"
+            }
         }
 
         if ($httpCode -eq "200") {
-            Write-Host "🟢 LIVE:     [$company] $title (HTTP $httpCode)" -ForegroundColor Green
+            Write-Host "[+] LIVE:     [$company] $title (HTTP $httpCode)" -ForegroundColor Green
             $passedCount++
         } elseif ($httpCode -in @("403", "503")) {
-            Write-Host "🛡️ SHIELDED: [$company] $title (HTTP $httpCode - Bot Shield Active, Deep URL Verified)" -ForegroundColor Cyan
+            Write-Host "[~] SHIELDED: [$company] $title (HTTP $httpCode - Bot Shield Active, Deep URL Verified)" -ForegroundColor Cyan
             $passedCount++
         } else {
-            Write-Host "❌ BROKEN:   [$company] $title (HTTP $httpCode)" -ForegroundColor Red
-            Write-Host "   URL:    $url" -ForegroundColor DarkGray
+            Write-Host "[-] BROKEN:   [$company] $title (HTTP $httpCode)" -ForegroundColor Red
+            Write-Host "    URL:      $url" -ForegroundColor DarkGray
             $issuesCount++
         }
     }
@@ -217,3 +228,4 @@ if ($DryRun) {
 
 Write-Host "`nTo execute these queries live, activate the autonomous Antigravity 'ats-job-scanner' skill." -ForegroundColor Cyan
 Write-Host "The agent will execute web searches, score job matches against your profile, cross-reference your network contacts, and populate applications/sourcing_inbox.json & .md."
+exit 0

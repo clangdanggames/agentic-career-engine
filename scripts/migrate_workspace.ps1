@@ -278,7 +278,7 @@ $summary.DashboardMigrated = $dashboardFound
 # 7. Merge Search Configuration
 # ----------------------------------------------------
 Write-Host "`n[7/7] Merging ATS Search Configuration..." -ForegroundColor Cyan
-$srcSearchConfig = Join-Path $resolvedSource "workflows\ats_search_config.json"
+$srcSearchConfig = Join-Path $resolvedSource "workflows/ats_search_config.json"
 $tgtSearchConfig = Join-Path $targetWorkflowsDir "ats_search_config.json"
 
 if ((Test-Path $srcSearchConfig) -and (Test-Path $tgtSearchConfig)) {
@@ -359,8 +359,9 @@ Write-Host "ATS Search Config      : $(if ($summary.ConfigMerged) {'Merged'} els
 $masterResume = Get-ChildItem -Path $targetResumesDir -Filter "*_Resume_Master.md" -File | Select-Object -First 1
 if ($masterResume -and -not $DryRun) {
     Write-Host "Running integrity check on migrated master resume: $($masterResume.Name)..." -ForegroundColor Yellow
-    $linterScript = Join-Path $targetRoot "scripts\lint_resume_integrity.ps1"
+    $linterScript = Join-Path $targetRoot "scripts/lint_resume_integrity.ps1"
     if (Test-Path $linterScript) {
-        powershell -ExecutionPolicy Bypass -File $linterScript -TailoredResumePath $masterResume.FullName
+        & $linterScript -TailoredResumePath $masterResume.FullName
     }
 }
+exit 0

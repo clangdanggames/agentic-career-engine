@@ -127,15 +127,30 @@ function Extract-CompetencyTokens {
             $inSkills = $false
             break
         }
-        if ($inSkills -and $trimmed -match "^-\s*\*\*([^*]+)\*\*:\s*(.+)$") {
-            $categoryVal = $matches[2]
-            $rawItems = $categoryVal -split "[,;]"
+        if ($inSkills -and ($trimmed -match "^[-*]\s*\*\*([^*]+)\*\*:\s*(.+)$" -or $trimmed -match "^[-*]\s+([^*].+)$")) {
+            $categoryVal = if ($matches[2]) { $matches[2] } else { $matches[1] }
+
+            # First extract parenthetical sub-items like AWS (EKS, RDS, DynamoDB, S3) before comma-splitting
+            $parenMatches = [regex]::Matches($categoryVal, "\(([^)]+)\)")
+            foreach ($pm in $parenMatches) {
+                $innerText = $pm.Groups[1].Value
+                $innerItems = $innerText -split "[,;/]"
+                foreach ($inner in $innerItems) {
+                    $cleanInner = $inner.Trim().TrimEnd('.').Trim()
+                    # Skip pure version numbers (e.g. 3.11+) or internal depth markers
+                    if ($cleanInner.Length -gt 1 -and $cleanInner -match "[a-zA-Z]" -and $cleanInner -notmatch "(?i)^(?:Level\s*[123]|v?\d+(?:\.\d+)*\+?)$") {
+                        $tokensList.Add($cleanInner)
+                    }
+                }
+            }
+
+            # Strip parenthetical groups and split remaining top-level items
+            $noParenVal = ($categoryVal -replace "\([^)]*\)", "")
+            $rawItems = $noParenVal -split "[,;]"
             foreach ($item in $rawItems) {
                 $clean = $item.Trim().TrimEnd('.').Trim()
-                # Strip parenthetical annotations like (3.10+), (P4), (.NET)
-                $cleanNoParen = ($clean -replace "\(.*?\)", "").Trim()
-                if ($cleanNoParen.Length -gt 1) {
-                    $tokensList.Add($cleanNoParen)
+                if ($clean.Length -gt 1) {
+                    $tokensList.Add($clean)
                 }
             }
         }
@@ -167,6 +182,40 @@ foreach ($skill in $skills) {
         $unverifiedSkills.Add($skill)
     }
 }
+
+# 2B. Verify Quantified Metrics & Figures Across Entire Document (Anti-Inflation Check)
+$metricPattern = "(?:\$\d[\d,.]*[kKmMbB]?\+?|\b\d+(?:\.\d+)?%|\b(?:sub-)?\d+(?:\.\d+)?(?:ms|x|X|[kKmMbB]\+)(?!\w))"
+$metricMatches = [regex]::Matches($tailoredText, $metricPattern)
+$unverifiedMetrics = [System.Collections.Generic.List[string]]::new()
+
+foreach ($mm in $metricMatches) {
+    $metricVal = $mm.Value
+    if ($whitelistCorpus.IndexOf($metricVal, [System.StringComparison]::OrdinalIgnoreCase) -lt 0) {
+        $unverifiedMetrics.Add($metricVal)
+    }
+}
+
+# 2C. Verify Experience Organization Headers (### Employer)
+$unverifiedEmployers = [System.Collections.Generic.List[string]]::new()
+$inExp = $false
+foreach ($line in ($tailoredText -split "\r?\n")) {
+    $trimmed = $line.Trim()
+    if ($trimmed -match "^##\s+(?:Professional Experience|Work Experience|Experience)") {
+        $inExp = $true
+        continue
+    }
+    if ($inExp -and $trimmed -match "^##\s+") {
+        $inExp = $false
+        break
+    }
+    if ($inExp -and $trimmed -match "^###\s+(.+)$") {
+        $empName = $matches[1].Trim()
+        if ($empName -notmatch "^\[.*\]$" -and $whitelistCorpus.IndexOf($empName, [System.StringComparison]::OrdinalIgnoreCase) -lt 0) {
+            $unverifiedEmployers.Add($empName)
+        }
+    }
+}
+Write-Host "[*] Verified $($metricMatches.Count) quantified metric(s) and experience headers against ground truth." -ForegroundColor Yellow
 
 # 3. Check for "(Familiar)" or "(Proficient)" Qualifier Injection
 $familiarMatches = [regex]::Matches($tailoredText, "([A-Za-z0-9+#\.\s]{2,25})\s*\(\s*(?:Familiar|Proficient|Working Knowledge)\s*\)", [System.Text.RegularExpressions.RegexOptions]::IgnoreCase)
@@ -218,6 +267,22 @@ if ($unverifiedSkills.Count -gt 0) {
     }
 }
 
+if ($unverifiedMetrics.Count -gt 0) {
+    $hasFailure = $true
+    Write-Host "`n[!] VIOLATION: Unverified or inflated quantified metrics detected (not in Master Resume or Reserve Bank):" -ForegroundColor Red
+    foreach ($um in ($unverifiedMetrics | Select-Object -Unique)) {
+        Write-Host "   - $um" -ForegroundColor Red
+    }
+}
+
+if ($unverifiedEmployers.Count -gt 0) {
+    $hasFailure = $true
+    Write-Host "`n[!] VIOLATION: Unverified Experience organization header(s) detected:" -ForegroundColor Red
+    foreach ($ue in ($unverifiedEmployers | Select-Object -Unique)) {
+        Write-Host "   - $ue" -ForegroundColor Red
+    }
+}
+
 if ($leakedTags.Count -gt 0) {
     $hasFailure = $true
     Write-Host "`n[!] VIOLATION: Internal evaluation depth tags detected in candidate-facing resume:" -ForegroundColor Red
@@ -236,9 +301,9 @@ if ($emDashCount -gt 0) {
 
 if ($hasFailure) {
     Write-Host "`n[-] INTEGRITY LINT FAILED: Rule 3 (Whitelist) or Rule 9 (Em Dash Prohibition) violated." -ForegroundColor Red
-    Write-Host "Action Required: Remove or replace these unverified items/internal tags/em dashes before proceeding to PDF compilation or submission.`n" -ForegroundColor Red
+    Write-Host "Action Required: Remove or replace these unverified items/metrics/internal tags/em dashes before proceeding to PDF compilation or submission.`n" -ForegroundColor Red
     exit 1
 } else {
-    Write-Host "`n[+] INTEGRITY LINT PASSED: All competency tokens strictly verified in Master Resume whitelist, zero internal tags leaked, and zero AI em dashes detected.`n" -ForegroundColor Green
+    Write-Host "`n[+] INTEGRITY LINT PASSED: All competency tokens, quantified metrics, and experience headers strictly verified in Master Resume whitelist, zero internal tags leaked, and zero AI em dashes detected.`n" -ForegroundColor Green
     exit 0
 }

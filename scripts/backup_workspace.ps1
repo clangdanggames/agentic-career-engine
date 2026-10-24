@@ -11,6 +11,7 @@ param (
 )
 
 $ErrorActionPreference = "Stop"
+$global:ProgressPreference = "SilentlyContinue"
 [Console]::OutputEncoding = [System.Text.Encoding]::UTF8
 
 $workspaceRoot = (Resolve-Path "$PSScriptRoot\..").Path
@@ -113,7 +114,7 @@ try {
             "stories",
             "network",
             "companies",
-            "workflows\ats_search_config.json",
+            "workflows/ats_search_config.json",
             "DASHBOARD.md"
         )
 
@@ -170,4 +171,5 @@ if ($KeepRecent -gt 0 -and (Test-Path $backupRootDir)) {
     }
 }
 
+$global:LASTEXITCODE = 0
 return $targetZip

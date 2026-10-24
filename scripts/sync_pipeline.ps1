@@ -25,8 +25,8 @@ param (
 $ErrorActionPreference = "Stop"
 [Console]::OutputEncoding = [System.Text.Encoding]::UTF8
 
-$workspaceRoot = (Resolve-Path "$PSScriptRoot\..").Path
-$ledgerPath = Join-Path $workspaceRoot "applications\ledger.json"
+$workspaceRoot = (Resolve-Path "$PSScriptRoot/..").Path
+$ledgerPath = Join-Path $workspaceRoot "applications/ledger.json"
 $dashboardPath = Join-Path $workspaceRoot "DASHBOARD.md"
 
 if (-not (Test-Path $ledgerPath)) {
@@ -58,18 +58,18 @@ if (-not [string]::IsNullOrWhiteSpace($AppId) -and -not [string]::IsNullOrWhiteS
         exit 1
     }
 
-    $targetApp.status = $Status
+    $targetApp | Add-Member -NotePropertyName "status" -NotePropertyValue $Status -Force
     if ($null -eq $targetApp.dates) {
         $targetApp | Add-Member -NotePropertyName "dates" -NotePropertyValue ([PSCustomObject]@{}) -Force
     }
-    $targetApp.dates.last_activity = $today
+    $targetApp.dates | Add-Member -NotePropertyName "last_activity" -NotePropertyValue $today -Force
 
     if ($Status -eq "applied") {
         $targetApp.dates | Add-Member -NotePropertyName "applied" -NotePropertyValue $today -Force
     }
 
     if (-not [string]::IsNullOrWhiteSpace($Notes)) {
-        $targetApp.notes = $Notes
+        $targetApp | Add-Member -NotePropertyName "notes" -NotePropertyValue $Notes -Force
     }
 
     $ledger.meta.last_updated = $today

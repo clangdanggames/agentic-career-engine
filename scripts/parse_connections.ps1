@@ -1,7 +1,7 @@
 # Script to parse LinkedIn Connections.csv and analyze network against target companies
 param (
-    [string]$CsvPath = ".\network\Connections.csv",
-    [string]$ConfigFile = ".\workflows\ats_search_config.json",
+    [string]$CsvPath = "./network/Connections.csv",
+    [string]$ConfigFile = "./workflows/ats_search_config.json",
     [string[]]$TargetCompanies = @(),
     [int]$TopCompaniesCount = 30
 )
@@ -114,3 +114,4 @@ $matchedConnections | Sort-Object Company, Position | ForEach-Object {
 }
 
 Write-Host "`nAnalysis complete. You can log relevant 1st-degree contacts into network/contacts_ledger.md for warm referral routing." -ForegroundColor Gray
+exit 0
