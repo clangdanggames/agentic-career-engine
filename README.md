@@ -64,14 +64,16 @@ graph TD
     end
 
     subgraph Preparation [2. High-Leverage Tailoring & Assembly]
-        MasterResume["📄 Master Resume\n(Verified Single Source of Truth)"]
+        CareerBanks["🏦 Career Profile & Reserve Banks\n(Skills, Credentials, & Bullet Store)"]
+        MasterResume["📄 Master Resume\n(General Summary View)"]
         JD["📋 Targeted Requisition\n(Extracted Scope & Keywords)"]
-        Tailor["🤖 Agent Tailoring Routine\n(Quantified Metrics & Alignment)"]
+        Tailor["🤖 Agent Tailoring Routine\n(Clean-Room Fork from Banks)"]
         Linter["🛡️ Whitelist Integrity Linter\n(0 Errors Mandatory Pre-Condition)"]
-        PDF["🖨️ Headless PDF Engine\n(Strict 1-Page Letter Layout)"]
+        PDF["🖨️ Headless PDF Engine\n(Bi-Directional Target Page Fit)"]
         Validator["✅ Page Count Validator\n(Deterministic Stream Inspection)"]
         
-        MasterResume & JD --> Tailor
+        CareerBanks -.-> MasterResume
+        CareerBanks & JD --> Tailor
         Tailor --> Linter
         Linter --> PDF
         PDF --> Validator
@@ -103,39 +105,41 @@ ACE organizes your career assets into clean, dedicated workspaces designed to el
 
 | Workspace Section | Purpose | Key Artifacts |
 | :--- | :--- | :--- |
-| [**`resumes/`**](resumes/) | Factual ground truth & typography templates | Master Resume, Modular Reserve Bullet Bank, 1-Page Layout Template |
+| [**`resumes/`**](resumes/) | Factual ground truth & typography templates | Career Profile Bank, Modular Reserve Bullet Bank, Master Resume (General Summary View), Layout Template |
 | [**`applications/`**](applications/) | Active pipeline & isolated application dossiers | Sourcing Inbox, Pipeline Ledger, Requisition Dossiers (`YYYY-MM-DD_[company]_[reqid]/`) |
 | [**`network/`**](network/) | Warm referral mapping & low-friction outreach | Contacts Ledger, LinkedIn Connection Parser, Outreach Templates |
 | [**`stories/`**](stories/) | Interview proof & narrative positioning | STAR+R Story Bank, Phone Screen Cheatsheet, Career Gap Framing |
 | [**`companies/`**](companies/) | Strategic market map & target prioritization | 3-Tier Company List (Premier, Domain Champions, Regional Anchors) |
-| [**`workflows/`**](workflows/) | Search criteria & execution SOPs | ATS Search Config, 20-Min Tailoring SOP, Compensation Estimator |
-| [**`scripts/`**](scripts/) | Native automation engine | Headless PDF Compiler, Whitelist Linter, Parity Sync, ATS Scanner, 1-Click Backups |
+| [**`workflows/`**](workflows/) | Search criteria & execution SOPs | ATS Search Config, 20-Min Tailoring SOP, Compensation Estimator, Project Ingestion Prompt |
+| [**`scripts/`**](scripts/) | Native automation engine | Headless PDF Compiler, Whitelist Linter, Career Bank Sync, Parity Sync, ATS Scanner, 1-Click Backups |
 
 <details>
 <summary><b>Explore Full Directory Layout (Click to expand)</b></summary>
 
 ```text
 ACE/
-├── .agents/skills/ats-job-scanner/ # Autonomous skill for scanning & scoring ATS listings
+├── .agents/skills/
+│   ├── ats-job-scanner/            # Autonomous skill for scanning & scoring ATS listings
+│   └── career-ingestion/           # Continuous career data clarification, validation, & routing skill
 ├── applications/
-│   ├── dossier_template/          # Canonical blueprint for individual application dossiers
-│   ├── ledger.json                # Programmatic single source of truth for all applications
-│   ├── sourcing_inbox.json        # Structured discovered job leads
-│   ├── sourcing_inbox.md          # Ranked visual dashboard of active opportunities
-│   └── YYYY-MM-DD_[company]_[req]/# Individual isolated dossiers (ignored by git)
-├── companies/target_tier_list.md  # 3-tier market map (Premier, Champions, Regional)
-├── examples/demo_showcase/        # Isolated sample data & reference artifacts
-├── network/                       # Contacts ledger & outreach templates
-├── resumes/                       # Master resumes & modular reserve bullet bank
-├── scripts/                       # Automation scripts (PDF rendering, linting, syncing, backups)
-├── stories/                       # STAR+R stories, screen cheatsheets, & gap framing
-├── workflows/                     # Search configs, 20-min SOP, & compensation models
-├── AGENTS.md                      # Operational doctrines (Rules 1–9)
-├── DASHBOARD.md                   # [Generated] Your live personal career command center
-├── GENESIS_PROMPT.md              # Candidate onboarding protocol
-├── HARNESS_SETUP.md               # Agent harness permissions & security guide
-├── QUICK_START.md                 # 3-step setup guide & assistant instructions
-└── README.md                      # Permanent project documentation
+│   ├── dossier_template/           # Canonical blueprint for individual application dossiers
+│   ├── ledger.json                 # Programmatic single source of truth for all applications
+│   ├── sourcing_inbox.json         # Structured discovered job leads
+│   ├── sourcing_inbox.md           # Ranked visual dashboard of active opportunities
+│   └── YYYY-MM-DD_[company]_[req]/ # Individual isolated dossiers (ignored by git)
+├── companies/target_tier_list.md   # 3-tier market map (Premier, Champions, Regional)
+├── examples/demo_showcase/         # Isolated sample data & reference artifacts
+├── network/                        # Contacts ledger & outreach templates
+├── resumes/                        # Career profile bank, modular reserve bank, & master resume summary
+├── scripts/                        # Automation scripts (PDF rendering, linting, bank sync, pipeline sync, backups)
+├── stories/                        # STAR+R stories, screen cheatsheets, & gap framing
+├── workflows/                      # Search configs, 20-min SOP, project ingestion prompt, & compensation models
+├── AGENTS.md                       # Operational doctrines (Rules 1–9)
+├── DASHBOARD.md                    # [Generated] Your live personal career command center
+├── GENESIS_PROMPT.md               # Candidate onboarding protocol
+├── HARNESS_SETUP.md                # Agent harness permissions & security guide
+├── QUICK_START.md                  # 3-step setup guide & assistant instructions
+└── README.md                       # Permanent project documentation
 ```
 
 </details>
@@ -151,12 +155,13 @@ ACE/
 - **LinkedIn Network Overlap Intelligence**: Parses your LinkedIn connection export with `scripts/parse_connections.ps1` to surface warm 1st-degree contacts at target employers in [`companies/target_tier_list.md`](companies/target_tier_list.md).
 
 ### 🛡️ Pillar 2: Precision Engineering & Factual Guardrails
-- **Headless 1-Page PDF Compiler**: Compiles pixel-perfect resumes using headless Edge/Chrome with strict print geometry, proportional typography, and stream page-count validation ([`scripts/check_pdf_pages.ps1`](scripts/check_pdf_pages.ps1)) to ensure documents never spill onto a second page.
+- **Headless Bi-Directional PDF Compiler**: Compiles pixel-perfect resumes using headless Edge/Chrome with configurable target page fitting (`1` page default via `resume_settings.target_pages`), proportional typography presets (`Tight` through `Spacious`), and stream page-count validation ([`scripts/check_pdf_pages.ps1`](scripts/check_pdf_pages.ps1)) that shrinks overflow AND expands sparse layouts so documents neatly fill the target page count.
 - **Closed-Set Whitelist Linter (Zero Hallucination)**: Deterministically enforces **Rule 3** via [`scripts/lint_resume_integrity.ps1`](scripts/lint_resume_integrity.ps1). Prevents LLMs from back-filling unverified tools, certifications, or keywords from job descriptions.
 - **Standardized Application Dossiers & Pre-Filled Guides**: Isolates each application into `applications/YYYY-MM-DD_[company]_[reqid]/` containing the exact JD, tailored resume, cover letter, interview prep, and an **Application Form Guide** (`application_form_guide.md`) pre-calculating answers for portal submission fields.
-- **Modular Reserve Bank & Multi-Track Variants**: Maintains overflow achievements in [`resumes/modular_reserve_bank.md`](resumes/modular_reserve_bank.md) to swap specialized bullets without bloating 1-page layouts, with multi-track master variants in [`resumes/variants/`](resumes/variants/).
+- **Bank-First Career Architecture & Master Summary View**: Comprehensively stores categorized skills (`[Level 1/2/3]`), education, certifications, references ([`resumes/career_profile_bank.md`](resumes/career_profile_bank.md)), and complete work history/achievements ([`resumes/modular_reserve_bank.md`](resumes/modular_reserve_bank.md)), automatically backfilling any un-banked entries from the Master Resume via [`scripts/sync_career_banks.ps1`](scripts/sync_career_banks.ps1) while keeping `resumes/[Name]_Resume_Master.md` as a clean general summary view.
 
 ### ⚡ Pillar 3: High-Leverage Career Operations
+- **Continuous Career Ingestion Skill**: Captures new project wins, performance reviews, postmortems, and external agent exports via [`.agents/skills/career-ingestion/SKILL.md`](.agents/skills/career-ingestion/SKILL.md) and [`workflows/project_ingestion_prompt.md`](workflows/project_ingestion_prompt.md), clarifying ownership and metrics before updating the Career Banks.
 - **The 20-Minute Micro-Stepped Application SOP**: Micro-steps each application into timed stages in [`workflows/job_hunt_workflow.md`](workflows/job_hunt_workflow.md) to eliminate ADHD overwhelm, perfectionism loops, and application procrastination.
 - **Full-Cycle Interview Partner**: Interviews you to extract high-impact **STAR+R stories** ([`stories/star_story_bank.md`](stories/star_story_bank.md)), prepares 90-second elevator pitches and recruiter cheatsheets ([`stories/recruiter_screen_cheatsheet.md`](stories/recruiter_screen_cheatsheet.md)), and structures confident narrative framing for career gaps or sabbaticals ([`stories/career_gap_framing.md`](stories/career_gap_framing.md)).
 - **Conflict-Free Engine Lifecycle**: Upstream updates and fresh migrations ([`workflows/engine_lifecycle.md`](workflows/engine_lifecycle.md)) cleanly separate engine code (`scripts/`, `workflows/`, `.agents/`) from personal user state (`resumes/`, `applications/`, `stories/`, `DASHBOARD.md`), guaranteeing zero merge conflicts and zero data loss.

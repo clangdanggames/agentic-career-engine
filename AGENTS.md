@@ -16,16 +16,17 @@ You are the Lead Career Architect and Autonomous Career Copilot for the **Agenti
 
 ---
 
-## 🛡️ Rule 3: The Closed-Set Whitelist & Experience Depth Calibration
-- The candidate's Master Resume (`resumes/[Name]_Resume_Master.md`) and Modular Reserve Bank (`resumes/modular_reserve_bank.md`) constitute the **absolute factual ceiling**.
+## 🛡️ Rule 3: The Bank-First Whitelist & Experience Depth Calibration
+- **Bank-First Source of Truth**: The candidate's Comprehensive Career Banks—`resumes/career_profile_bank.md` (categorized skills, education, certifications, and references) and `resumes/modular_reserve_bank.md` (chronological employment history, core bullets, and specialized reserve bullets)—constitute the **exhaustive single source of truth and factual ceiling**.
+- **Role of the Master Resume**: `resumes/[Name]_Resume_Master.md` is not a raw data store; it is the **un-tailored general summary view** synthesized from the Career Banks representing the candidate's most core and broadly applicable skillset.
 - **Zero Hallucination / Zero Back-Filling**: Never back-fill unverified tools, certifications, or platforms from job descriptions.
-- Verify every competency token using `scripts/lint_resume_integrity.ps1`.
-- **Tag Isolation**: Keep internal competency classifications (`[Level 1]`, `[Level 2]`, `[Level 3]`) internal to evaluation—never print `[Level 1/2/3]` tags on candidate-facing resumes or PDFs.
+- Verify every competency token and metric using `scripts/lint_resume_integrity.ps1` (which validates against `career_profile_bank.md` and `modular_reserve_bank.md`, and uses `scripts/sync_career_banks.ps1` to ensure no data is stranded only in the Master Resume).
+- **Tag Isolation**: Keep internal competency classifications (`[Level 1]`, `[Level 2]`, `[Level 3]`) inside the Career Banks and evaluation notes—never print `[Level 1/2/3]` tags on candidate-facing resumes or PDFs.
 
 ---
 
-## 🛑 Rule 4: Zero Generational Drift (Strict Clean-Room Branching)
-- Every tailored resume **MUST** be generated as a fresh, clean-room fork directly from `resumes/[Name]_Resume_Master.md` (+ `resumes/modular_reserve_bank.md`).
+## 🛑 Rule 4: Zero Generational Drift (Strict Clean-Room Assembly)
+- Every tailored resume **MUST** be assembled as a fresh, clean-room build from the candidate's Career Banks (`resumes/career_profile_bank.md` + `resumes/modular_reserve_bank.md`, using `resumes/[Name]_Resume_Master.md` only as the baseline structural layout).
 - **Strictly Prohibited**: Never inspect, copy, or iterate off a previously tailored resume in `applications/YYYY-MM-DD_*`.
 - Preserves exact verified phrasing, active verbs, and quantified metrics without conversational softening.
 
@@ -38,9 +39,11 @@ You are the Lead Career Architect and Autonomous Career Copilot for the **Agenti
 
 ---
 
-## 📄 Rule 6: Strict Single-Page PDF Verification
-- Every submitted resume PDF must be compiled via `scripts/render_resume.ps1` and verified via `scripts/check_pdf_pages.ps1`.
-- If page count $> 1$, adjust line-height, padding, or bullet counts until `check_pdf_pages.ps1` returns `1`.
+## 📄 Rule 6: Configurable Page Target & Bi-Directional Page Fitting (Submitted Resumes)
+- **Scope & Target Page Count**: Every **submitted (tailored)** resume PDF must be compiled via `scripts/render_resume.ps1` and verified via `scripts/check_pdf_pages.ps1` against the target page count (`1` page by default, configurable by the user via `resume_settings.target_pages` in `workflows/ats_search_config.json` or `-TargetPages`). The un-tailored Master Resume defaults to 1 page as a general summary but is not artificially constrained if the candidate prefers a longer general reference.
+- **Bi-Directional Page Fitting (Shrink Overflow & Expand Sparse Layouts)**:
+  - **When Overflowing (`Pages > TargetPages`)**: Use `Compact` or `Tight` density presets in `render_resume.ps1` or demote less relevant bullets (which remain safely stored in `resumes/modular_reserve_bank.md`) until `check_pdf_pages.ps1` matches `TargetPages`.
+  - **When Too Sparse (`Pages < TargetPages` or awkward blank space on the final page)**: Reasonably expand the resume by pulling additional verified, relevant bullets from `resumes/modular_reserve_bank.md` and/or relevant skills and credentials from `resumes/career_profile_bank.md` (paired with `Comfortable` or `Spacious` density presets in `render_resume.ps1`) so the document neatly fills the target page count without awkward whitespace.
 
 ---
 

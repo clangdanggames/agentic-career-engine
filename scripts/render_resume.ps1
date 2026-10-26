@@ -4,18 +4,22 @@ param (
     [string]$MarkdownPath,
 
     [Parameter(Mandatory = $false)]
+    [Alias("OutputPdfPath")]
     [string]$OutputPath,
 
     [Parameter(Mandatory = $false)]
     [switch]$VerifyIntegrity,
 
     [Parameter(Mandatory = $false)]
-    [ValidateSet("Standard", "Compact", "Tight")]
+    [ValidateSet("Tight", "Compact", "Standard", "Comfortable", "Spacious")]
     [string]$Density = "Standard",
 
     [Parameter(Mandatory = $false)]
     [ValidateSet("Resume", "CoverLetter")]
     [string]$DocumentType = "Resume",
+
+    [Parameter(Mandatory = $false)]
+    [int]$TargetPages = 0,
 
     [Parameter(Mandatory = $false)]
     [switch]$AutoFit,
@@ -30,6 +34,26 @@ $ErrorActionPreference = "Stop"
 if (-not (Test-Path $MarkdownPath)) {
     Write-Error "Markdown file not found at: $MarkdownPath"
     exit 1
+}
+
+$workspaceRoot = (Resolve-Path (Join-Path $PSScriptRoot "..")).Path
+$minFillRatio = 0.78
+if ($TargetPages -le 0) {
+    $TargetPages = 1
+    $configPath = Join-Path $workspaceRoot "workflows/ats_search_config.json"
+    if (Test-Path $configPath) {
+        try {
+            $cfg = Get-Content -Path $configPath -Raw -Encoding UTF8 | ConvertFrom-Json
+            if ($null -ne $cfg.resume_settings) {
+                if ($null -ne $cfg.resume_settings.target_pages -and [int]$cfg.resume_settings.target_pages -gt 0) {
+                    $TargetPages = [int]$cfg.resume_settings.target_pages
+                }
+                if ($null -ne $cfg.resume_settings.min_fill_ratio -and [double]$cfg.resume_settings.min_fill_ratio -gt 0) {
+                    $minFillRatio = [double]$cfg.resume_settings.min_fill_ratio
+                }
+            }
+        } catch {}
+    }
 }
 
 $ResolvedMd = (Resolve-Path $MarkdownPath).Path
@@ -202,6 +226,30 @@ function Build-DocumentHtml {
                 $secBottom = "1.5px"
                 $liMargin = "0.75px"
             }
+            "Comfortable" {
+                $fontSize = "9.15pt"
+                $lineHeight = "1.34"
+                $bodyPadding = "0.35in 0.44in"
+                $h1Size = "18pt"
+                $h2Size = "10.0pt"
+                $h3Size = "9.6pt"
+                $pMargin = "3.5px"
+                $secTop = "7px"
+                $secBottom = "3.5px"
+                $liMargin = "2.5px"
+            }
+            "Spacious" {
+                $fontSize = "9.60pt"
+                $lineHeight = "1.42"
+                $bodyPadding = "0.42in 0.50in"
+                $h1Size = "19pt"
+                $h2Size = "10.5pt"
+                $h3Size = "10.0pt"
+                $pMargin = "4.5px"
+                $secTop = "9px"
+                $secBottom = "4.5px"
+                $liMargin = "3.5px"
+            }
             default {
                 $fontSize = "8.65pt"
                 $lineHeight = "1.25"
@@ -328,6 +376,29 @@ function Get-PdfPageCount {
     return ([regex]::Matches($text, "/Type\s*/Page[^s]")).Count
 }
 
+function Get-EstimatedVisualFillRatio {
+    param ([string]$MarkdownText, [int]$TargetPageCount = 1)
+    if ([string]::IsNullOrWhiteSpace($MarkdownText) -or $TargetPageCount -le 0) { return 0.0 }
+    $lines = $MarkdownText -split "\r?\n"
+    $visualLines = 0.0
+    foreach ($l in $lines) {
+        $t = $l.Trim()
+        if ([string]::IsNullOrWhiteSpace($t) -or $t -eq "---") { continue }
+        if ($t -match "^# ") { $visualLines += 2.0 }
+        elseif ($t -match "^## ") { $visualLines += 1.7 }
+        elseif ($t -match "^### ") { $visualLines += 1.3 }
+        elseif ($t -match "^\*\*[^*]+\*\*\s*\|") { $visualLines += 1.15 }
+        else {
+            $cleanLen = ($t -replace "\*\*|\*|\[([^\]]+)\]\([^\)]+\)", '$1').Length
+            $wrappedLines = [math]::Max(1.0, [math]::Ceiling($cleanLen / 132.0))
+            $visualLines += ($wrappedLines * 1.08)
+        }
+    }
+    # Standard 1-page capacity at 8.65pt / 1.25 line-height on US Letter is ~66.5 visual lines
+    $capacity = 66.5 * $TargetPageCount
+    return [math]::Round(($visualLines / $capacity), 2)
+}
+
 $htmlParent = Split-Path -Parent $HtmlPath
 if (-not [string]::IsNullOrWhiteSpace($htmlParent) -and -not (Test-Path $htmlParent)) {
     New-Item -ItemType Directory -Path $htmlParent -Force | Out-Null
@@ -337,8 +408,8 @@ $fullHtml = Build-DocumentHtml -BodyContent $bodyHtml -TitleText $candidateName 
 Set-Content -Path $HtmlPath -Value $fullHtml -Encoding UTF8
 Write-Host "Generated HTML ($DocumentType, Density: $Density) at: $HtmlPath"
 
-# Locate Chromium-based headless browser (Edge or Chrome)
-$BrowserPath = $null
+# Locate Chromium-based headless browsers (Edge or Chrome)
+$AvailableBrowsers = [System.Collections.Generic.List[string]]::new()
 $CandidatePaths = @(
     # Windows paths
     "C:\Program Files (x86)\Microsoft\Edge\Application\msedge.exe",
@@ -357,29 +428,25 @@ $CandidatePaths = @(
 )
 
 foreach ($path in $CandidatePaths) {
-    if (Test-Path $path) {
-        $BrowserPath = $path
-        break
+    if ((Test-Path $path) -and -not $AvailableBrowsers.Contains($path)) {
+        $AvailableBrowsers.Add($path)
     }
 }
 
-# Check if browser binary is available on PATH
-if ($null -eq $BrowserPath) {
-    $pathBins = @("msedge", "chrome", "google-chrome", "google-chrome-stable", "chromium", "chromium-browser")
-    foreach ($bin in $pathBins) {
-        $cmd = Get-Command $bin -ErrorAction SilentlyContinue
-        if ($cmd) {
-            $BrowserPath = $cmd.Source
-            break
-        }
+$pathBins = @("msedge", "chrome", "google-chrome", "google-chrome-stable", "chromium", "chromium-browser")
+foreach ($bin in $pathBins) {
+    $cmd = Get-Command $bin -ErrorAction SilentlyContinue
+    if ($cmd -and -not $AvailableBrowsers.Contains($cmd.Source)) {
+        $AvailableBrowsers.Add($cmd.Source)
     }
 }
 
-if ($null -eq $BrowserPath) {
+if ($AvailableBrowsers.Count -eq 0) {
     Write-Warning "Neither Microsoft Edge nor Google Chrome was found at standard locations. HTML generated, but PDF compile skipped."
     exit 0
 }
 
+$BrowserPath = $AvailableBrowsers[0]
 Write-Host "Compiling clean PDF via Headless Browser: $BrowserPath"
 $fileUri = [System.Uri]::new($HtmlPath).AbsoluteUri
 
@@ -389,25 +456,48 @@ function Invoke-HeadlessPdfCompile {
         [string]$SourceUri,
         [string]$PdfOutPath
     )
-    if ($env:OS -eq "Windows_NT") {
-        $browserArgs = @(
-            "--headless",
-            "--disable-gpu",
-            "--print-to-pdf-no-header",
-            "--print-to-pdf=`"$PdfOutPath`"",
-            "`"$SourceUri`""
-        )
-    } else {
-        $browserArgs = @(
-            "--headless",
-            "--disable-gpu",
-            "--no-sandbox",
-            "--print-to-pdf-no-header",
-            "--print-to-pdf=$PdfOutPath",
-            "$SourceUri"
-        )
+    $tempProfileDir = Join-Path ([System.IO.Path]::GetTempPath()) ("ace_pdf_profile_" + [guid]::NewGuid().ToString("N"))
+    New-Item -ItemType Directory -Path $tempProfileDir -Force | Out-Null
+    $compileStart = (Get-Date).ToUniversalTime().AddSeconds(-1)
+
+    $candidatesToTry = @($BrowserBin) + @($AvailableBrowsers | Where-Object { $_ -ne $BrowserBin })
+    try {
+        foreach ($candidate in $candidatesToTry) {
+            if ($env:OS -eq "Windows_NT") {
+                $browserArgs = @(
+                    "--headless",
+                    "--disable-gpu",
+                    "--no-first-run",
+                    "--no-default-browser-check",
+                    "--user-data-dir=`"$tempProfileDir`"",
+                    "--print-to-pdf-no-header",
+                    "--print-to-pdf=`"$PdfOutPath`"",
+                    "`"$SourceUri`""
+                )
+            } else {
+                $browserArgs = @(
+                    "--headless",
+                    "--disable-gpu",
+                    "--no-sandbox",
+                    "--no-first-run",
+                    "--no-default-browser-check",
+                    "--user-data-dir=$tempProfileDir",
+                    "--print-to-pdf-no-header",
+                    "--print-to-pdf=$PdfOutPath",
+                    "$SourceUri"
+                )
+            }
+            $null = Start-Process -FilePath $candidate -ArgumentList $browserArgs -PassThru -Wait -NoNewWindow
+            if ((Test-Path $PdfOutPath) -and ((Get-Item $PdfOutPath).LastWriteTimeUtc -ge $compileStart)) {
+                $script:BrowserPath = $candidate
+                break
+            }
+        }
+    } finally {
+        if (Test-Path $tempProfileDir) {
+            Remove-Item -Path $tempProfileDir -Recurse -Force -ErrorAction SilentlyContinue
+        }
     }
-    $null = Start-Process -FilePath $BrowserBin -ArgumentList $browserArgs -PassThru -Wait -NoNewWindow
 }
 
 Invoke-HeadlessPdfCompile -BrowserBin $BrowserPath -SourceUri $fileUri -PdfOutPath $OutputPath
@@ -419,28 +509,61 @@ if (-not (Test-Path $OutputPath)) {
 
 $pageCount = Get-PdfPageCount -PdfFile $OutputPath
 $activeDensity = $Density
+$estimatedFillRatio = Get-EstimatedVisualFillRatio -MarkdownText $mdContent -TargetPageCount $TargetPages
 
-# Automatic 1-page density stepping when minor 2-page overflow occurs and AutoFit is enabled (or default Density was used)
-if ($pageCount -eq 2 -and ($AutoFit -or -not $PSBoundParameters.ContainsKey("Density")) -and $DocumentType -eq "Resume") {
-    $fallbackPresets = @("Compact", "Tight") | Where-Object { $_ -ne $Density }
-    foreach ($preset in $fallbackPresets) {
-        Write-Host "Page count is $pageCount (> 1). Auto-fitting with '$preset' density preset..." -ForegroundColor Yellow
-        $activeDensity = $preset
-        $fullHtml = Build-DocumentHtml -BodyContent $bodyHtml -TitleText $candidateName -DocType $DocumentType -DensityPreset $preset
-        Set-Content -Path $HtmlPath -Value $fullHtml -Encoding UTF8
-        Invoke-HeadlessPdfCompile -BrowserBin $BrowserPath -SourceUri $fileUri -PdfOutPath $OutputPath
-        $pageCount = Get-PdfPageCount -PdfFile $OutputPath
-        if ($pageCount -eq 1) {
-            break
+# Bi-Directional Auto-Fit (Rule 6): Shrink minor overflow OR expand sparse layouts to neatly fill TargetPages
+if (($AutoFit -or -not $PSBoundParameters.ContainsKey("Density")) -and $DocumentType -eq "Resume") {
+    if ($pageCount -eq ($TargetPages + 1)) {
+        # 1. Shrinking Path: Document spilled 1 page over TargetPages
+        $shrinkPresets = @("Compact", "Tight") | Where-Object { $_ -ne $Density }
+        foreach ($preset in $shrinkPresets) {
+            Write-Host "Page count is $pageCount (> Target $TargetPages). Auto-shrinking with '$preset' density preset..." -ForegroundColor Yellow
+            $activeDensity = $preset
+            $fullHtml = Build-DocumentHtml -BodyContent $bodyHtml -TitleText $candidateName -DocType $DocumentType -DensityPreset $preset
+            Set-Content -Path $HtmlPath -Value $fullHtml -Encoding UTF8
+            Invoke-HeadlessPdfCompile -BrowserBin $BrowserPath -SourceUri $fileUri -PdfOutPath $OutputPath
+            $pageCount = Get-PdfPageCount -PdfFile $OutputPath
+            if ($pageCount -le $TargetPages) {
+                break
+            }
         }
-    }
-    # If document is still > 1 page even at Tight density (e.g. a genuine 2-page Master CV), restore original Density so typography is not needlessly squished
-    if ($pageCount -gt 1 -and $activeDensity -ne $Density) {
-        $activeDensity = $Density
-        $fullHtml = Build-DocumentHtml -BodyContent $bodyHtml -TitleText $candidateName -DocType $DocumentType -DensityPreset $Density
-        Set-Content -Path $HtmlPath -Value $fullHtml -Encoding UTF8
-        Invoke-HeadlessPdfCompile -BrowserBin $BrowserPath -SourceUri $fileUri -PdfOutPath $OutputPath
-        $pageCount = Get-PdfPageCount -PdfFile $OutputPath
+        # If document still exceeds TargetPages even at Tight density (e.g. a genuine multi-page Master CV rendered with TargetPages=1), restore original Density
+        if ($pageCount -gt $TargetPages -and $activeDensity -ne $Density) {
+            $activeDensity = $Density
+            $fullHtml = Build-DocumentHtml -BodyContent $bodyHtml -TitleText $candidateName -DocType $DocumentType -DensityPreset $Density
+            Set-Content -Path $HtmlPath -Value $fullHtml -Encoding UTF8
+            Invoke-HeadlessPdfCompile -BrowserBin $BrowserPath -SourceUri $fileUri -PdfOutPath $OutputPath
+            $pageCount = Get-PdfPageCount -PdfFile $OutputPath
+        }
+    } elseif ($pageCount -lt $TargetPages -or ($pageCount -eq $TargetPages -and $estimatedFillRatio -lt $minFillRatio)) {
+        # 2. Expanding Path: Document is under TargetPages or has sparse vertical fill (< minFillRatio)
+        $expandPresets = if ($pageCount -lt $TargetPages -or $estimatedFillRatio -lt 0.75) {
+            @("Comfortable", "Spacious")
+        } else {
+            @("Comfortable")
+        }
+        foreach ($preset in $expandPresets) {
+            if ($preset -eq $activeDensity) { continue }
+            $prevDensity = $activeDensity
+            Write-Host "Sparse layout detected (Fill ratio ~$($estimatedFillRatio * 100)% for $TargetPages page(s)). Auto-expanding with '$preset' density preset..." -ForegroundColor Cyan
+            $fullHtml = Build-DocumentHtml -BodyContent $bodyHtml -TitleText $candidateName -DocType $DocumentType -DensityPreset $preset
+            Set-Content -Path $HtmlPath -Value $fullHtml -Encoding UTF8
+            Invoke-HeadlessPdfCompile -BrowserBin $BrowserPath -SourceUri $fileUri -PdfOutPath $OutputPath
+            $newPageCount = Get-PdfPageCount -PdfFile $OutputPath
+
+            if ($newPageCount -gt $TargetPages) {
+                # Roll back if expanding pushed the document over TargetPages
+                $activeDensity = $prevDensity
+                $fullHtml = Build-DocumentHtml -BodyContent $bodyHtml -TitleText $candidateName -DocType $DocumentType -DensityPreset $prevDensity
+                Set-Content -Path $HtmlPath -Value $fullHtml -Encoding UTF8
+                Invoke-HeadlessPdfCompile -BrowserBin $BrowserPath -SourceUri $fileUri -PdfOutPath $OutputPath
+                $pageCount = Get-PdfPageCount -PdfFile $OutputPath
+                break
+            } else {
+                $activeDensity = $preset
+                $pageCount = $newPageCount
+            }
+        }
     }
 }
 
@@ -449,9 +572,14 @@ if ($CleanHtml -and (Test-Path $HtmlPath)) {
 }
 
 Write-Host "SUCCESS: PDF generated cleanly at $OutputPath" -ForegroundColor Green
-if ($pageCount -eq 1) {
-    Write-Host "PASS: Strict 1-page constraint verified (1 page | Mode: $DocumentType | Density: $activeDensity)." -ForegroundColor Green
-} elseif ($pageCount -gt 1) {
-    Write-Warning "OVERFLOW: Compiled PDF is $pageCount pages even at '$activeDensity' density. Trim 1-2 bullets to fit strictly on 1 page."
+if ($pageCount -eq $TargetPages) {
+    Write-Host "PASS: Target $TargetPages-page constraint verified ($pageCount page(s) | Mode: $DocumentType | Density: $activeDensity)." -ForegroundColor Green
+    if ($DocumentType -eq "Resume" -and $estimatedFillRatio -lt 0.55) {
+        Write-Warning "SPARSE CONTENT: Resume content fills ~$([int][math]::Round($estimatedFillRatio * 100))% of $TargetPages page(s) even at '$activeDensity' density. Pull additional verified bullets or skills from resumes/modular_reserve_bank.md and resumes/career_profile_bank.md to substantively fill the page."
+    }
+} elseif ($pageCount -gt $TargetPages) {
+    Write-Warning "OVERFLOW: Compiled PDF is $pageCount pages (Target: $TargetPages) at '$activeDensity' density. Demote 1-2 less relevant bullets to resumes/modular_reserve_bank.md or adjust -TargetPages."
+} elseif ($pageCount -gt 0 -and $pageCount -lt $TargetPages) {
+    Write-Warning "UNDERFLOW / SPARSE: Compiled PDF is $pageCount page(s), below target of $TargetPages page(s). Pull additional verified bullets or skills from resumes/modular_reserve_bank.md and resumes/career_profile_bank.md to fill $TargetPages page(s)."
 }
 exit 0

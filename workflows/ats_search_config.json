@@ -82,5 +82,10 @@
     "max_total_leads": 25,
     "deduplicate_days": 30,
     "min_fit_score_to_inbox": 65
+  },
+  "resume_settings": {
+    "target_pages": 1,
+    "min_fill_ratio": 0.78,
+    "description": "Default target page count for submitted/tailored resumes (Rule 6) and minimum vertical fill threshold before auto-expanding sparse layouts."
   }
 }

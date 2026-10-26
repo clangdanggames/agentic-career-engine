@@ -68,7 +68,9 @@ pwsh -File scripts/render_resume.ps1 *
 powershell -File scripts/check_pdf_pages.ps1 *
 pwsh -File scripts/check_pdf_pages.ps1 *
 
-# Factual Integrity & Whitelist Linter
+# Factual Integrity, Career Bank Sync & Whitelist Linter
+powershell -File scripts/sync_career_banks.ps1 *
+pwsh -File scripts/sync_career_banks.ps1 *
 powershell -File scripts/lint_resume_integrity.ps1 *
 pwsh -File scripts/lint_resume_integrity.ps1 *
 

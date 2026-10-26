@@ -1,18 +1,21 @@
 #!/usr/bin/env pwsh
 <#
 .SYNOPSIS
-    Integrity Linter for Tailored Resumes against Master Resume and Reserve Bank.
+    Integrity Linter for Resumes against the Comprehensive Career Banks.
 .DESCRIPTION
     Enforces Operational Rule 3 (The Closed-Set Whitelist Rule) and Rule 9 (Em Dash Prohibition):
-    Verifies that no unverified technical tools, certifications, platforms, or buzzwords
-    appear in a tailored resume unless they are explicitly present in the candidate's
-    Master Resume or Modular Reserve Bank, and enforces zero AI em dashes.
+    Verifies that no unverified technical tools, certifications, platforms, metrics, or buzzwords
+    appear in a resume unless they are explicitly present in the candidate's Career Banks
+    (resumes/career_profile_bank.md and resumes/modular_reserve_bank.md, plus Master Resume fallback),
+    and enforces zero AI em dashes and zero leaked [Level 1/2/3] tags.
 .PARAMETER TailoredResumePath
-    Path to the tailored markdown resume to verify.
+    Path to the markdown resume to verify.
 .PARAMETER MasterResumePath
-    Path to the master resume repository (defaults to auto-detecting resumes/*_Resume_Master.md).
+    Optional: Path to the master resume (defaults to auto-detecting resumes/*_Resume_Master.md).
+.PARAMETER ProfileBankPath
+    Path to the comprehensive career profile bank (defaults to resumes/career_profile_bank.md).
 .PARAMETER ReserveBankPath
-    Path to the modular reserve bank (defaults to resumes/modular_reserve_bank.md if present).
+    Path to the modular experience & bullet bank (defaults to resumes/modular_reserve_bank.md).
 #>
 param (
     [Parameter(Mandatory = $true)]
@@ -20,6 +23,10 @@ param (
 
     [Parameter(Mandatory = $false)]
     [string]$MasterResumePath = "",
+
+    [Parameter(Mandatory = $false)]
+    [Alias("CareerProfileBankPath")]
+    [string]$ProfileBankPath = "resumes/career_profile_bank.md",
 
     [Parameter(Mandatory = $false)]
     [string]$ReserveBankPath = "resumes/modular_reserve_bank.md"
@@ -50,7 +57,7 @@ if ([string]::IsNullOrWhiteSpace($MasterResumePath)) {
     }
     if ($masters.Count -eq 0) {
         $masters = @(Get-ChildItem -Path $resumesDir -Filter "*.md" -File -ErrorAction SilentlyContinue | Where-Object {
-            $_.Name -notin @("modular_reserve_bank.md", "resume_template.md", "README.md")
+            $_.Name -notin @("career_profile_bank.md", "modular_reserve_bank.md", "resume_template.md", "README.md")
         })
     }
     if ($masters.Count -gt 0) {
@@ -60,9 +67,6 @@ if ([string]::IsNullOrWhiteSpace($MasterResumePath)) {
         $demoMaster = Join-Path $workspaceRoot "examples/demo_showcase/Alex_Morgan_Resume.md"
         if (Test-Path $demoMaster) {
             $MasterResumePath = $demoMaster
-        } else {
-            Write-Error "No Master Resume found. Please provide a path to resumes/[Your_Name]_Resume_Master.md"
-            exit 1
         }
     }
 } elseif (-not (Test-Path $MasterResumePath)) {
@@ -75,26 +79,65 @@ if ([string]::IsNullOrWhiteSpace($MasterResumePath)) {
     }
 }
 
-$tailoredText = Get-Content -Path $TailoredResumePath -Raw -Encoding UTF8
-$masterText = Get-Content -Path $MasterResumePath -Raw -Encoding UTF8
-
-# Combine with reserve bank if present
+$resolvedProfile = if (Test-Path $ProfileBankPath) { $ProfileBankPath } else { Join-Path $workspaceRoot $ProfileBankPath }
 $resolvedReserve = if (Test-Path $ReserveBankPath) { $ReserveBankPath } else { Join-Path $workspaceRoot $ReserveBankPath }
-if (Test-Path $resolvedReserve) {
-    $reserveText = Get-Content -Path $resolvedReserve -Raw -Encoding UTF8
-    $whitelistCorpus = "$masterText`n$reserveText"
-    $hasReserve = $true
-} else {
-    $whitelistCorpus = $masterText
-    $hasReserve = $false
+
+# Automatically backfill any unsynced Master Resume items into the Career Banks when using default bank paths
+$syncBanksScript = Join-Path $PSScriptRoot "sync_career_banks.ps1"
+if ((Test-Path $syncBanksScript) -and -not [string]::IsNullOrWhiteSpace($MasterResumePath) -and (Test-Path $MasterResumePath)) {
+    if ($MasterResumePath -notmatch "examples[/\\]demo_showcase") {
+        try {
+            & $syncBanksScript -MasterResumePath $MasterResumePath -ProfileBankPath $resolvedProfile -ReserveBankPath $resolvedReserve -Quiet
+        } catch {}
+    }
 }
+
+function Remove-TemplatePlaceholders {
+    param([string]$RawText)
+    if ([string]::IsNullOrWhiteSpace($RawText)) { return "" }
+    $cleaned = $RawText -replace "(?i)\[e\.g\.[^\]]*\]", ""
+    $cleaned = $cleaned -replace "(?i)\([^)]*e\.g\.[^)]*\)", ""
+    $cleaned = $cleaned -replace "(?m)^[^\r\n]*\[Action verb\][^\r\n]*$", ""
+    return $cleaned
+}
+
+$tailoredText = Get-Content -Path $TailoredResumePath -Raw -Encoding UTF8
+$corpusParts = [System.Collections.Generic.List[string]]::new()
+
+$hasProfileBank = $false
+if (Test-Path $resolvedProfile) {
+    $corpusParts.Add((Remove-TemplatePlaceholders -RawText (Get-Content -Path $resolvedProfile -Raw -Encoding UTF8)))
+    $hasProfileBank = $true
+}
+
+$hasReserve = $false
+if (Test-Path $resolvedReserve) {
+    $corpusParts.Add((Remove-TemplatePlaceholders -RawText (Get-Content -Path $resolvedReserve -Raw -Encoding UTF8)))
+    $hasReserve = $true
+}
+
+if (-not [string]::IsNullOrWhiteSpace($MasterResumePath) -and (Test-Path $MasterResumePath)) {
+    $corpusParts.Add((Remove-TemplatePlaceholders -RawText (Get-Content -Path $MasterResumePath -Raw -Encoding UTF8)))
+}
+
+if ($corpusParts.Count -eq 0) {
+    Write-Error "No Career Banks or Master Resume found to build whitelist corpus."
+    exit 1
+}
+
+$whitelistCorpus = $corpusParts -join "`n"
 
 Write-Host "==========================================================" -ForegroundColor Cyan
 Write-Host "[*] ACE RESUME INTEGRITY LINTER (Rule 3 Whitelist & Rule 9 AI Scrub)" -ForegroundColor Cyan
-Write-Host "Target:   $(Split-Path $TailoredResumePath -Leaf)" -ForegroundColor Cyan
-Write-Host "Master:   $(Split-Path $MasterResumePath -Leaf)" -ForegroundColor Cyan
+Write-Host "Target:       $(Split-Path $TailoredResumePath -Leaf)" -ForegroundColor Cyan
+if ($hasProfileBank) {
+    Write-Host "Profile Bank: $(Split-Path $resolvedProfile -Leaf)" -ForegroundColor Cyan
+}
 if ($hasReserve) {
-    Write-Host "Reserve:  $(Split-Path $resolvedReserve -Leaf)" -ForegroundColor Cyan
+    Write-Host "Reserve Bank: $(Split-Path $resolvedReserve -Leaf)" -ForegroundColor Cyan
+}
+if (-not [string]::IsNullOrWhiteSpace($MasterResumePath) -and (Test-Path $MasterResumePath)) {
+    Write-Host "Master View:  $(Split-Path $MasterResumePath -Leaf)" -ForegroundColor Cyan
 }
 Write-Host "==========================================================" -ForegroundColor Cyan
 

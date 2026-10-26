@@ -92,7 +92,8 @@ if (-not (Test-Path $templateDir)) {
     exit 1
 }
 
-# 1. Resolve Master Resume Path (Rule 4 Clean-Room Source)
+# 1. Resolve Master Resume Path & Career Banks (Rule 4 Clean-Room Source)
+$profileBankPath = Join-Path $resumesDir "career_profile_bank.md"
 if ([string]::IsNullOrWhiteSpace($MasterResumePath)) {
     $candidates = @(Get-ChildItem -Path $resumesDir -Filter "*_Resume_Master.md" -File -ErrorAction SilentlyContinue)
     if ($candidates.Count -eq 0) {
@@ -100,7 +101,7 @@ if ([string]::IsNullOrWhiteSpace($MasterResumePath)) {
     }
     if ($candidates.Count -eq 0) {
         $candidates = @(Get-ChildItem -Path $resumesDir -Filter "*.md" -File -ErrorAction SilentlyContinue | Where-Object {
-            $_.Name -notin @("modular_reserve_bank.md", "resume_template.md", "README.md")
+            $_.Name -notin @("career_profile_bank.md", "modular_reserve_bank.md", "resume_template.md", "README.md")
         })
     }
     if ($candidates.Count -gt 0) {
@@ -119,15 +120,45 @@ if ([string]::IsNullOrWhiteSpace($MasterResumePath)) {
     exit 1
 }
 
+# Sync Master Resume into Career Banks if sync_career_banks.ps1 is present
+$syncBanksScript = Join-Path $PSScriptRoot "sync_career_banks.ps1"
+if ((Test-Path $syncBanksScript) -and ($MasterResumePath -notmatch "resume_template\.md$")) {
+    try {
+        & $syncBanksScript -MasterResumePath $MasterResumePath -Quiet
+    } catch {}
+}
+
 $masterContent = Get-Content -Path $MasterResumePath -Raw -Encoding UTF8
 $masterLines = $masterContent -split "\r?\n"
 
-# 2. Extract Candidate Identity Metadata from Master Resume & Ledger
+# 2. Extract Candidate Identity Metadata from Career Profile Bank, Master Resume & Ledger
 $candidateName = "Candidate Name"
 $candidateLocation = "Remote, USA"
 $candidateEmail = "email@example.com"
 $candidatePhone = "(555) 000-0000"
 $candidateLinkedIn = "https://linkedin.com"
+
+if (Test-Path $profileBankPath) {
+    $pbLines = Get-Content -Path $profileBankPath -Encoding UTF8
+    foreach ($pbLine in $pbLines) {
+        if ($pbLine -match "^\-\s*\*\*Full Name\*\*:\s*(.+)$") {
+            $val = $matches[1].Trim()
+            if ($val -notmatch "^\[") { $candidateName = $val }
+        } elseif ($pbLine -match "^\-\s*\*\*Primary Location\*\*:\s*(.+)$") {
+            $val = $matches[1].Trim()
+            if ($val -notmatch "^\[") { $candidateLocation = $val }
+        } elseif ($pbLine -match "^\-\s*\*\*Email\*\*:\s*(.+)$") {
+            $val = $matches[1].Trim()
+            if ($val -notmatch "^\[" -and $val -ne "email@domain.com") { $candidateEmail = $val }
+        } elseif ($pbLine -match "^\-\s*\*\*Phone\*\*:\s*(.+)$") {
+            $val = $matches[1].Trim()
+            if ($val -notmatch "^\[") { $candidatePhone = $val }
+        } elseif ($pbLine -match "^\-\s*\*\*LinkedIn URL\*\*:\s*(.+)$") {
+            $val = $matches[1].Trim()
+            if ($val -notmatch "^\[" -and $val -notmatch "username") { $candidateLinkedIn = $val }
+        }
+    }
+}
 
 if ($masterLines.Count -ge 1 -and $masterLines[0] -match "^#\s+(.+)$") {
     $extractedName = $matches[1].Trim()

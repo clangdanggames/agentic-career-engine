@@ -261,6 +261,21 @@ if (-not $DryRun -and (Test-Path $syncScriptPath) -and (Test-Path (Join-Path $wo
     } catch {}
 }
 
+# Seed resumes/career_profile_bank.md if missing and backfill any Master Resume data into Career Banks
+$srcProfileBank = Join-Path $upstreamRoot "resumes/career_profile_bank.md"
+$tgtProfileBank = Join-Path $workspaceRoot "resumes/career_profile_bank.md"
+if (-not $DryRun -and (Test-Path $srcProfileBank) -and -not (Test-Path $tgtProfileBank)) {
+    Copy-Item -Path $srcProfileBank -Destination $tgtProfileBank -Force
+    Write-Host "  -> Initialized resumes/career_profile_bank.md" -ForegroundColor DarkGray
+}
+$syncBanksScript = Join-Path $workspaceRoot "scripts/sync_career_banks.ps1"
+if (-not $DryRun -and (Test-Path $syncBanksScript)) {
+    try {
+        & $syncBanksScript -Quiet
+        $global:LASTEXITCODE = 0
+    } catch {}
+}
+
 # ----------------------------------------------------
 # 5. Clean Up Temporary Files & Verify
 # ----------------------------------------------------

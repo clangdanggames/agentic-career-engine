@@ -339,6 +339,9 @@ if ((Test-Path $srcSearchConfig) -and (Test-Path $tgtSearchConfig)) {
         if ($srcConfig.execution_settings) {
             $tgtConfig.execution_settings = $srcConfig.execution_settings
         }
+        if ($srcConfig.resume_settings) {
+            $tgtConfig | Add-Member -NotePropertyName "resume_settings" -NotePropertyValue $srcConfig.resume_settings -Force
+        }
         if ($srcConfig.search_batches) {
             $tgtConfig | Add-Member -NotePropertyName "search_batches" -NotePropertyValue $srcConfig.search_batches -Force
         }
@@ -368,7 +371,14 @@ Write-Host "Applications Ledger    : $(if ($summary.LedgerUpdated) {'Updated'} e
 Write-Host "Career Dashboard       : $(if ($summary.DashboardMigrated) {'Migrated to DASHBOARD.md'} else {'Not found in source'})" -ForegroundColor White
 Write-Host "ATS Search Config      : $(if ($summary.ConfigMerged) {'Merged'} else {'Unchanged'})`n" -ForegroundColor White
 
-# Run Resume Integrity Linter if master resume is present
+# Run Career Bank Backfill & Resume Integrity Linter if master resume is present
+$syncBanksScript = Join-Path $targetRoot "scripts/sync_career_banks.ps1"
+if ((Test-Path $syncBanksScript) -and -not $DryRun) {
+    try {
+        & $syncBanksScript
+    } catch {}
+}
+
 $masterResume = Get-ChildItem -Path $targetResumesDir -Filter "*_Resume_Master.md" -File | Select-Object -First 1
 if ($masterResume -and -not $DryRun) {
     Write-Host "Running integrity check on migrated master resume: $($masterResume.Name)..." -ForegroundColor Yellow

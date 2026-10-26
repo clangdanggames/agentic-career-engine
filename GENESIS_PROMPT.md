@@ -104,16 +104,20 @@ Then **STOP execution and wait for my input**. Do NOT ask about resume preferenc
 
 ---
 
-### Stage 5 of 6: Master Resume (Refine, Create, or Defer) — [Turn 6 Action]
-Offer me three flexible options:
-- **Option A (Refine Existing Resume)**: If I have a resume, I can paste the text or provide a file path. Standardize and refine it into `resumes/[My_Name]_Resume_Master.md` using modern formatting and action-driven metrics.
-- **Option B (Create from Scratch)**: If I do not have a resume ready, interview me conversationally about my recent roles, key accomplishments, skills, and education, and author a brand-new master resume.
-- **Option C (Defer for Later)**: If I prefer to explore job search and tracking tools first, create a placeholder draft and proceed to dashboard activation.
+### Stage 5 of 6: Career Banks & Master Resume Summary (Refine, Create, or Defer) — [Turn 6 Action]
+Explain that ACE uses a **Bank-First Architecture**—storing all categorized skills (`[Level 1/2/3]`), full work history bullets, education, credentials, and references in [`resumes/career_profile_bank.md`](resumes/career_profile_bank.md) and [`resumes/modular_reserve_bank.md`](resumes/modular_reserve_bank.md), and synthesizing `resumes/[My_Name]_Resume_Master.md` as your un-tailored general summary view. Offer me three flexible options:
+- **Option A (Import & Refine Existing Resume)**: If I have a resume (and/or any additional skill lists, performance reviews, or project notes), I can paste the text or provide a file path. Populate `resumes/career_profile_bank.md` and `resumes/modular_reserve_bank.md` with the comprehensive data, and synthesize a clean, high-impact general summary in `resumes/[My_Name]_Resume_Master.md`.
+- **Option B (Create from Scratch)**: If I do not have a resume ready, interview me conversationally about my recent roles, key accomplishments, categorized skills (including competency depth), education, and optional references to populate my Career Banks and synthesize a brand-new Master Resume summary.
+- **Option C (Defer for Later)**: If I prefer to explore job search and tracking tools first, keep the bank templates ready and proceed to dashboard activation.
+
+*(Optional Bank Enrichment Note: Also let me know that I can share additional details—such as broader categorized skills, references, employee performance reviews, project postmortems, or outputs from `workflows/project_ingestion_prompt.md`—either now or at any time later to expand my Career Banks beyond what fits on a 1-page summary.)*
 
 If a resume is provided or drafted:
-1. Compile the single-page PDF:
+1. Ensure all Master Resume items are synchronized into the Career Banks:
+   `powershell -ExecutionPolicy Bypass -File scripts/sync_career_banks.ps1`
+2. Compile the PDF:
    `powershell -ExecutionPolicy Bypass -File scripts/render_resume.ps1 -MarkdownPath resumes/[My_Name]_Resume_Master.md`
-2. Validate that it fits strictly on 1 page:
+3. Verify page count and layout fill:
    `powershell -ExecutionPolicy Bypass -File scripts/check_pdf_pages.ps1 -Path resumes/[My_Name]_Resume_Master.pdf`
 
 Then **STOP execution and wait for my input**.
@@ -129,16 +133,16 @@ Then **STOP execution and wait for my input**.
    - Live Mermaid pipeline funnel diagram (`graph LR`).
    - Active application tracker table (linking to each role's dossier in `applications/`).
    - Initial velocity and conversion metrics.
-   - **Quick Access Workspace Links**: One-click markdown links to all core workspace assets (`sourcing_inbox.md`, `ats_search_config.json`, `scoring_rubric.md`, `contacts_ledger.md`, `[Candidate]_Resume_Master.md`, `modular_reserve_bank.md`, `target_tier_list.md`, `targeted_job_sourcing_queries.md`, `recruiter_screen_cheatsheet.md`, `career_gap_framing.md`, and `job_hunt_workflow.md`).
+   - **Quick Access Workspace Links**: One-click markdown links to all core workspace assets (`sourcing_inbox.md`, `ats_search_config.json`, `scoring_rubric.md`, `contacts_ledger.md`, `career_profile_bank.md`, `modular_reserve_bank.md`, `[Candidate]_Resume_Master.md`, `star_story_bank.md`, `project_ingestion_prompt.md`, `target_tier_list.md`, `targeted_job_sourcing_queries.md`, `recruiter_screen_cheatsheet.md`, `career_gap_framing.md`, and `job_hunt_workflow.md`).
 4. Present my new `DASHBOARD.md` and introduce our full-cycle career copilot routines:
    - **ATS Sourcing & X-Ray**: Autonomous scans and 1-click Boolean searches (`workflows/targeted_job_sourcing_queries.md`) with pragmatic 3-tier gap analysis.
-   - **20-Minute Application SOP**: Micro-stepped workflow in `workflows/job_hunt_workflow.md` enforcing Rules 1–3 (Confirmation Gate, Immutable Resumes, Closed-Set Whitelist).
-   - **Application Dossiers**: Standardizing `applications/YYYY-MM-DD_[company]_[reqid]/` with tailored 1-page resumes, pre-filled portal guides (`application_form_guide.md`), cover letters, and interview prep.
-   - **Automated Integrity Linting**: Verifying zero hallucinated skills via `scripts/lint_resume_integrity.ps1` prior to rendering.
-   - **Modular Reserve Bank**: Swapping specialized bullets from `resumes/modular_reserve_bank.md` to match unique requirements without bloating 1-page layouts.
+   - **20-Minute Application SOP**: Micro-stepped workflow in `workflows/job_hunt_workflow.md` enforcing Rules 1–6 (Confirmation Gate, Immutable Resumes, Bank-First Whitelist, Clean-Room Assembly, State Sync, and Bi-Directional Page Fitting).
+   - **Application Dossiers**: Standardizing `applications/YYYY-MM-DD_[company]_[reqid]/` with tailored resumes, pre-filled portal guides (`application_form_guide.md`), cover letters, and interview prep.
+   - **Automated Integrity Linting**: Verifying zero hallucinated skills via `scripts/lint_resume_integrity.ps1` against your Career Banks prior to rendering.
+   - **Comprehensive Career Banks & Continuous Ingestion**: Storing all categorized skills, education, references, and role bullets in `resumes/career_profile_bank.md` and `resumes/modular_reserve_bank.md`, and continuously ingesting performance reviews, postmortems, and external project exports via the `career-ingestion` skill and `workflows/project_ingestion_prompt.md`.
    - **Story Bank & Gap Framing**: STAR+R stories (`stories/star_story_bank.md`), phone screen cheatsheets, and confident sabbatical/transition framing (`stories/career_gap_framing.md`).
    - **Offer Negotiation**: Structuring counter-proposals with `workflows/compensation_estimator.md`.
-5. Propose immediate next actions (such as running an initial ATS scan, creating an application dossier, or authoring a targeted STAR story).
+5. Propose immediate next actions (such as running an initial ATS scan, enriching the Career Banks with a recent project or performance review, or creating an application dossier).
 
 ---
 

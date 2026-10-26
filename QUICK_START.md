@@ -68,9 +68,10 @@ ACE operates as an end-to-end career chief of staff across every phase of your j
 | :--- | :--- | :--- |
 | **Sourcing** | Discover ATS leads | *"Scan ATS boards for new senior roles matching my compensation floor and fit rubric."* |
 | **Direct X-Ray** | 1-Click Boolean searches | *"Show me direct Boolean search strings for finding uncrowded Director of Operations roles on Greenhouse and Ashby."* |
-| **Tailoring** | 20-min micro-stepped dossier | *"Tailor my resume for this requisition: [paste link or text]. Run the integrity linter, ensure strict 1-page PDF, and pre-fill an application form guide."* |
+| **Tailoring** | 20-min micro-stepped dossier | *"Tailor my resume for this requisition: [paste link or text]. Assemble from my Career Banks, run the integrity linter, neatly fill 1 page, and pre-fill an application form guide."* |
 | **Whitelisting** | Verify factual integrity | *"Run `scripts/lint_resume_integrity.ps1` against my tailored resume to verify zero hallucinated skills."* |
-| **Reserve Bank** | Swap specialized bullets | *"Check `resumes/modular_reserve_bank.md` and swap in our verified distributed systems bullets for this role."* |
+| **Career Banks** | Swap or expand bullets & skills | *"Check `resumes/modular_reserve_bank.md` and `resumes/career_profile_bank.md` and pull in our verified distributed systems bullets and skills for this role."* |
+| **Career Ingestion** | Ingest reviews, postmortems & wins | *"Here is my latest performance review / project postmortem / external project export. Clarify any missing metrics or ownership boundaries and ingest it into my Career Banks."* |
 | **Networking** | Uncover warm referral paths | *"I placed my LinkedIn Connections.csv in `network/`. Parse my connections and highlight who works at target employers."* |
 | **Outreach** | Draft low-friction messages | *"Draft a concise, warm message to [Contact Name] at [Company] asking for an internal referral for requisition #[ID]."* |
 | **Gap Framing** | Address career pauses | *"Help me refine my narrative in `stories/career_gap_framing.md` for explaining my recent sabbatical with confidence."* |
