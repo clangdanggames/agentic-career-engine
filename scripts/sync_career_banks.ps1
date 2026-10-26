@@ -284,27 +284,33 @@ if (-not [string]::IsNullOrWhiteSpace($contactLine)) {
     }
 }
 
-$missingSummaryLines = [System.Collections.Generic.List[string]]::new()
-foreach ($sumLine in $summaryLinesToSync) {
-    if ($sumLine.Length -gt 10 -and $updatedProfile.IndexOf($sumLine, [System.StringComparison]::OrdinalIgnoreCase) -lt 0) {
-        $missingSummaryLines.Add("- **Executive Summary**: $sumLine")
-    }
-}
-if ($missingSummaryLines.Count -gt 0) {
-    $sumBlock = "`n" + ($missingSummaryLines -join "`n") + "`n"
-    if ($updatedProfile -match "(?m)^##\s+.*Section 2:") {
-        $updatedProfile = [regex]::Replace($updatedProfile, '(?m)(^---\s*\r?\n+##\s+.*Section 2:)', "$sumBlock`n`$1", 1)
-    } else {
-        $updatedProfile = $updatedProfile.TrimEnd() + "`n" + $sumBlock
-    }
-    $profileModified = $true
-}
+$profileWithoutPlaceholders = ($updatedProfile -replace "(?i)\[e\.g\.[^\]]*\]", "" -replace "(?i)\([^)]*e\.g\.[^)]*\)", "")
 
 $missingSkillLines = [System.Collections.Generic.List[string]]::new()
 foreach ($sLine in $skillsLinesToSync) {
     # Check if this exact skill line or its core content is already in career_profile_bank.md
     $cleanCheck = ($sLine -replace "^[-*]\s+", "").Trim()
-    if ($updatedProfile.IndexOf($cleanCheck, [System.StringComparison]::OrdinalIgnoreCase) -lt 0) {
+    $isAlreadyPresent = ($profileWithoutPlaceholders.IndexOf($cleanCheck, [System.StringComparison]::OrdinalIgnoreCase) -ge 0)
+    if (-not $isAlreadyPresent -and $cleanCheck -match "^\*\*([^*]+)\*\*:\s*(.+)$") {
+        $catName = $matches[1].Trim()
+        $content = $matches[2].Trim()
+        # Check if the category header or core skill tokens are already represented in career_profile_bank.md
+        if ($profileWithoutPlaceholders.IndexOf($catName, [System.StringComparison]::OrdinalIgnoreCase) -ge 0) {
+            $isAlreadyPresent = $true
+        } else {
+            $tokens = @($content -split "[,;/]" | ForEach-Object { ($_ -replace "[().*]", "").Trim() } | Where-Object { $_.Length -ge 3 })
+            $matchedTokens = 0
+            foreach ($t in $tokens) {
+                if ($profileWithoutPlaceholders.IndexOf($t, [System.StringComparison]::OrdinalIgnoreCase) -ge 0) {
+                    $matchedTokens++
+                }
+            }
+            if ($tokens.Count -gt 0 -and ($matchedTokens / $tokens.Count) -ge 0.6) {
+                $isAlreadyPresent = $true
+            }
+        }
+    }
+    if (-not $isAlreadyPresent) {
         $levelPrefix = "`[Level 1: Core Direct]` "
         if ($cleanCheck -match "(?i)Level\s*2") { $levelPrefix = "`[Level 2: AI-Assisted / Architecture]` " }
         elseif ($cleanCheck -match "(?i)Level\s*3") { $levelPrefix = "`[Level 3: Working Exposure / Evaluated]` " }
@@ -327,7 +333,22 @@ if ($missingSkillLines.Count -gt 0) {
 $missingEduLines = [System.Collections.Generic.List[string]]::new()
 foreach ($eLine in $eduLinesToSync) {
     $cleanEdu = ($eLine -replace "^###\s+", "" -replace "^[-*]\s+", "").Trim()
-    if ($cleanEdu.Length -gt 2 -and $updatedProfile.IndexOf($cleanEdu, [System.StringComparison]::OrdinalIgnoreCase) -lt 0) {
+    $eduPresent = ($profileWithoutPlaceholders.IndexOf($cleanEdu, [System.StringComparison]::OrdinalIgnoreCase) -ge 0)
+    if (-not $eduPresent) {
+        $eduParts = @($cleanEdu -split "\|" | ForEach-Object { ($_ -replace "\*\*", "").Trim() } | Where-Object { $_.Length -ge 3 })
+        if ($eduParts.Count -gt 0) {
+            $matchedEduParts = 0
+            foreach ($ep in $eduParts) {
+                if ($profileWithoutPlaceholders.IndexOf($ep, [System.StringComparison]::OrdinalIgnoreCase) -ge 0) {
+                    $matchedEduParts++
+                }
+            }
+            if ($matchedEduParts -eq $eduParts.Count) {
+                $eduPresent = $true
+            }
+        }
+    }
+    if ($cleanEdu.Length -gt 2 -and -not $eduPresent) {
         $missingEduLines.Add($eLine)
         $eduAddedCount++
     }
